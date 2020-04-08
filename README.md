@@ -4,4 +4,4 @@
 npm set registry http://npm.edianzu.cn
 # 注册用户
 npm adduser –registry http://npm.edianzu.cn
-
+使用姓名全拼作为用户名注册
