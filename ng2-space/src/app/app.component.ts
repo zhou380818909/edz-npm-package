@@ -8,12 +8,15 @@ import { Component } from '@angular/core';
 export class AppComponent {
     title = 'ng2-space';
     text = '13211111111'
-    options = [
+    options = [ 
         {key:'id',value:'北京'}
     ]
     showPhone() {
         setTimeout(() => {
             this.text = '13211112222'
         }, 1000)
+    }
+    onCollapse(v){
+        // alert(v)
     }
 }

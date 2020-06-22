@@ -1,14 +1,21 @@
 
-
-<edz-bool-text [condition]="false" [text]="'启用'"></edz-bool-text>
-<edz-secret-text [defualtText]="'点击显示手机号'" [text]="text" (onClick)="showPhone()"></edz-secret-text>
-<div style="height:200px">
-    <edz-search-list>
-        <div class="search-form">
-            safdlkjl
-        </div>
-        <div class="data-list">
-            asflkjslfdf 
-        </div>
-    </edz-search-list>
-</div>
+<edz-layer [siderMinWidth]="0" [siderMaxWidth]="300" (onCollapse)="onCollapse($event)">
+    <div class="layer-sider">
+        sdfsd
+    </div>
+    <div class="layer-header">
+            sdfsd
+    </div>
+    <div class="layer-body">
+        <edz-bool-text [condition]="false" [text]="'启用'"></edz-bool-text>
+        <edz-secret-text [defualtText]="'点击显示手机号'" [text]="text" (onClick)="showPhone()"></edz-secret-text>
+        <edz-search-list>
+            <div class="search-form">
+                safdlkjl 
+            </div>
+            <div class="data-list">
+                sadfs
+            </div>
+        </edz-search-list>
+    </div>
+</edz-layer>

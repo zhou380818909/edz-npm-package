@@ -6,6 +6,7 @@
     "@angular/core": "^9.1.11"
   },
   "dependencies": {
-    "tslib": "^1.10.0"
+    "tslib": "^1.10.0",
+    "ng-zorro-antd": "~9.2.1"
   }
 }

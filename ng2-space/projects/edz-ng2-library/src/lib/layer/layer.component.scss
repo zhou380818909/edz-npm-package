@@ -1,0 +1,50 @@
+nz-header{
+    background: #fff;
+    padding: 0;
+    border-bottom: 1px solid #f3f3f3;
+    height: 42px;
+    line-height: 42px;
+    display: flex;
+}
+
+nz-footer {
+    text-align: center;
+    padding: 5px;
+    color: #000;
+    background: #fff;
+}
+
+nz-sider {
+  background: #001529;
+}
+
+nz-content {
+  overflow: auto;
+}
+
+nz-layout {
+  height: 100%;
+  color: #fff;
+  :last-child {
+    margin: 0;
+  }
+}
+
+
+.collapse{
+    cursor: pointer;
+    padding: 0 5px;
+    :hover{
+        opacity: 0.9;
+    }
+    i{
+        padding:8px 5px;
+        background: #1890ff;
+        color: #fff;
+        border-radius: 4px;
+    }
+}
+.header{
+    float: left;
+    flex: 1;
+}

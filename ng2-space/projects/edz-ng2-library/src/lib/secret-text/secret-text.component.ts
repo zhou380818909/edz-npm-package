@@ -1,6 +1,4 @@
 import { Component, OnInit, Input,Output, EventEmitter } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
 
 @Component({
     selector: 'edz-secret-text',
@@ -12,7 +10,7 @@ export class SecretTextComponent implements OnInit {
     constructor() { }
     @Input() defualtText : string;
     @Input() text : string;
-    @Output() onClick = new EventEmitter<boolean>();
+    @Output() onClick = new EventEmitter<string>();
 
     isShow:boolean = false;
 
@@ -22,6 +20,6 @@ export class SecretTextComponent implements OnInit {
 
     show(){
         this.isShow = true;
-        this.onClick.emit(true);
+        this.onClick.emit(this.text);
     }
 }
