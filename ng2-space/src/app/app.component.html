@@ -1,5 +1,5 @@
 
-<edz-layer [siderMinWidth]="0" [siderMaxWidth]="300" (onCollapse)="onCollapse($event)">
+<edz-layer [siderMinWidth]="70" [siderMaxWidth]="300" (onCollapse)="onCollapse($event)">
     <div class="layer-sider">
         sdfsd
     </div>
@@ -14,7 +14,9 @@
                 safdlkjl 
             </div>
             <div class="data-list">
-                sadfs
+                <edz-group-datepicker [type]="2" [(dateRange)]="date" (onChange)="dateChange($event)"></edz-group-datepicker>
+
+                <button (click)="onBtnClick()">试试</button>
             </div>
         </edz-search-list>
     </div>

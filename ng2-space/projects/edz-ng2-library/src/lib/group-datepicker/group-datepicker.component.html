@@ -1,0 +1,17 @@
+<span>
+    <nz-radio-group *ngIf="type=='1'" (ngModelChange)="onRadioChange($event)" [(ngModel)]="radioValue">
+        <label nz-radio nzValue="1">今天</label>
+        <label nz-radio nzValue="2">本周</label>
+        <label nz-radio nzValue="3">本月</label>
+        <label nz-radio nzValue="4">全部</label>
+        <label nz-radio nzValue="5">自定义</label>
+    </nz-radio-group>
+    <nz-radio-group *ngIf="type=='2'" (ngModelChange)="onSecondRadioChange($event)" [(ngModel)]="radioValue">
+            <label nz-radio nzValue="1">近7天</label>
+            <label nz-radio nzValue="2">近14天</label>
+            <label nz-radio nzValue="3">近30天</label>
+            <label nz-radio nzValue="4">全部</label>
+            <label nz-radio nzValue="5">自定义</label>
+        </nz-radio-group>
+    <nz-range-picker [(ngModel)]="dateRange" [nzDisabled]="disabled" (ngModelChange)="onDateChange($event)"></nz-range-picker>
+</span>

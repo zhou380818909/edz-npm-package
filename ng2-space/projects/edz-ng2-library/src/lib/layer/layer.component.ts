@@ -26,16 +26,20 @@ export class LayerComponent implements OnInit {
         };
     }
 
+    setSiderMin(){
+        this.siderStyle = {
+            flex: `0 0 ${this.siderMinWidth}px`,
+            'max-width': `${this.siderMinWidth}px`,
+            'min-width': `${this.siderMinWidth}px`,
+            width: `${this.siderMinWidth}px`,
+            overflow: 'hidden'
+        };
+    }
+
     toggleCollapsed() {
         this.isCollapsed = !this.isCollapsed;
         if (this.isCollapsed) {
-            this.siderStyle = {
-                flex: `0 0 ${this.siderMinWidth}px`,
-                'max-width': `${this.siderMinWidth}px`,
-                'min-width': `${this.siderMinWidth}px`,
-                width: `${this.siderMinWidth}px`,
-                overflow: 'hidden'
-            };
+            this.setSiderMin()
         } else {
             this.setSiderMax()
         }

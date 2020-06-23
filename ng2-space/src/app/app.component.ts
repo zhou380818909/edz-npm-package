@@ -1,4 +1,8 @@
 import { Component } from '@angular/core';
+import { registerLocaleData } from '@angular/common';
+import zh from '@angular/common/locales/zh';
+
+registerLocaleData(zh);
 
 @Component({
     selector: 'app-root',
@@ -11,6 +15,7 @@ export class AppComponent {
     options = [ 
         {key:'id',value:'北京'}
     ]
+    date=null
     showPhone() {
         setTimeout(() => {
             this.text = '13211112222'
@@ -18,5 +23,11 @@ export class AppComponent {
     }
     onCollapse(v){
         // alert(v)
+    }
+    onBtnClick(){
+        console.log(this.date)
+    }
+    dateChange(date){
+        console.log(date)
     }
 }
