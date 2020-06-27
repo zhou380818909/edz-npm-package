@@ -1,13 +1,19 @@
 {
   "name": "edz-ng2-library",
-  "version": "1.0.6",
+  "version": "1.0.8",
   "peerDependencies": {
-    "@angular/common": "~9.1.11",
-    "@angular/core": "~9.1.11",
-    "@angular/forms": "~9.1.11"
+    "@angular/animations": "^9.1.11",
+    "@angular/common": "^9.1.11",
+    "@angular/core": "^9.1.11",
+    "@angular/forms": "~9.1.11",
+    "@angular/platform-browser": "^9.1.11",
+    "@angular/router": "~9.1.11",
+    "ng-zorro-antd": "~9.2.2"
   },
   "dependencies": {
-    "tslib": "^1.10.0",
-    "ng-zorro-antd": "~9.2.1"
-  }
+    "tslib": "^1.10.0"
+  },
+  "bundleDependencies": [
+    "ng-zorro-antd"
+  ]
 }

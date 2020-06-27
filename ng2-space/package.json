@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --configuration --host localhost --port 4820",
+    "start": "ng serve --host localhost --port 4820",
     "build": "ng build edz-ng2-library --prod",
     "publish": "npm run build && cd projects/edz-ng2-library && npm version patch && cd ../../dist/edz-ng2-library && npm version patch && npm publish",
     "test": "ng test",
@@ -22,8 +22,7 @@
     "@angular/router": "~9.1.11",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
-    "zone.js": "~0.10.2",
-    "ng-zorro-antd": "~9.2.1"
+    "zone.js": "~0.10.2"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.901.8",

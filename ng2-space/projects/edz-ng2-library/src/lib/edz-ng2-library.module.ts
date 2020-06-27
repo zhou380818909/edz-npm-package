@@ -1,36 +1,26 @@
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
-import { CommonModule, } from '@angular/common';
-import { NgZorroAntdModule } from 'ng-zorro-antd';
+import { NZ_I18N, zh_CN } from 'ng-zorro-antd';
+import { BoolTextModule } from './bool-text/bool-text.module';
+import { GroupDatepickerModule } from './group-datepicker/group-datepicker.module';
+import { LayerModule } from './layer/layer.module';
+import { SearchListModule } from './search-list/search-list.module';
+import { SecretTextModule } from './secret-text/secret-text.module';
 
-import { FormsModule } from '@angular/forms';
+const modules = [
+  CommonModule,
+  SecretTextModule,
+  SearchListModule,
+  BoolTextModule,
+  LayerModule,
+  GroupDatepickerModule
+];
 
-
-import { SearchListComponent } from './search-list/search-list.component'
-import { BoolTextComponent } from './bool-text/bool-text.component'
-import { SecretTextComponent } from './secret-text/secret-text.component';
-import { LayerComponent } from './layer/layer.component';
-import { GroupDatepickerComponent } from './group-datepicker/group-datepicker.component';
-import { HttpClientModule } from '@angular/common/http';
-
-const components = [
-    SearchListComponent,
-    BoolTextComponent,
-    SecretTextComponent,
-    LayerComponent,
-    GroupDatepickerComponent
-]
-
-@NgModule({ 
-  declarations: components,
-  exports: components,
-  imports: [
-    FormsModule, 
-    CommonModule,
-    NgZorroAntdModule,
-    HttpClientModule,
-  ],
+@NgModule({
+  imports: modules,
+  exports: modules,
   providers: [
-    
+    { provide: NZ_I18N, useValue: zh_CN },
   ]
 })
 export class EdzNg2LibraryModule { }
