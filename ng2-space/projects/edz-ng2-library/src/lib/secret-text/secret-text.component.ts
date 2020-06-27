@@ -1,4 +1,4 @@
-import { Component, OnInit, Input,Output, EventEmitter } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 @Component({
     selector: 'edz-secret-text',
@@ -8,14 +8,14 @@ import { Component, OnInit, Input,Output, EventEmitter } from '@angular/core';
 export class SecretTextComponent implements OnInit {
 
     constructor() { }
-    @Input() defualtText : string;
-    @Input() text : string;
+    @Input() defualtText: string;
+    @Input() text: string;
     @Output() onClick = new EventEmitter<string>();
 
-    isShow:boolean = false;
+    isShow = false;
 
     ngOnInit() {
-        
+
     }
 
     show(){
