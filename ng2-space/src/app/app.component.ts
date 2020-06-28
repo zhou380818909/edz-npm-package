@@ -35,64 +35,64 @@ export class AppComponent {
   }
   column: IColumnItem[] = [
     {
-      title: '明月',
-      index: 'love',
+      title: '姓名',
+      index: 'name',
       nzLeft: '0',
     },
     {
-      title: '颜值',
+      title: '姓名',
       index: 'score',
     },
     {
-      title: '颜值',
+      title: '姓名',
       index: 'score',
     },
     {
-      title: '颜值',
+      title: '姓名',
       index: 'score',
     },
     {
-      title: '颜值',
+      title: '姓名',
       index: 'score',
     },
     {
-      title: '颜值',
+      title: '姓名',
       index: 'score',
     },
     {
-      title: '颜值',
+      title: '姓名',
       index: 'score',
     },
     {
-      title: '颜值',
+      title: '姓名',
       index: 'score',
     },
     {
-      title: '颜值',
+      title: '姓名',
       index: 'score',
     },
     {
-      title: '颜值',
+      title: '姓名',
       index: 'score',
     },
     {
-      title: '颜值',
+      title: '姓名',
       index: 'score',
     },
     {
-      title: '颜值',
+      title: '姓名',
       index: 'score',
     },
     {
-      title: '颜值',
+      title: '姓名',
       index: 'score',
     },
     {
-      title: '颜值',
+      title: '姓名',
       index: 'score',
     },
     {
-      title: '颜值1',
+      title: '姓名1',
       index: 'score',
     },
   ]
