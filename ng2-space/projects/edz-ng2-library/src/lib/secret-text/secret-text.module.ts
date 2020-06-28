@@ -1,14 +1,12 @@
-import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import { SecretTextComponent } from './secret-text.component';
-
-
+import { CommonModule } from '@angular/common'
+import { NgModule } from '@angular/core'
+import { SecretTextComponent } from './secret-text.component'
 
 @NgModule({
-  declarations: [ SecretTextComponent ],
+  declarations: [SecretTextComponent],
   imports: [
-    CommonModule
+    CommonModule,
   ],
-  exports: [ SecretTextComponent ]
+  exports: [SecretTextComponent],
 })
 export class SecretTextModule { }

@@ -1,0 +1,91 @@
+:host {
+  &::ng-deep {
+    // 边框相关样式
+    .ant-table {
+      border: 1px solid #e8e8e8;
+
+      .ant-table-header {
+        table {
+          border: 0 none;
+        }
+      }
+
+      .ant-table-body {
+        table {
+          border: 0 none;
+        }
+      }
+
+      .ant-table-tbody {
+        tr {
+          td {
+            &:last-child {
+              border-right: 0 none;
+            }
+          }
+
+          &:last-child {
+            td {
+              border-bottom: 0 none;
+            }
+          }
+        }
+      }
+    }
+    // 表格内按钮
+    .ant-btn {
+      height: unset;
+      line-height: 1;
+    }
+    // 表格排序标识
+    .ant-table-thead > tr > th .ant-table-column-sorter {
+      vertical-align: unset;
+    }
+
+    .ant-table-placeholder {
+      border-bottom: 0 none;
+    }
+
+    .check {
+      width: 48px;
+    }
+
+    th[nzshowcheckbox] {
+      width: 16px !important;
+    }
+
+    th {
+      height: 40px;
+      padding: 0 16px !important;
+      // line-height: 40px;
+    }
+
+    td {
+      padding: 12px 16px !important;
+    }
+  }
+}
+
+// 表格为空, 滚动条样式
+.empty {
+  &::ng-deep {
+    .ant-table-body {
+      &::-webkit-scrollbar {
+        height: 0;
+        width: 0;
+      }
+
+      &::-webkit-scrollbar-thum {
+        background-color: transparent;
+      }
+
+      &::-webkit-scrollbar-track {
+        background-color: transparent;
+      }
+    }
+  }
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}

@@ -5,6 +5,6 @@ import { BoolTextComponent } from './bool-text.component'
 @NgModule({
   declarations: [BoolTextComponent],
   imports: [CommonModule],
-  exports: [ BoolTextComponent ]
+  exports: [BoolTextComponent],
 })
 export class BoolTextModule {}
