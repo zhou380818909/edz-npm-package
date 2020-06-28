@@ -1,0 +1,139 @@
+<nz-table #nzTable [nzData]="data" nzBordered="true" [nzLoading]="loading" [nzShowPagination]="true"
+  [(nzPageIndex)]="pagination.pageIndex" [(nzPageSize)]="pagination.pageSize"
+  [nzShowTotal]="rangeTemplate" [nzShowQuickJumper]="true" [nzShowSizeChanger]="true"
+  [nzPageSizeOptions]="config.nzPageSizeOptions || [10, 20, 50]" [nzTotal]="pagination.total"
+  [nzHideOnSinglePage]="config.nzHideOnSinglePage" (nzPageIndexChange)="paginationHanlder()"
+  (nzPageSizeChange)="paginationHanlder()" [nzScroll]="scroll" nzSize="middle"
+  [nzFrontPagination]="false" [class.empty]="data?.length === 0">
+  <thead class="33">
+    <tr>
+      <!-- 根据表格配置是否含有选择框 -->
+      <th class="check" *ngIf="config.showCheck" nzShowCheckbox [nzIndeterminate]="isIndeterminate"
+        [(nzChecked)]="isAllChecked" (nzCheckedChange)="allCheckedHandler($event)"
+        [nzLeft]="config.checkFixed ? '-1px': ''">
+      </th>
+      <!-- 循环渲染表格列 -->
+      <th *ngFor="let col of column; let index = index" [nzWidth]="col.width"
+        [nzColumnKey]="col.index" [nzShowSort]="col.nzShowSort" [(nzSortOrder)]="col.nzSortOrder"
+        [nzLeft]="col.nzLeft" [nzRight]="col.nzRight"
+        (nzSortOrderChange)="col.nzSortOrderChange($event, col, column)"
+        [ngStyle]="{'border-right': index==column.length-1?'none':'1px solid #e8e8e8'}">
+        <!-- 如果有表格列名有渲染渲染模板则使用模板 -->
+        <ng-container *ngIf="col.titleRender; else elseTpl">
+          <ng-container *ngTemplateOutlet="col.titleRender"></ng-container>
+        </ng-container>
+        <!-- 否则直接渲染列名 -->
+        <ng-template #elseTpl>{{col.title || '-'}}</ng-template>
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- 首先根据数据渲染所需要的行数 -->
+    <tr *ngFor="let item of nzTable.data; trackBy: trackBy" [ngStyle]="item.style">
+      <!-- 选择框渲染 -->
+      <td class="check" *ngIf="config.showCheck" nzShowCheckbox
+        [nzLeft]="config.checkFixed ? '-1px': ''" [nzDisabled]="item.style || item['disabled']"
+        [(nzChecked)]="checkedMap[item[config.checkIndex || 'id']]"
+        (nzCheckedChange)="checkHanlder($event, item)">
+      </td>
+      <!-- 其次根据列配置,渲染所需要的列数 -->
+      <td *ngFor="let col of column" [nzLeft]="col.nzLeft" [nzRight]="col.nzRight">
+        <!--有样式则渲染样式 -->
+        <ng-template [ngIf]="item.style">
+          {{item[col.index]}}
+        </ng-template>
+        <!-- 没有样式 -->
+        <ng-template [ngIf]="!item.style">
+          <!-- 如果有渲染模板, 则根据模板渲染, 同时需要把当前行的数据传到对应的模板 -->
+          <ng-template [ngIf]="col.render">
+            <ng-container
+              *ngTemplateOutlet="col.render; context: {$implicit: item[col['index']], index: col['index'], row: item}">
+            </ng-container>
+          </ng-template>
+
+          <!-- ****  以下为模板引入 **** -->
+          <!-- 模板1 transfer转换器模板 -->
+          <ng-template #transferTpl>
+            <span nz-text [nzType]="col.transfer[item[col.index]]?.color">
+              {{col.transfer[item[col.index]]?.target}}
+            </span>
+          </ng-template>
+          <!-- 模板1 转换器不带颜色模板 -->
+          <ng-template #transferTooltipzTpl>
+            {{col.transfer[item[col.index]]?.target}}
+          </ng-template>
+          <!-- 模板3 管道模板 -->
+          <ng-template #pipeTpl>
+            <!-- 数字管道 -->
+            <span
+              *ngIf="col.pipe['pipe'] === 'number'">{{item[col.index] | number:col.pipe['format']}}
+            </span>
+            <!-- 时间管道 -->
+            <span *ngIf="col.pipe['pipe'] === 'date'">{{item[col.index] | date:col.pipe['format']}}
+            </span>
+          </ng-template>
+          <!-- 模板4 纯展示 -->
+          <ng-template #plainTpl>
+            {{item[col.index]}}
+          </ng-template>
+          <!-- **** 以上为模板引入 **** -->
+
+          <!-- 判断为以上三种模板中的哪个模板 -->
+          <ng-template #tpl>
+            <ng-container *ngIf="col.transfer && !col.pipe">
+              <ng-container *ngTemplateOutlet="transferTpl"></ng-container>
+            </ng-container>
+            <ng-container *ngIf="col.pipe && !col.transfer">
+              <ng-container *ngTemplateOutlet="pipeTpl"></ng-container>
+            </ng-container>
+            <ng-container *ngIf="!col.pipe && !col.transfer">
+              <ng-container *ngTemplateOutlet="plainTpl"></ng-container>
+            </ng-container>
+          </ng-template>
+
+          <!-- 悬浮提示 -->
+          <ng-template #tooltipTpl>
+            <ng-container
+              *ngTemplateOutlet="col.tooltipTpl; context: {$implicit: item[col['index']], index: col['index'], row: item}">
+            </ng-container>
+          </ng-template>
+
+          <ng-template #toolTpl>
+            <!-- webkit溢出隐藏 -->
+            <span *ngIf="isWebKit; else elseEllip">
+              <ng-container *ngTemplateOutlet="tpl"></ng-container>
+            </span>
+            <!-- FIXME: 有兼容性问题, 非webkit可能不会生效 -->
+            <!-- 非webkit溢出隐藏 -->
+            <ng-template #elseEllip>
+              <span nz-text nzEllipsis [nzEllipsisRows]="2">
+                <ng-container *ngTemplateOutlet="tpl"></ng-container>
+              </span>
+            </ng-template>
+          </ng-template>
+
+          <!-- 实现悬浮提示, 则出现溢出隐藏 -->
+          <ng-template [ngIf]="!col.render && col.tooltip">
+            <!-- 自定义悬浮内容 -->
+            <span class="cursor-pointer" *ngIf="col.tooltipTpl" nz-tooltip [nzTooltipTitle]="tooltipTpl">
+              <ng-container *ngTemplateOutlet="toolTpl"></ng-container>
+            </span>
+            <!-- 悬浮提示功能 -->
+            <span class="cursor-pointer" *ngIf="!col.tooltipTpl" nz-tooltip [nzTooltipTitle]="col.transfer ? transferTooltipzTpl: tpl">
+              <ng-container *ngTemplateOutlet="toolTpl"></ng-container>
+            </span>
+          </ng-template>
+          <!-- 不需要实现悬浮提示, 也不处理溢出隐藏 -->
+          <ng-template [ngIf]="!col.render && !col.tooltip">
+            <ng-container *ngTemplateOutlet="tpl"></ng-container>
+          </ng-template>
+        </ng-template>
+      </td>
+    </tr>
+  </tbody>
+</nz-table>
+<!-- 分页组件 -->
+<ng-template #rangeTemplate let-range="range" let-total>
+  总共 {{total}} 个记录
+  <!-- 当前显示 {{range[0]}} - {{range[1]}} 条, 共{{total}}条 -->
+</ng-template>

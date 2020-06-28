@@ -8,12 +8,14 @@
     "@angular/forms": "~9.1.11",
     "@angular/platform-browser": "^9.1.11",
     "@angular/router": "~9.1.11",
-    "ng-zorro-antd": "~9.2.2"
+    "ng-zorro-antd": "~9.2.2",
+    "lodash-decorators": "^6.0.1"
   },
   "dependencies": {
     "tslib": "^1.10.0"
   },
   "bundleDependencies": [
-    "ng-zorro-antd"
+    "ng-zorro-antd",
+    "lodash-decorators"
   ]
 }
