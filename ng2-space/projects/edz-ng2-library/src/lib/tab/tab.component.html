@@ -1,0 +1,15 @@
+<nz-tabset [nzType]="'card'" [nzSelectedIndex]="index">
+  <nz-tab *ngFor="let tab of tabs" [nzTitle]="titleTemplate">
+    <ng-template #titleTemplate>
+      <div class="tab-title" (contextmenu)="contextMenu($event, menu)">{{ tab }}<i nz-icon *ngIf="tabs?.length > 1" nzType="close" class="ant-tabs-close-x" (click)="closeTab(tab)"></i></div>
+    </ng-template>
+  </nz-tab>
+</nz-tabset>
+
+<nz-dropdown-menu #menu="nzDropdownMenu">
+  <ul nz-menu>
+    <li nz-menu-item (click)="contextHandler(menu)">关闭其他</li>
+    <li nz-menu-item>关闭到左边</li>
+    <li nz-menu-item>关闭到右边</li>
+  </ul>
+</nz-dropdown-menu>

@@ -1,4 +1,5 @@
-import { TemplateRef } from '@angular/core'
+import { TemplateRef, EventEmitter } from '@angular/core'
+import { NzMenuItemDirective } from 'ng-zorro-antd'
 
 /** 表格的转换数据 */
 export interface ITransfer {
@@ -38,6 +39,10 @@ export interface IColumnItem<T = { [k: string]: any }> {
   nzSortOrderChange?: (sort: 'descend' | 'ascend' | null, column: IColumnItem[], index: number) => void
   /** 列宽, 如果超过宽度将自动缩略 */
   width?: string
+  /** 行合并 */
+  rowspan?: number
+  /** 列合并 */
+  colspan?: number
   /** 鼠标悬浮提示 */
   tooltip?: boolean
   /** 鼠标悬浮提示组件渲染 */
@@ -47,9 +52,9 @@ export interface IColumnItem<T = { [k: string]: any }> {
   /** webkit设置多行省略 */
   lineClamp?: number
   /** 列宽固定左侧, 不要和左边的选择框同时使用 */
-  nzLeft?: string
+  nzLeft?: boolean
   /** 列表固定右侧 */
-  nzRight?: string
+  nzRight?: boolean
 }
 /** 表格数据 */
 export interface ITableItem {
@@ -73,10 +78,14 @@ export interface ICheckedMap {
 }
 /** 表格的配置 */
 export interface ITableConfig {
+  /** 表格总宽度, 出现横向滚动条 */
+  width?: string
+  /** 是否显示边框 */
+  nzBordered?: boolean
   /** 是否有选择框 */
   showCheck?: boolean
   /** 选中的定位 */
-  checkFixed?: boolean
+  checkNzLeft?: boolean
   /** 选中数据的唯一标识符 */
   checkIndex?: string
   /** 分页大小范围 */
@@ -85,11 +94,31 @@ export interface ITableConfig {
   nzHideOnSinglePage?: boolean
   /** 是否固定表格内容, false为不固定 */
   scroll?: boolean
-  /** 表格宽度, 出现横向滚动条 */
-  width?: string
 }
+
 /** 表格滚动区域 */
 export interface ITableScroll {
   x: string
   y: string
+}
+
+/** 菜单配置 */
+export interface IMenuItem {
+  /** 菜单名 */
+  title: string
+  /** 菜单跳转的地址 */
+  path: string
+  /** 菜单内置图标 */
+  icon?: string
+  /** 菜单自定义图标 */
+  importIcon?: string
+  /** 子菜单 */
+  children?: IMenuItem[]
+}
+
+export interface IMenuConfig {
+  /** 菜单模式 */
+  nzMode?: 'inline' | 'vertical' | 'horizontal'
+  /** 点击菜单的回调 */
+  nzClick?: EventEmitter<NzMenuItemDirective>
 }

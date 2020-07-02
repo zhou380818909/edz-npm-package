@@ -1,0 +1,23 @@
+:host {
+  background-color: #fff;
+  display: block;
+
+  &::ng-deep {
+    .ant-tabs-bar {
+      margin-bottom: 0;
+      user-select: none;
+
+      .ant-tabs-tab {
+        padding: 0 !important;
+      }
+
+      .ant-tabs-tab-active {
+        font-weight: 400;
+      }
+    }
+  }
+
+  .tab-title {
+    padding: 6px 16px;
+  }
+}

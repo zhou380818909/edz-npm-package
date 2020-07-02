@@ -4,13 +4,16 @@
   </nz-sider>
   <nz-layout>
     <nz-header>
-        <div class="collapse">
-            <i nz-icon [hidden]="isCollapsed" (click)="toggleCollapsed()" nzType="double-left" nzTheme="outline"></i>
-            <i nz-icon [hidden]="!isCollapsed" (click)="toggleCollapsed()" nzType="double-right" nzTheme="outline"></i>
+        <div class="header-top">
+          <div class="collapse">
+              <i nz-icon [hidden]="isCollapsed" (click)="toggleCollapsed()" nzType="double-left" nzTheme="outline"></i>
+              <i nz-icon [hidden]="!isCollapsed" (click)="toggleCollapsed()" nzType="double-right" nzTheme="outline"></i>
+          </div>
+          <div class="header">
+              <ng-content select=".layer-header"></ng-content>
+          </div>
         </div>
-        <div class="header">
-            <ng-content select=".layer-header"></ng-content>
-        </div>
+        <ng-content select=".layer-second-header"></ng-content>
     </nz-header>
     <nz-content>
       <ng-content select=".layer-body"></ng-content>
