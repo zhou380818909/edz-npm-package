@@ -1,7 +1,12 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core'
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core'
 import { Debounce } from 'lodash-decorators'
 import { NzTableComponent } from 'ng-zorro-antd'
 import { ICheckedMap, IColumnItem, IPagination, ITableConfig, ITableItem, ITableScroll } from '../interfaces'
+
+interface ICollapseItem extends IColumnItem {
+  rowspan: number
+  colspan: number
+}
 
 @Component({
   selector: 'edz-table',
@@ -38,7 +43,11 @@ export class TableComponent implements OnInit, AfterViewInit {
   // 是否是webkit内核
   isWebKit = true
   /** 滚动区域 */
-  scroll: ITableScroll = null
+  nzScroll: ITableScroll = null
+  /** 表格列宽设置 */
+  nzWidthConfig: string[] = []
+  /** 表头合并设置 */
+  collapseConfig: ICollapseItem[][] = []
   // 数据缓存
   private _data = []
 
@@ -59,7 +68,7 @@ export class TableComponent implements OnInit, AfterViewInit {
     return this._data.filter(item => !item.disabled).length < 1
   }
 
-  constructor(private ele: ElementRef<HTMLElement>) {}
+  constructor() {}
 
   /** 当页码和页大小同时改变的时候使用防抖 */
   @Debounce(10)
@@ -86,7 +95,7 @@ export class TableComponent implements OnInit, AfterViewInit {
   /** 设置表格滚动 */
   setTableScrollY(y) {
     if (y) {
-      this.scroll = { ...this.scroll, y }
+      this.nzScroll = { ...this.nzScroll, y }
     }
   }
 
@@ -95,16 +104,43 @@ export class TableComponent implements OnInit, AfterViewInit {
     return index
   }
 
+  /** 根据表格列配置和列宽配置生成表头分组 */
+  createCollapses() {
+    // 判断列配置中是否含有表头合并相关皮配置
+    const hasCallapse = this.column.some(item => item.colspan && item.colspan > 1)
+    if (!hasCallapse) {
+      // 如果没有表头合并, 则提取宽度配置
+      this.nzWidthConfig = this.column.map(item => item.width)
+      this.collapseConfig = [this.column.map(item => ({ colspan: 1, rowspan: 1, ...item }))]
+    } else {
+      // 如果有表头合并
+      // 宽度配置为colspan不设置或者为1的宽度
+      this.nzWidthConfig = this.column.filter(item => !item.colspan || item.colspan < 2).map(item => item.width)
+      // const rowspanMax = Math.max(...this.column.filter(item => item.rowspan && item.rowspan > 1).map(item => item.rowspan))
+      // 根据最大的行合并数生成合并配置的外层数量
+      // this.collapseConfig = new Array(rowspanMax).fill([])
+      console.warn('暂不支持表头分组')
+    }
+  }
+
   ngOnInit() {
-    this.scroll = { ...this.scroll, x: this.config.width }
+    this.nzScroll = { ...this.nzScroll, x: this.config.width }
+    this.createCollapses()
+  }
+
+  ngOnChanges(simpleChange: SimpleChanges) {
+    // 将column里面的宽度width遍历到config的widthConfig中
+    if (simpleChange.column && Array.isArray(simpleChange.column.currentValue)) {
+      this.createCollapses()
+    }
   }
 
   ngAfterViewInit() {
     // 表头滚动事件没有绑定上
-    setTimeout(() => {
-      if (this.nzTable && typeof this.nzTable.ngAfterViewInit) {
-        this.nzTable.ngAfterViewInit()
-      }
-    }, 1000)
+    // setTimeout(() => {
+    //   if (this.nzTable && typeof this.nzTable.ngAfterViewInit) {
+    //     this.nzTable.ngAfterViewInit()
+    //   }
+    // }, 1000)
   }
 }
