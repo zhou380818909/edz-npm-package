@@ -11,17 +11,17 @@
     "ng-zorro-antd": "~9.2.2",
     "@ant-design/icons-angular": "~9.0.1",
     "lodash-decorators": "^6.0.1",
-    "@ngxs/store": "^3.6.2"
+    "@ngxs/store": "^3.6.2",
+    "rxjs": "^6.5.4"
   },
   "dependencies": {
-    "@ant-design/icons-angular": "^9.0.1",
-    "@ngxs/store": "^3.6.2",
     "tslib": "^1.10.0"
   },
   "bundleDependencies": [
     "ng-zorro-antd",
     "lodash-decorators",
     "@ngxs/store",
-    "@ant-design/icons-angular"
+    "@ant-design/icons-angular",
+    "rxjs"
   ]
 }

@@ -4,6 +4,7 @@ import zh from '@angular/common/locales/zh'
 import { Component, OnInit, ViewChild } from '@angular/core'
 import { IColumnItem, ITableConfig, IMenuItem, IMenuConfig } from '../../projects/edz-ng2-library/src/lib/interfaces'
 import { TabComponent } from '../../projects/edz-ng2-library/src/lib/tab/tab.component'
+import { MenuService } from '../../projects/edz-ng2-library/src/lib/menu/menu.service'
 
 registerLocaleData(zh)
 
@@ -118,39 +119,51 @@ export class AppComponent implements OnInit {
   tableData = [
     {
       name: '看看',
+      score: '清风',
     },
     {
       name: '看看',
+      score: '清风',
     },
     {
       name: '看看',
+      score: '清风',
     },
     {
       name: '看看',
+      score: '清风',
     },
     {
       name: '看看',
+      score: '清风',
     },
     {
       name: '看看',
+      score: '清风',
     },
     {
       name: '看看',
+      score: '清风',
     },
     {
       name: '看看',
+      score: '清风',
     },
     {
       name: '看看',
+      score: '清风',
     },
     {
       name: '看看',
+      score: '清风',
     },
     {
       name: '看看',
+      score: '清风',
     },
     {
       name: '看看',
+      score: '清风',
     },
     {
       name: '看看',
@@ -206,12 +219,16 @@ export class AppComponent implements OnInit {
   @ViewChild(TabComponent)
   tab: TabComponent
 
-  constructor() {}
+  constructor(private menuService: MenuService) { }
 
   menuHanlder(value) {
     console.log(value)
     this.tab.createTab('新增的')
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.menuService.getMenuSelect().subscribe(value => {
+      console.log(value)
+    })
+  }
 }

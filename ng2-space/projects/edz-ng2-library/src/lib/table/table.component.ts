@@ -1,4 +1,5 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core'
+import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output,
+  SimpleChanges, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core'
 import { Debounce } from 'lodash-decorators'
 import { NzTableComponent } from 'ng-zorro-antd'
 import { ICheckedMap, IColumnItem, IPagination, ITableConfig, ITableItem, ITableScroll } from '../interfaces'
@@ -12,6 +13,7 @@ interface ICollapseItem extends IColumnItem {
   selector: 'edz-table',
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 
 export class TableComponent implements OnInit, AfterViewInit {
@@ -68,13 +70,14 @@ export class TableComponent implements OnInit, AfterViewInit {
     return this._data.filter(item => !item.disabled).length < 1
   }
 
-  constructor() {}
+  constructor(private cdr: ChangeDetectorRef) {}
 
   /** 当页码和页大小同时改变的时候使用防抖 */
   @Debounce(10)
   paginationHanlder() {
     this.tableChange.emit()
   }
+
   /** 排序事件 */
   sortHanlder(event) {
     this.tableChange.emit(event)
@@ -106,12 +109,14 @@ export class TableComponent implements OnInit, AfterViewInit {
 
   /** 根据表格列配置和列宽配置生成表头分组 */
   createCollapses() {
+    // TODO: 暂时没有实现表头分组
     // 判断列配置中是否含有表头合并相关皮配置
     const hasCallapse = this.column.some(item => item.colspan && item.colspan > 1)
     if (!hasCallapse) {
       // 如果没有表头合并, 则提取宽度配置
       this.nzWidthConfig = this.column.map(item => item.width)
       this.collapseConfig = [this.column.map(item => ({ colspan: 1, rowspan: 1, ...item }))]
+      this.cdr.detectChanges()
     } else {
       // 如果有表头合并
       // 宽度配置为colspan不设置或者为1的宽度

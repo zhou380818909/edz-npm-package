@@ -10,7 +10,6 @@
   (nzPageSizeChange)="paginationHanlder()" [nzScroll]="nzScroll" nzSize="middle"
   [nzFrontPagination]="false" [class.empty]="data?.length === 0">
   <thead>
-    <ng-container *ngIf="collapseConfig?.length>0">
       <tr *ngFor="let collapseItem of collapseConfig; let index = index">
         <!-- 根据表格配置是否含有选择框 -->
         <ng-container *ngIf="index === 0 && config.showCheck">
@@ -46,7 +45,6 @@
           </th>
         </ng-container>
       <tr>
-    </ng-container>
   </thead>
   <tbody>
     <!-- 1.首先根据数据渲染所需要的行数 -->
