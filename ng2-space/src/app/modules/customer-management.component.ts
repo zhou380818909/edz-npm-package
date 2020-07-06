@@ -1,24 +1,12 @@
-/* eslint-disable no-console */
-import { registerLocaleData } from '@angular/common'
-import zh from '@angular/common/locales/zh'
-import { Component, OnInit, ViewChild } from '@angular/core'
-import { IColumnItem, ITableConfig, IMenuItem, IMenuConfig } from '../../projects/edz-ng2-library/src/lib/interfaces'
-import { TabComponent } from '../../projects/edz-ng2-library/src/lib/tab/tab.component'
-import { MenuService } from '../../projects/edz-ng2-library/src/lib/menu/menu.service'
-
-registerLocaleData(zh)
+import { Component, OnInit } from '@angular/core'
+import { IColumnItem, ITableConfig } from '../../../projects/edz-ng2-library/src/lib/interfaces'
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  selector: 'app-customer-management',
+  templateUrl: './customer-management.component.html',
+  styleUrls: ['./customer-management.component.scss'],
 })
-export class AppComponent implements OnInit {
-  title = 'ng2-space'
-  onCollapse() {
-    console.log(1)
-    // alert(v)
-  }
+export class CustomerManagementComponent implements OnInit {
   text = '13211111111'
   options = [
     { key: 'id', value: '北京' },
@@ -39,7 +27,7 @@ export class AppComponent implements OnInit {
     {
       title: '姓名',
       index: 'name',
-      // nzLeft: true,
+      nzLeft: true,
       width: '300px',
     },
     {
@@ -180,63 +168,8 @@ export class AppComponent implements OnInit {
       score: '清风',
     },
   ]
-  menuList: IMenuItem[] = [
-    {
-      title: '一级',
-      path: 'a',
-      icon: 'apple',
-    },
-    {
-      title: '二级',
-      path: 'b',
-      children: [
-        {
-          title: '2-1',
-          path: '1',
-        },
-        {
-          title: '2-2',
-          path: '2',
-          children: [
-            {
-              title: '2-2-1',
-              path: 'c',
-            },
-          ],
-        },
-      ],
-    },
-    {
-      title: '三级',
-      path: 'c',
-      children: [{ title: '2-2',
-        path: '2',
-        children: [
-          {
-            title: '2-2-1',
-            path: 'c',
-          },
-        ] }],
-    },
+  constructor() { }
 
-  ]
-  menuConfig: IMenuConfig = {
-    nzMode: 'inline',
-  }
-
-  @ViewChild(TabComponent)
-  tab: TabComponent
-
-  constructor(private menuService: MenuService) { }
-
-  menuHanlder(value) {
-    console.log(value)
-    this.tab.createTab('新增的')
-  }
-
-  ngOnInit() {
-    this.menuService.getMenuSelect().subscribe(value => {
-      console.log(value)
-    })
+  ngOnInit(): void {
   }
 }

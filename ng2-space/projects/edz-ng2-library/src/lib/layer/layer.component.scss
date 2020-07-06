@@ -39,6 +39,25 @@ nz-layout {
   :last-child {
     margin: 0;
   }
+
+  &::ng-deep {
+    .layer-second-header {
+      border-top: 1px solid #eee;
+      padding-top: 4px;
+    }
+
+    .layer-body {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+
+      > .ng-star-inserted {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+    }
+  }
 }
 
 .collapse {

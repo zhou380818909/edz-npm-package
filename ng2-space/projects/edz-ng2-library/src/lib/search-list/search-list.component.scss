@@ -1,9 +1,9 @@
-
-.common-page-container {
+:host {
   display: flex;
+  flex: 1;
   flex-direction: column;
   height: 100%;
-  overflow: hidden;
+  overflow: auto;
 
   .common-page-search-box {
     height: auto;
@@ -12,6 +12,12 @@
 
   .common-page-content {
     flex: 1;
-    margin-bottom: 2px;
+    overflow: auto;
+
+    &::ng-deep {
+      .data-list {
+        height: 100%;
+      }
+    }
   }
 }
