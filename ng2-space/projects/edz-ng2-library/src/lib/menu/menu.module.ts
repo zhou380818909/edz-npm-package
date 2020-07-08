@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core'
 import { NzMenuModule, NzIconModule } from 'ng-zorro-antd'
 import { AppleOutline } from '@ant-design/icons-angular/icons'
 import { HttpClientModule } from '@angular/common/http'
+import { RouterModule } from '@angular/router'
 import { MenuComponent } from './menu.component'
 
 const icons = [AppleOutline]
@@ -14,7 +15,8 @@ const icons = [AppleOutline]
     NzMenuModule,
     NzIconModule.forChild(icons),
     HttpClientModule,
+    RouterModule,
   ],
-  exports: [NzMenuModule, NzIconModule, MenuComponent, HttpClientModule],
+  exports: [RouterModule, NzMenuModule, NzIconModule, MenuComponent, HttpClientModule],
 })
 export class MenuModule {}

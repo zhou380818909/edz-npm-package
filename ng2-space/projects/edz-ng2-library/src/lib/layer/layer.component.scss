@@ -1,9 +1,10 @@
 nz-header {
   background: #fff;
-  border-bottom: 1px solid #f3f3f3;
+  box-shadow: 0 2px 4px 2px rgba(0, 0, 0, 0.05);
   height: auto;
   padding-left: 0;
   padding-right: 0;
+  z-index: 1;
 
   .header-top {
     display: flex;
@@ -15,9 +16,11 @@ nz-header {
 
 nz-footer {
   background: #fff;
+  box-shadow: 0 -2px 4px 2px rgba(0, 0, 0, 0.05);
   color: #000;
   padding: 5px;
   text-align: center;
+  z-index: 1;
 }
 
 nz-sider {
@@ -35,6 +38,25 @@ nz-layout {
 
   :last-child {
     margin: 0;
+  }
+
+  &::ng-deep {
+    .layer-second-header {
+      border-top: 1px solid #eee;
+      padding-top: 4px;
+    }
+
+    .layer-body {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+
+      > .ng-star-inserted {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+    }
   }
 }
 

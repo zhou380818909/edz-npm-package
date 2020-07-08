@@ -1,0 +1,11 @@
+  <edz-secret-text [defualtText]="'点击显示手机号1'" [text]="text" (onClick)="showPhone()"></edz-secret-text>
+  <edz-bool-text [condition]="false" [text]="'启用'"></edz-bool-text>
+  <edz-search-list>
+      <div class="search-form">
+          <edz-group-datepicker [type]="2" [(dateRange)]="date" (onChange)="dateChange($event)"></edz-group-datepicker>
+          <button (click)="onBtnClick()">试试</button>
+      </div>
+      <div class="data-list">
+          <edz-table [config]="tableConfig" [column]="column" [data]="tableData" [loading]="false"></edz-table>
+      </div>
+  </edz-search-list>

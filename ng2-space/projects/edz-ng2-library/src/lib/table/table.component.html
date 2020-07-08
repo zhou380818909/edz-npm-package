@@ -2,51 +2,42 @@
   由于ng-zorro版本9.x, nzLeft和nzRight属性变更, 需要判断nzLeft和nzRight属性存在与否
   https://ng.ant.design/components/table/zh#components-table-demo-fixed-columns
  -->
-<nz-table #nzTable [nzData]="data" [nzWidthConfig]="nzWidthConfig" [nzBordered]="config.nzBordered" [nzShowPagination]="true"
+<nz-table #nzTable [nzData]="data" [nzWidthConfig]="nzWidthConfig" [nzBordered]="config.nzBordered !== false" [nzShowPagination]="true"
   [(nzPageIndex)]="pagination.pageIndex" [(nzPageSize)]="pagination.pageSize"
   [nzShowTotal]="rangeTemplate" [nzShowQuickJumper]="true" [nzShowSizeChanger]="true"
-  [nzPageSizeOptions]="config.nzPageSizeOptions || [10, 20, 50]" [nzTotal]="pagination.total"
+  [nzPageSizeOptions]="config.nzPageSizeOptions || [10, 20, 50, 100]" [nzTotal]="pagination.total"
   [nzHideOnSinglePage]="config.nzHideOnSinglePage" (nzPageIndexChange)="paginationHanlder()"
   (nzPageSizeChange)="paginationHanlder()" [nzScroll]="nzScroll" nzSize="middle"
   [nzFrontPagination]="false" [class.empty]="data?.length === 0">
   <thead>
-    <ng-container *ngIf="collapseConfig?.length>0">
-      <tr *ngFor="let collapseItem of collapseConfig; let index = index">
-        <!-- 根据表格配置是否含有选择框 -->
-        <ng-container *ngIf="index === 0 && config.showCheck">
-          <ng-container *ngIf="config.checkNzLeft; else thCheckTpl">
-            <!-- 选择框如果有固定列 -->
-            <th class="check" nzShowCheckbox [nzIndeterminate]="isIndeterminate"
-              [(nzChecked)]="isAllChecked" (nzCheckedChange)="allCheckedHandler($event)" nzLeft>
-            </th>
-          </ng-container>
-          <ng-template #thCheckTpl>
-            <!-- 选择框如果没有固定列 -->
-            <th class="check" nzShowCheckbox [nzIndeterminate]="isIndeterminate"
+      <tr *ngFor="let collapseItem of collapseConfig">
+        <!-- 循环渲染表格列 -->
+        <ng-container *ngFor="let th of collapseItem; let index = index">
+            <!-- 表头选择固定 -->
+            <th *ngIf="th.isCheck && th.nzLeft" nzLeft nzShowCheckbox [nzIndeterminate]="isIndeterminate"
               [(nzChecked)]="isAllChecked" (nzCheckedChange)="allCheckedHandler($event)">
             </th>
-          </ng-template>
-        </ng-container>
-        <!-- 循环渲染表格列 -->
-        <ng-container *ngFor="let th of collapseItem">
-          <!-- 表头不固定 -->
-          <th *ngIf="!th.nzLeft && !th.nzRight" [nzColumnKey]="th.index" [nzShowSort]="th.nzShowSort" [(nzSortOrder)]="th.nzSortOrder"
-            (nzSortOrderChange)="th.nzSortOrderChange($event, th, collapseItem)">
-            <ng-container *ngTemplateOutlet="thContent; context: { $implicit: th }"></ng-container>
-          </th>
-          <!-- 表头左侧列固定 -->
-          <th *ngIf="th.nzLeft" [nzColumnKey]="th.index" [nzShowSort]="th.nzShowSort" [(nzSortOrder)]="th.nzSortOrder"
-            nzLeft (nzSortOrderChange)="th.nzSortOrderChange($event, th, collapseItem)">
-            <ng-container *ngTemplateOutlet="thContent; context: { $implicit: th }"></ng-container>
-          </th>
-          <!-- 表头右侧列固定 -->
-          <th *ngIf="th.nzRight" [nzColumnKey]="th.index" [nzShowSort]="th.nzShowSort" [(nzSortOrder)]="th.nzSortOrder"
-            nzRight (nzSortOrderChange)="th.nzSortOrderChange($event, th, collapseItem)">
-            <ng-container *ngTemplateOutlet="thContent; context: { $implicit: th }"></ng-container>
-          </th>
+            <!-- 表头选择不固定 -->
+            <th *ngIf="th.isCheck && !th.nzLeft" nzLeft nzShowCheckbox [nzIndeterminate]="isIndeterminate"
+              [(nzChecked)]="isAllChecked" (nzCheckedChange)="allCheckedHandler($event)">
+            </th>
+            <!-- 表头不固定 -->
+            <th *ngIf="!th.isCheck && !th.nzLeft && !th.nzRight" [nzColumnKey]="th.index" [nzSortFn]="true" [nzShowSort]="th.nzShowSort" [(nzSortOrder)]="th.nzSortOrder"
+              (nzSortOrderChange)="th.nzSortOrderChange($event, th, collapseItem)">
+              <ng-container *ngTemplateOutlet="thContent; context: { $implicit: th }"></ng-container>
+            </th>
+            <!-- 表头左侧列固定 -->
+            <th *ngIf="!th.isCheck && th.nzLeft" [nzColumnKey]="th.index" [nzShowSort]="th.nzShowSort" [(nzSortOrder)]="th.nzSortOrder"
+              nzLeft (nzSortOrderChange)="th.nzSortOrderChange($event, th, collapseItem)">
+              <ng-container *ngTemplateOutlet="thContent; context: { $implicit: th }"></ng-container>
+            </th>
+            <!-- 表头右侧列固定 -->
+            <th *ngIf="!th.isCheck && th.nzRight" [nzColumnKey]="th.index" [nzShowSort]="th.nzShowSort" [(nzSortOrder)]="th.nzSortOrder"
+              nzRight (nzSortOrderChange)="th.nzSortOrderChange($event, th, collapseItem)">
+              <ng-container *ngTemplateOutlet="thContent; context: { $implicit: th }"></ng-container>
+            </th>
         </ng-container>
       <tr>
-    </ng-container>
   </thead>
   <tbody>
     <!-- 1.首先根据数据渲染所需要的行数 -->
@@ -54,17 +45,17 @@
       <!-- 根据表格配置是否含有选择框 -->
       <ng-container *ngIf="config.checkNzLeft; else tdCheckTpl">
         <!-- 选择框如果有固定列 -->
-        <th class="check" *ngIf="config.showCheck" nzShowCheckbox  [nzDisabled]="item.style || item?.disabled"
+        <td *ngIf="config.showCheck" nzShowCheckbox nzLeft [nzDisabled]="item.style || item?.disabled"
         [(nzChecked)]="checkedMap[item[config.checkIndex || 'id']]"
-        (nzCheckedChange)="checkHanlder($event, item)" nzLeft>
-        </th>
+        (nzCheckedChange)="checkHanlder($event, item)">
+        </td>
       </ng-container>
       <ng-template #tdCheckTpl>
         <!-- 选择框如果没有固定列 -->
-        <th class="check" *ngIf="config.showCheck" nzShowCheckbox  [nzDisabled]="item.style || item?.disabled"
+        <td *ngIf="config.showCheck" nzShowCheckbox  [nzDisabled]="item.style || item?.disabled"
         [(nzChecked)]="checkedMap[item[config.checkIndex || 'id']]"
         (nzCheckedChange)="checkHanlder($event, item)">
-        </th>
+        </td>
       </ng-template>
       <!-- 2.其次根据列配置,渲染所需要的列数 -->
       <ng-container *ngFor="let col of column">
@@ -115,7 +106,7 @@
           </ng-template>
           <!-- 模板4 纯展示 -->
           <ng-template #plainTpl>
-            {{item[col.index]}}
+            <span class="td-content">{{item[col.index]}}</span>
           </ng-template>
           <!-- **** 以上为模板引入 **** -->
 

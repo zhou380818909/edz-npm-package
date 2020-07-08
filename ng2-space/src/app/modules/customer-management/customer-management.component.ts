@@ -1,22 +1,12 @@
-/* eslint-disable no-console */
-import { registerLocaleData } from '@angular/common'
-import zh from '@angular/common/locales/zh'
 import { Component, OnInit } from '@angular/core'
-import { IColumnItem, ITableConfig, IMenuItem, IMenuConfig } from '../../projects/edz-ng2-library/src/lib/interfaces'
-
-registerLocaleData(zh)
+import { IColumnItem, ITableConfig } from '../../../../projects/edz-ng2-library/src/lib/interfaces'
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  selector: 'app-customer-management',
+  templateUrl: './customer-management.component.html',
+  styleUrls: ['./customer-management.component.scss'],
 })
-export class AppComponent implements OnInit {
-  title = 'ng2-space'
-  onCollapse() {
-    console.log(1)
-    // alert(v)
-  }
+export class CustomerManagementComponent implements OnInit {
   text = '13211111111'
   options = [
     { key: 'id', value: '北京' },
@@ -37,7 +27,7 @@ export class AppComponent implements OnInit {
     {
       title: '姓名',
       index: 'name',
-      // nzLeft: true,
+      nzLeft: true,
       width: '300px',
     },
     {
@@ -178,55 +168,8 @@ export class AppComponent implements OnInit {
       score: '清风',
     },
   ]
-  menuList: IMenuItem[] = [
-    {
-      title: '一级',
-      path: 'customer',
-      icon: 'apple',
-    },
-    {
-      title: '仓库管理',
-      path: 'store',
-      children: [
-        {
-          title: '库存列表',
-          path: 'list',
-        },
-        {
-          title: '详情',
-          path: 'detail',
-          children: [
-            {
-              title: '详情2',
-              path: '1',
-            },
-          ],
-        },
-      ],
-    },
-    {
-      title: '三级',
-      path: 'c',
-      children: [{ title: '2-2',
-        path: '2',
-        children: [
-          {
-            title: '2-2-1',
-            path: 'c',
-          },
-        ] }],
-    },
-
-  ]
-  menuConfig: IMenuConfig = {
-    nzMode: 'inline',
-  }
-
   constructor() { }
 
-  menuHanlder(value) {
-    console.log(value)
+  ngOnInit(): void {
   }
-
-  ngOnInit() {}
 }

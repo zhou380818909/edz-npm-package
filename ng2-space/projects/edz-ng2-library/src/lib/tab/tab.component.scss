@@ -9,10 +9,15 @@
 
       .ant-tabs-tab {
         padding: 0 !important;
+        transition: none !important;
       }
 
       .ant-tabs-tab-active {
         font-weight: 400;
+      }
+
+      .ant-tabs-close-x {
+        transition: none !important;
       }
     }
   }

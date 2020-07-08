@@ -2,26 +2,29 @@
   "name": "edz-ng2-library",
   "version": "1.0.8",
   "peerDependencies": {
-    "@angular/animations": "^9.1.11",
-    "@angular/common": "^9.1.11",
-    "@angular/core": "^9.1.11",
+    "@angular/common": "~9.1.11",
+    "@angular/core": "~9.1.11",
     "@angular/forms": "~9.1.11",
-    "@angular/platform-browser": "^9.1.11",
     "@angular/router": "~9.1.11",
     "ng-zorro-antd": "~9.2.2",
     "@ant-design/icons-angular": "~9.0.1",
-    "lodash-decorators": "^6.0.1",
-    "@ngxs/store": "^3.6.2"
+    "lodash-decorators": "~6.0.1",
+    "rxjs": "~6.5.3"
   },
   "dependencies": {
-    "@ant-design/icons-angular": "^9.0.1",
-    "@ngxs/store": "^3.6.2",
     "tslib": "^1.10.0"
   },
-  "bundleDependencies": [
-    "ng-zorro-antd",
-    "lodash-decorators",
-    "@ngxs/store",
-    "@ant-design/icons-angular"
-  ]
+  "bundleDependencies": [],
+  "optionalDependencies": {
+    "@angular/animations": "~9.1.11",
+    "@angular/platform-browser": "~9.1.11",
+    "@angular/common": "~9.1.11",
+    "@angular/core": "~9.1.11",
+    "@angular/forms": "~9.1.11",
+    "@angular/router": "~9.1.11",
+    "ng-zorro-antd": "~9.2.2",
+    "@ant-design/icons-angular": "~9.0.1",
+    "lodash-decorators": "~6.0.1",
+    "rxjs": "~6.5.3"
+  }
 }

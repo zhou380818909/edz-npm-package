@@ -110,10 +110,14 @@ export interface IMenuItem {
   path: string
   /** 菜单内置图标 */
   icon?: string
-  /** 菜单自定义图标 */
-  importIcon?: string
+  /** iconfont图标 */
+  iconfont?: string
+  /** 自定义图标地址 */
+  iconUrl?: string
   /** 子菜单 */
   children?: IMenuItem[]
+  /** 是否隐藏 */
+  hidden?: boolean
 }
 
 export interface IMenuConfig {
