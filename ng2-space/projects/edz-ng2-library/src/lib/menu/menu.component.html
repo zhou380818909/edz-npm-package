@@ -1,4 +1,4 @@
-<ul nz-menu nzTheme="dark" [nzMode]="config.nzMode">
+<ul nz-menu nzTheme="dark" [nzMode]="config.nzMode || 'inline'">
   <ng-container *ngTemplateOutlet="menuTpl; context: { $implicit: menus }"></ng-container>
   <ng-template #menuTpl let-menus>
     <ng-container *ngFor="let menu of menus">
@@ -6,11 +6,12 @@
         *ngIf="!menu.children"
         nz-menu-item
         [nzPaddingLeft]="menu.level * 24"
-        nzMatchRouter
-        (click)="menuHanlder(menu)"
+        [nzSelected]="menu.selected"
       >
-        <i nz-icon [nzType]="menu.icon" *ngIf="menu.icon"></i>
-        <span>{{ menu.title }}</span>
+        <a (click)="menuHanlder($event, menu)">
+          <i nz-icon [nzType]="menu.icon" *ngIf="menu.icon"></i>
+          <span>{{ menu.title }}</span>
+        </a>
       </li>
       <li
         *ngIf="menu.children"
@@ -19,7 +20,6 @@
         [(nzOpen)]="menu.open"
         [nzTitle]="menu.title"
         [nzIcon]="menu.icon"
-        (click)="menuHanlder(menu)"
       >
         <ul>
           <ng-container *ngTemplateOutlet="menuTpl; context: { $implicit: menu.children }"></ng-container>

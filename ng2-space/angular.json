@@ -29,7 +29,7 @@
             ],
             "styles": [
               "src/styles.scss",
-              "projects/edz-ng2-library/node_modules/ng-zorro-antd/ng-zorro-antd.min.css"
+              "./node_modules/ng-zorro-antd/ng-zorro-antd.min.css"
             ],
             "scripts": []
           },

@@ -1,10 +1,8 @@
 /* eslint-disable no-console */
 import { registerLocaleData } from '@angular/common'
 import zh from '@angular/common/locales/zh'
-import { Component, OnInit, ViewChild } from '@angular/core'
+import { Component, OnInit } from '@angular/core'
 import { IColumnItem, ITableConfig, IMenuItem, IMenuConfig } from '../../projects/edz-ng2-library/src/lib/interfaces'
-import { TabComponent } from '../../projects/edz-ng2-library/src/lib/tab/tab.component'
-import { MenuService } from '../../projects/edz-ng2-library/src/lib/menu/menu.service'
 
 registerLocaleData(zh)
 
@@ -183,24 +181,24 @@ export class AppComponent implements OnInit {
   menuList: IMenuItem[] = [
     {
       title: '一级',
-      path: 'a',
+      path: 'customer',
       icon: 'apple',
     },
     {
-      title: '二级',
-      path: 'b',
+      title: '仓库管理',
+      path: 'store',
       children: [
         {
-          title: '2-1',
-          path: '1',
+          title: '库存列表',
+          path: 'list',
         },
         {
-          title: '2-2',
-          path: '2',
+          title: '详情',
+          path: 'detail',
           children: [
             {
-              title: '2-2-1',
-              path: 'c',
+              title: '详情2',
+              path: '1',
             },
           ],
         },
@@ -224,19 +222,11 @@ export class AppComponent implements OnInit {
     nzMode: 'inline',
   }
 
-  @ViewChild(TabComponent)
-  tab: TabComponent
-
-  constructor(private menuService: MenuService) { }
+  constructor() { }
 
   menuHanlder(value) {
     console.log(value)
-    this.tab.createTab('新增的')
   }
 
-  ngOnInit() {
-    this.menuService.getMenuSelect().subscribe(value => {
-      console.log(value)
-    })
-  }
+  ngOnInit() {}
 }

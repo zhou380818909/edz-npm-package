@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core'
-import { IColumnItem, ITableConfig } from '../../../projects/edz-ng2-library/src/lib/interfaces'
+import { IColumnItem, ITableConfig } from '../../../../projects/edz-ng2-library/src/lib/interfaces'
 
 @Component({
   selector: 'app-customer-management',

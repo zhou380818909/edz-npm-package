@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common'
 
 import { CustomerManagementRoutingModule } from './customer-management-routing.module'
 import { CustomerManagementComponent } from './customer-management.component'
-import { EdzNg2LibraryModule } from '../../../projects/edz-ng2-library/src/lib/edz-ng2-library.module'
+import { EdzNg2LibraryModule } from '../../../../projects/edz-ng2-library/src/lib/edz-ng2-library.module'
 
 @NgModule({
   declarations: [CustomerManagementComponent],
