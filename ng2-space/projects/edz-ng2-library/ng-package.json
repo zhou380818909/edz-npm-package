@@ -5,7 +5,9 @@
     "entryFile": "src/public-api.ts",
     "umdModuleIds": {
       "ng-zorro-antd": "ngZorroAntd",
-      "lodash-decorators": "lodashDecorators"
+      "ng-zorro-antd/dropdown": "dropdown",
+      "lodash-decorators": "lodashDecorators",
+      "lodash": "lodash"
     }
   }
 }

@@ -1,0 +1,59 @@
+<nz-spin [nzIndicator]="spinTpl" [nzSpinning]="loading">
+  <div class="search-bar">
+    <ng-template ngFor let-item [ngForOf]="config">
+      <div class="item" [ngSwitch]="item.type" [style.width.px]="item.width || 240">
+        <!-- 输入框 -->
+        <ng-template ngSwitchCase="input">
+          <!-- 如果clear标识不为false, 则渲染的input框带有清除按钮 -->
+          <nz-input-group [nzAddOnBefore]="item.label" [nzSuffix]="item.clear !== false ? suffixTemplate : null">
+            <input type="text" nz-input [(ngModel)]="searchValue[item.index]"
+              [placeholder]="item.placeholder || '请输入'+item.label" (keydown)="keyHandler($event)" />
+          </nz-input-group>
+          <ng-template #suffixTemplate><i nz-icon nz-tooltip class="ant-input-clear-icon"
+              nzTheme="fill" nzType="close-circle" *ngIf="searchValue[item.index]"
+              (click)="searchValue[item.index] = null"></i>
+          </ng-template>
+        </ng-template>
+        <!-- 下拉选择渲染 -->
+        <ng-template ngSwitchCase="select">
+          <nz-input-group [nzAddOnBefore]="item.label">
+            <nz-select [(ngModel)]="searchValue[item.index]" [nzShowSearch]="item?.nzShowSearch !== false"
+              [nzPlaceHolder]="item.placeholder || '请选择'+item.label" [nzAllowClear]="item.clear !== false">
+              <ng-container *ngIf="item.options$; else selectOption">
+                <nz-option *ngFor="let option of item.options$ | async" [nzValue]="option.value"
+                  [nzLabel]="option.label" [nzDisabled]="option.disbaled"></nz-option>
+              </ng-container>
+              <ng-template #selectOption>
+                <nz-option *ngFor="let option of item.options" [nzValue]="option.value"
+                  [nzLabel]="option.label" [nzDisabled]="option.disbaled"></nz-option>
+              </ng-template>
+            </nz-select>
+          </nz-input-group>
+        </ng-template>
+        <!-- 自定义渲染 -->
+        <ng-template ngSwitchCase="render">
+          <nz-input-group *ngIf="item.label; else noLabel" [nzAddOnBefore]="item.label">
+            <ng-container
+              *ngTemplateOutlet="item.render; context: { index: item.index, value: searchValue}">
+            </ng-container>
+          </nz-input-group>
+          <ng-template #noLabel>
+            <ng-container
+              *ngTemplateOutlet="item.render; context: { index: item.index, value: searchValue}">
+            </ng-container>
+          </ng-template>
+        </ng-template>
+      </div>
+    </ng-template>
+    <button class="item" nz-button nzType="primary" (click)="searchHandler()">
+      <i nz-icon nzType="search"></i>搜索
+    </button>
+    <button class="item" nz-button [disabled]="resetDisabled" (click)="resetHandler()">
+      <i nz-icon nzType="reload"></i>重置
+    </button>
+  </div>
+</nz-spin>
+
+<ng-template #spinTpl>
+  <span></span>
+</ng-template>

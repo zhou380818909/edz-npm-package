@@ -97,6 +97,7 @@ export class TabComponent implements OnInit, OnDestroy {
 
   /** 右键关闭tab事件 */
   contextHandler(type: 'other' | 'toRight' | 'toLeft') {
+    // 点击关闭的tab的索引
     const contextIndex = this.tabs.findIndex(item => item === this.contextMenuTab)
     if (contextIndex < 0) {
       return
@@ -106,9 +107,11 @@ export class TabComponent implements OnInit, OnDestroy {
         this.contextCloseOtherTab(contextIndex)
         break
       case 'toRight':
+        // 关闭到右边, 就是当前索引+1, 到数组的最后一个数据
         this.contextCloseToTab(contextIndex + 1, this.tabs.length - 1)
         break
       case 'toLeft':
+        // 关闭到左边, 就是当前数组第一个, 到当前索引-1
         this.contextCloseToTab(0, contextIndex - 1)
         break
       default:
@@ -120,6 +123,7 @@ export class TabComponent implements OnInit, OnDestroy {
   /** 关闭范围 */
   contextCloseToTab(fromIndex, toIndex) {
     this.tabs = this.tabs.filter((item, index) => index < fromIndex || index > toIndex)
+    this.router.navigateByUrl(this.contextMenuTab.url)
   }
 
   /** 关闭其他 */

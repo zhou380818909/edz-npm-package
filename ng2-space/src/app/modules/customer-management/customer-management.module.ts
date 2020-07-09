@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core'
 import { CommonModule } from '@angular/common'
+import { NzDatePickerModule } from 'ng-zorro-antd'
 
 import { CustomerManagementRoutingModule } from './customer-management-routing.module'
 import { CustomerManagementComponent } from './customer-management.component'
@@ -10,6 +11,7 @@ import { EdzNg2LibraryModule } from '../../../../projects/edz-ng2-library/src/li
   imports: [
     CommonModule,
     CustomerManagementRoutingModule,
+    NzDatePickerModule,
     EdzNg2LibraryModule,
   ],
 })
