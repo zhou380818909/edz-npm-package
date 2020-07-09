@@ -1,0 +1,27 @@
+:host {
+  display: block;
+  height: 100%;
+
+  &::ng-deep {
+    nz-tabset {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .ant-tabs-tab {
+      transition: none !important;
+    }
+
+    .ant-tabs-content {
+      flex: 1;
+      overflow: auto;
+    }
+
+    .ant-tabs-tabpane {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+  }
+}
