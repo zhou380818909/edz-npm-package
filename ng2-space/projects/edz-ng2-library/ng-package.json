@@ -7,9 +7,7 @@
       "ng-zorro-antd": "ngZorroAntd",
       "ng-zorro-antd/dropdown": "dropdown",
       "lodash-decorators": "lodashDecorators",
-      "lodash/cloneDeep": "cloneDeep",
-      "lodash/isEqual": "isEqual",
-      "lodash/union": "union"
+      "lodash": "lodash"
     }
   }
 }

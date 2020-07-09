@@ -13,7 +13,6 @@
     "rxjs": "~6.5.3"
   },
   "dependencies": {
-    "@types/lodash": "^4.14.157",
     "tslib": "^1.10.0"
   },
   "bundleDependencies": [
