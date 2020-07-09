@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core'
-import { IColumnItem, ITableConfig } from '../../../../projects/edz-ng2-library/src/lib/interfaces'
+import { Component, OnInit, ViewChild } from '@angular/core'
+import { IColumnItem, ITableConfig, ISearchItem } from '../../../../projects/edz-ng2-library/src/lib/interfaces'
 
 @Component({
   selector: 'app-customer-management',
@@ -23,6 +23,8 @@ export class CustomerManagementComponent implements OnInit {
   dateChange(date) {
     console.log(date)
   }
+  searchValue = { city: '2' } as any
+  searchBarConfig: ISearchItem[] = []
   column: IColumnItem[] = [
     {
       title: '姓名',
@@ -168,8 +170,31 @@ export class CustomerManagementComponent implements OnInit {
       score: '清风',
     },
   ]
+
+  dateValue = null
+
+  @ViewChild('date', { static: true })
+  dateComponent
+
   constructor() { }
 
+  searchHandler(value) {
+    this.searchValue = value
+    console.log(value)
+  }
+
+  initSearch() {
+    this.searchBarConfig = [
+      { label: '姓名', index: 'name', type: 'input', defaultValue: '明月' },
+      { label: '城市', index: 'city', type: 'select', options: [{ value: '1', label: '承德' }, { value: '2', label: '株洲' }] },
+      { label: '时间', index: 'date', type: 'render', render: this.dateComponent, defaultValue: new Date('2000/09/12 20:20:20') },
+    ]
+  }
+
   ngOnInit(): void {
+    this.initSearch()
+    setTimeout(() => {
+      this.searchValue = {}
+    }, 3000)
   }
 }

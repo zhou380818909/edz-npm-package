@@ -1,5 +1,6 @@
 import { TemplateRef, EventEmitter } from '@angular/core'
 import { NzMenuItemDirective } from 'ng-zorro-antd'
+import { Observable } from 'rxjs'
 
 /** 表格的转换数据 */
 export interface ITransfer {
@@ -125,4 +126,68 @@ export interface IMenuConfig {
   nzMode?: 'inline' | 'vertical' | 'horizontal'
   /** 点击菜单的回调 */
   nzClick?: EventEmitter<NzMenuItemDirective>
+}
+
+/** 搜索栏基本配置 */
+interface ISearchBase<T = any> {
+  /** 标签名 */
+  label?: string
+  /** 索引 */
+  index: keyof T
+  /** 默认值 */
+  defaultValue?: any
+  /** 占位符 */
+  placeholder?: string | string[]
+  /** 类型 */
+  type: 'input' | 'select' | 'render'
+  /** 是否清除, 显性设置为false禁用 */
+  clear?: boolean
+  /** 宽度 */
+  width?: number
+}
+// 输入框
+interface ISearchInput<T> extends ISearchBase<T> {
+  type: 'input'
+  placeholder?: string
+}
+// 下拉框选项
+export interface ISelectOption {
+  label?: string
+  value?: string | number
+  disabled?: boolean
+}
+// 下拉框带数组
+interface ISearchSelectWithOption<T> extends ISearchBase<T> {
+  type: 'select'
+  placeholder?: string
+  /** 是否允许搜索 */
+  nzShowSearch?: boolean
+  /** 下拉框选项 */
+  options: ISelectOption[]
+}
+// 下拉框带Observable
+interface ISearchSelecWithObservable<T> extends ISearchBase<T> {
+  type: 'select'
+  placeholder?: string
+  /** 是否允许搜索 */
+  nzShowSearch?: boolean
+  /** 下拉选择框流 */
+  options: Observable<ISelectOption[]>
+}
+
+// 模板引用
+interface ISearchRender<T> extends ISearchBase {
+  type: 'render'
+  render: TemplateRef<T>
+}
+
+/** 搜索栏组件配置 */
+export type ISearchItem<T = any> =
+  | ISearchInput<T>
+  | ISearchSelectWithOption<T>
+  | ISearchSelecWithObservable<T>
+  | ISearchRender<T>
+/** 搜索数据 */
+export type ISearchValue<T = any> = {
+  [K in keyof T]?: T[K]
 }

@@ -9,6 +9,7 @@ import { SearchListModule } from './search-list/search-list.module'
 import { SecretTextModule } from './secret-text/secret-text.module'
 import { TableModule } from './table/table.module'
 import { TabModule } from './tab/tab.module'
+import { SearchBarModule } from './search-bar/search-bar.module'
 
 const modules = [
   CommonModule,
@@ -20,6 +21,7 @@ const modules = [
   TableModule,
   MenuModule,
   TabModule,
+  SearchBarModule,
 ]
 
 @NgModule({
