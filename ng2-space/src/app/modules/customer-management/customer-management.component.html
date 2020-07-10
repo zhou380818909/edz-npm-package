@@ -1,19 +1,84 @@
-  <edz-secret-text [defualtText]="'点击显示手机号1'" [text]="text" (onClick)="showPhone()"></edz-secret-text>
-  <edz-bool-text [condition]="false" [text]="'启用'"></edz-bool-text>
-  <edz-search-list>
-      <div class="search-form">
-          <edz-search-bar [config]="searchBarConfig" [value]="searchValue" (search)="searchHandler($event)">
-          </edz-search-bar>
-      </div>
-      <div class="data-list">
-          <edz-table [config]="tableConfig" [column]="column" [data]="tableData" [loading]="false"></edz-table>
-      </div>
-  </edz-search-list>
 
+<edz-secret-text [defualtText]="'点击显示手机号1'" [text]="text" (onClick)="showPhone()"></edz-secret-text>
+<edz-bool-text [condition]="false" [text]="'启用'"></edz-bool-text>
+<edz-scroll>
+  <edz-search-bar [config]="searchBarConfig" [value]="searchValue" (search)="searchHandler($event)">
+  </edz-search-bar>
+  <edz-scroll-content>
+    <edz-tab-set>
+      <nz-tabset [nzAnimated]="false">
+          <nz-tab nzTitle="Tab 1">
+            12312321
+            <div>
+              kkkkk
+              <edz-table [config]="tableConfig" [column]="column" [data]="tableData" [loading]="false"></edz-table>
+            </div>
+          </nz-tab>
+          <nz-tab nzTitle="Tab 2">
+            1233
+            <edz-scroll>
+              Content of Tab Pane 2
+              <edz-scroll-content>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+                <p>床前明月光</p>
+              </edz-scroll-content>
+            </edz-scroll>
+          </nz-tab>
+          <nz-tab nzTitle="Tab 3">
+              <edz-table [config]="tableConfig" [column]="column" [data]="tableData" [loading]="false"></edz-table>
+          </nz-tab>
+      </nz-tabset>
+    </edz-tab-set>
+  </edz-scroll-content>
+</edz-scroll>
 
 <ng-template #date let-index="index" let-value="value">
     <nz-date-picker [(ngModel)]="value[index]"></nz-date-picker>
 </ng-template>
-
-
-<nz-date-picker [(ngModel)]="dateValue"></nz-date-picker>

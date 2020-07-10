@@ -5,16 +5,16 @@ import { BoolTextModule } from './bool-text/bool-text.module'
 import { GroupDatepickerModule } from './group-datepicker/group-datepicker.module'
 import { LayerModule } from './layer/layer.module'
 import { MenuModule } from './menu/menu.module'
-import { SearchListModule } from './search-list/search-list.module'
 import { SecretTextModule } from './secret-text/secret-text.module'
 import { TableModule } from './table/table.module'
 import { TabModule } from './tab/tab.module'
 import { SearchBarModule } from './search-bar/search-bar.module'
+import { TabSetModule } from './tab-set/tab-set.module'
+import { ScrollModule } from './scroll/scroll.module'
 
 const modules = [
   CommonModule,
   SecretTextModule,
-  SearchListModule,
   BoolTextModule,
   LayerModule,
   GroupDatepickerModule,
@@ -22,6 +22,8 @@ const modules = [
   MenuModule,
   TabModule,
   SearchBarModule,
+  TabSetModule,
+  ScrollModule,
 ]
 
 @NgModule({
