@@ -116,8 +116,6 @@ export class AppComponent implements OnInit {
   ]
   tableConfig: ITableConfig = {
     width: '1900px',
-    showCheck: true,
-    checkNzLeft: true,
     scroll: true,
   }
   tableData = [

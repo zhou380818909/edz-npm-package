@@ -27,6 +27,13 @@ export class CustomerManagementComponent implements OnInit {
   searchBarConfig: ISearchItem[] = []
   column: IColumnItem[] = [
     {
+      title: '',
+      index: 'id',
+      nzShowCheckbox: true,
+      nzLeft: true,
+      width: '48px',
+    },
+    {
       title: '姓名',
       index: 'name',
       nzLeft: true,
@@ -36,7 +43,7 @@ export class CustomerManagementComponent implements OnInit {
       title: '姓名',
       index: 'score',
       width: '200px',
-      // nzLeft: true,
+      nzLeft: true,
     },
     {
       title: '姓名',
@@ -91,12 +98,12 @@ export class CustomerManagementComponent implements OnInit {
     {
       title: '姓名',
       index: 'score',
-      width: '200px',
+      // width: '200px',
     },
     {
       title: '姓名',
       index: 'score',
-      // width: '100px',
+      width: '100px',
       nzRight: true,
     },
     {
@@ -107,23 +114,24 @@ export class CustomerManagementComponent implements OnInit {
     },
   ]
   tableConfig: ITableConfig = {
-    width: '1900px',
-    showCheck: true,
-    checkNzLeft: true,
+    width: '2200px',
     scroll: true,
   }
   tableData = [
     {
       name: '看看',
       score: '清风',
+      id: 1,
     },
     {
       name: '看看',
       score: '清风',
+      id: 2,
     },
     {
       name: '看看',
       score: '清风',
+      id: '3',
     },
     {
       name: '看看',

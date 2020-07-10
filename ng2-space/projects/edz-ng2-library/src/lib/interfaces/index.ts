@@ -24,6 +24,8 @@ export interface IColumnItem<T = { [k: string]: any }> {
   index: keyof T
   /** 表格列名 */
   title?: string
+  /** 是否是多选框 */
+  nzShowCheckbox?: boolean
   /** 列标题的渲染 */
   titleRender?: TemplateRef<any>
   /** 数据组件渲染 */
@@ -83,11 +85,6 @@ export interface ITableConfig {
   width?: string
   /** 是否显示边框 */
   nzBordered?: boolean
-  /** 是否有选择框 */
-  showCheck?: boolean
-  /** 选中的定位 */
-  checkNzLeft?: boolean
-  /** 选中数据的唯一标识符 */
   checkIndex?: string
   /** 分页大小范围 */
   nzPageSizeOptions?: number[]

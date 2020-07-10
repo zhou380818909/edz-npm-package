@@ -1,12 +1,12 @@
 {
   "name": "edz-ng2-library",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "peerDependencies": {
     "@angular/common": "~9.1.11",
     "@angular/core": "~9.1.11",
     "@angular/forms": "~9.1.11",
     "@angular/router": "~9.1.11",
-    "ng-zorro-antd": "~9.2.2",
+    "ng-zorro-antd": "^9.3.0",
     "@ant-design/icons-angular": "~9.0.1",
     "lodash-decorators": "~6.0.1",
     "lodash": "~4.17.15",
