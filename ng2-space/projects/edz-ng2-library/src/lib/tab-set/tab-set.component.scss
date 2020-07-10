@@ -9,6 +9,12 @@
       height: 100%;
     }
 
+    .ant-tabs-nav {
+      .ant-tabs-tab-active {
+        font-weight: 400;
+      }
+    }
+
     .ant-tabs-tab {
       transition: none !important;
     }
