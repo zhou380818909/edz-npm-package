@@ -2,7 +2,7 @@
   由于ng-zorro版本9.x, nzLeft和nzRight属性变更, 需要判断nzLeft和nzRight属性存在与否
   https://ng.ant.design/components/table/zh#components-table-demo-fixed-columns
  -->
-<nz-table #nzTable [nzData]="data" [nzWidthConfig]="nzWidthConfig" [nzBordered]="config.nzBordered !== false" [nzShowPagination]="true"
+<nz-table #nzTable nzTableLayout="fixed" [nzData]="data" [nzWidthConfig]="nzWidthConfig" [nzBordered]="config.nzBordered !== false" [nzShowPagination]="true"
   [(nzPageIndex)]="pagination.pageIndex" [(nzPageSize)]="pagination.pageSize"
   [nzShowTotal]="rangeTemplate" [nzShowQuickJumper]="true" [nzShowSizeChanger]="true"
   [nzPageSizeOptions]="config.nzPageSizeOptions || [10, 20, 50, 100]" [nzTotal]="pagination.total"
@@ -45,135 +45,82 @@
     <!-- 1.首先根据数据渲染所需要的行数 -->
     <tr *ngFor="let item of data; trackBy: trackBy" [ngStyle]="item.style">
       <!-- 2.其次根据列配置,渲染所需要的列数 -->
-      <ng-container *ngFor="let col of renderColumn; let index=index">
+      <ng-container *ngFor="let col of renderColumn">
         <!-- 多选框 -->
         <ng-container *ngIf="col.nzShowCheckbox; else noCheckBox">
           <td *ngIf="col.nzLeft" nzShowCheckbox nzLeft [nzDisabled]="item?.disabled" [(nzChecked)]="checkedMap[item[col.index || 'id']]"
-          (nzCheckedChange)="checkHanlder($event, item)"></td>
+          (nzCheckedChange)="checkHanlder($event, item, col)"></td>
           <td *ngIf="!col.nzLeft" nzShowCheckbox [nzDisabled]="item?.disabled" [(nzChecked)]="checkedMap[item[col.index || 'id']]"
-          (nzCheckedChange)="checkHanlder($event, item)"></td>
+          (nzCheckedChange)="checkHanlder($event, item, col)"></td>
         </ng-container>
         <!-- 没有多选框 -->
         <ng-template #noCheckBox>
           <td *ngIf="!col.nzLeft && !col.nzRight">
-            <ng-container *ngTemplateOutlet="tdContent;context: { $implicit: col }"></ng-container>
+            <ng-container *ngTemplateOutlet="tdContent;context: { $implicit: col, item: item }"></ng-container>
           </td>
           <td *ngIf="col.nzLeft" [nzLeft]="col.nzLeftWidth">
-            <ng-container *ngTemplateOutlet="tdContent;context: { $implicit: col }"></ng-container>
+            <ng-container *ngTemplateOutlet="tdContent;context: { $implicit: col, item: item }"></ng-container>
           </td>
           <td *ngIf="col.nzRight" [nzRight]="col.nzRightWidth">
-            <ng-container *ngTemplateOutlet="tdContent;context: { $implicit: col }"></ng-container>
+            <ng-container *ngTemplateOutlet="tdContent;context: { $implicit: col, item: item }"></ng-container>
           </td>
         </ng-template>
       </ng-container>
-      <ng-template #tdContent let-col>
-        <!--有样式则渲染样式 -->
-        <ng-template [ngIf]="item.style">
-          {{item[col.index]}}
+    </tr>
+    <!-- 总计功能 -->
+    <tr class="total" *ngFor="let item of totalData; let index=index" [ngClass]="index === 0 ? 'first-row':''">
+      <!-- 2.其次根据列配置,渲染所需要的列数 -->
+      <ng-container *ngFor="let col of renderColumn">
+        <!-- 多选框 -->
+        <ng-container *ngIf="col.nzShowCheckbox; else noCheckBox">
+          <td [style.bottom.px]="item?.stickyBottom || 0" *ngIf="col.nzLeft" nzLeft nzShowCheckbox nzDisabled></td>
+          <td [style.bottom.px]="item?.stickyBottom || 0" *ngIf="!col.nzLeft" nzShowCheckbox nzDisabled>-</td>
+        </ng-container>
+        <!-- 没有多选框 -->
+        <ng-template #noCheckBox>
+          <td [style.bottom.px]="item?.stickyBottom || 0" *ngIf="!col.nzLeft && !col.nzRight">
+            <ng-container *ngTemplateOutlet="tdContent;context: { $implicit: col, item: item }"></ng-container>
+          </td>
+          <td [style.bottom.px]="item?.stickyBottom || 0" *ngIf="col.nzLeft" [nzLeft]="col.nzLeftWidth">
+            <ng-container *ngTemplateOutlet="tdContent;context: { $implicit: col, item: item }"></ng-container>
+          </td>
+          <td [style.bottom.px]="item?.stickyBottom || 0" *ngIf="col.nzRight" [nzRight]="col.nzRightWidth">
+            <ng-container *ngTemplateOutlet="tdContent;context: { $implicit: col, item: item }"></ng-container>
+          </td>
         </ng-template>
-        <!-- 没有样式 -->
-        <ng-template [ngIf]="!item.style">
-          <!-- 如果有渲染模板, 则根据模板渲染, 同时需要把当前行的数据传到对应的模板 -->
-          <ng-template [ngIf]="col.render">
-            <ng-container
-              *ngTemplateOutlet="col.render; context: {$implicit: item[col['index']], index: col['index'], row: item}">
-            </ng-container>
-          </ng-template>
-
-          <!-- ****  以下为模板引入 **** -->
-          <!-- 模板1 transfer转换器模板 -->
-          <ng-template #transferTpl>
-            <span nz-text [nzType]="col.transfer[item[col.index]]?.color">
-              {{col.transfer[item[col.index]]?.target}}
-            </span>
-          </ng-template>
-          <!-- 模板1 转换器不带颜色模板 -->
-          <ng-template #transferTooltipzTpl>
-            {{col.transfer[item[col.index]]?.target}}
-          </ng-template>
-          <!-- 模板3 管道模板 -->
-          <ng-template #pipeTpl>
-            <!-- 数字管道 -->
-            <span
-              *ngIf="col.pipe['pipe'] === 'number'">{{item[col.index] | number:col.pipe['format']}}
-            </span>
-            <!-- 时间管道 -->
-            <span *ngIf="col.pipe['pipe'] === 'date'">{{item[col.index] | date:col.pipe['format']}}
-            </span>
-          </ng-template>
-          <!-- 模板4 纯展示 -->
-          <ng-template #plainTpl>
-            <span class="td-content">{{item[col.index]}}</span>
-          </ng-template>
-          <!-- **** 以上为模板引入 **** -->
-
-          <!-- 判断为以上三种模板中的哪个模板 -->
-          <ng-template #tpl>
-            <ng-container *ngIf="col.transfer && !col.pipe">
-              <ng-container *ngTemplateOutlet="transferTpl"></ng-container>
-            </ng-container>
-            <ng-container *ngIf="col.pipe && !col.transfer">
-              <ng-container *ngTemplateOutlet="pipeTpl"></ng-container>
-            </ng-container>
-            <ng-container *ngIf="!col.pipe && !col.transfer">
-              <ng-container *ngTemplateOutlet="plainTpl"></ng-container>
-            </ng-container>
-          </ng-template>
-
-          <!-- 悬浮提示 -->
-          <ng-template #tooltipTpl>
-            <ng-container
-              *ngTemplateOutlet="col.tooltipTpl; context: {$implicit: item[col['index']], index: col['index'], row: item}">
-            </ng-container>
-          </ng-template>
-
-          <ng-template #toolTpl>
-            <!-- webkit溢出隐藏 -->
-            <span *ngIf="isWebKit; else elseEllip">
-              <ng-container *ngTemplateOutlet="tpl"></ng-container>
-            </span>
-            <!-- FIXME: 有兼容性问题, 非webkit可能不会生效 -->
-            <!-- 非webkit溢出隐藏 -->
-            <ng-template #elseEllip>
-              <span nz-text nzEllipsis [nzEllipsisRows]="2">
-                <ng-container *ngTemplateOutlet="tpl"></ng-container>
-              </span>
-            </ng-template>
-          </ng-template>
-
-          <!-- 实现悬浮提示, 则出现溢出隐藏 -->
-          <ng-template [ngIf]="!col.render && col.tooltip">
-            <!-- 自定义悬浮内容 -->
-            <span class="cursor-pointer" *ngIf="col.tooltipTpl" nz-tooltip [nzTooltipTitle]="tooltipTpl">
-              <ng-container *ngTemplateOutlet="toolTpl"></ng-container>
-            </span>
-            <!-- 悬浮提示功能 -->
-            <span class="cursor-pointer" *ngIf="!col.tooltipTpl" nz-tooltip [nzTooltipTitle]="col.transfer ? transferTooltipzTpl: tpl">
-              <ng-container *ngTemplateOutlet="toolTpl"></ng-container>
-            </span>
-          </ng-template>
-          <!-- 不需要实现悬浮提示, 也不处理溢出隐藏 -->
-          <ng-template [ngIf]="!col.render && !col.tooltip">
-            <ng-container *ngTemplateOutlet="tpl"></ng-container>
-          </ng-template>
-        </ng-template>
-
-      </ng-template>
-      <!-- <td *ngFor="let col of column" [nzLeft]="col.nzLeft" [nzRight]="col.nzRight">
-      </td> -->
+      </ng-container>
     </tr>
   </tbody>
 </nz-table>
 
 
 <!-- th的title内容区域 -->
-<ng-template #thContent let-col>
+<ng-template #thContent let-col let-item="item">
   <!-- 如果有表格列名有渲染渲染模板则使用模板 -->
   <ng-container *ngIf="col.titleRender; else thTitleTpl">
     <ng-container *ngTemplateOutlet="col.titleRender"></ng-container>
   </ng-container>
   <!-- 否则直接渲染列名 -->
   <ng-template #thTitleTpl>{{col.title || '-'}}</ng-template>
+</ng-template>
+
+<!-- td的内容渲染 -->
+<ng-template #tdContent let-col let-item="item">
+  <!-- 如果有渲染模板, 则根据模板渲染, 同时需要把当前行的数据传到对应的模板 -->
+  <ng-template [ngIf]="col.render">
+    <ng-container
+      *ngTemplateOutlet="col.render; context: {$implicit: item[col['index']], index: col['index'], row: item}">
+    </ng-container>
+  </ng-template>
+  <!-- 如果没有模板则直接渲染 -->
+  <ng-template [ngIf]="!col.render">
+    <span
+      [style.height.px]="config?.rowHeight || 24"
+      [style.lineHeight.px]="config?.lineHeight || config?.rowHeight || 24"
+      class="td-content">
+      {{item[col.index]}}
+    </span>
+  </ng-template>
 </ng-template>
 
 <!-- 分页组件 -->

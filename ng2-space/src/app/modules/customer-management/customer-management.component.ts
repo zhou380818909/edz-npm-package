@@ -25,94 +25,7 @@ export class CustomerManagementComponent implements OnInit {
   }
   searchValue = { city: '2' } as any
   searchBarConfig: ISearchItem[] = []
-  column: IColumnItem[] = [
-    {
-      title: '',
-      index: 'id',
-      nzShowCheckbox: true,
-      nzLeft: true,
-      width: '48px',
-    },
-    {
-      title: '姓名',
-      index: 'name',
-      nzLeft: true,
-      width: '300px',
-    },
-    {
-      title: '姓名',
-      index: 'score',
-      width: '200px',
-      nzLeft: true,
-    },
-    {
-      title: '姓名',
-      index: 'score',
-      width: '200px',
-    },
-    {
-      title: '姓名',
-      index: 'score',
-      width: '200px',
-    },
-    {
-      title: '姓名',
-      index: 'score',
-      width: '200px',
-    },
-    {
-      title: '姓名',
-      index: 'score',
-      width: '200px',
-    },
-    {
-      title: '姓名',
-      index: 'score',
-      width: '200px',
-    },
-    {
-      title: '姓名',
-      index: 'score',
-      width: '200px',
-    },
-    {
-      title: '姓名',
-      index: 'score',
-      width: '200px',
-    },
-    {
-      title: '姓名',
-      index: 'score',
-      width: '200px',
-    },
-    {
-      title: '姓名',
-      index: 'score',
-      width: '200px',
-    },
-    {
-      title: '姓名',
-      index: 'score',
-      width: '200px',
-    },
-    {
-      title: '姓名',
-      index: 'score',
-      // width: '200px',
-    },
-    {
-      title: '姓名',
-      index: 'score',
-      width: '100px',
-      nzRight: true,
-    },
-    {
-      title: '姓名1',
-      index: 'score',
-      width: '200px',
-      nzRight: true,
-    },
-  ]
+  column: IColumnItem[] = []
   tableConfig: ITableConfig = {
     width: '2200px',
     scroll: true,
@@ -120,8 +33,9 @@ export class CustomerManagementComponent implements OnInit {
   tableData = [
     {
       name: '看看',
-      score: '清风',
+      score: '清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风',
       id: 1,
+      style: { color: 'red' },
     },
     {
       name: '看看',
@@ -183,8 +97,102 @@ export class CustomerManagementComponent implements OnInit {
 
   @ViewChild('date', { static: true })
   dateComponent
+  @ViewChild('ellipsis', { static: true })
+  ellipsisComponent
 
   constructor() { }
+
+  initRender() {
+    this.column = [
+      // {
+      //   title: '',
+      //   index: 'id',
+      //   nzShowCheckbox: true,
+      //   nzLeft: true,
+      //   width: '48px',
+      // },
+      {
+        title: '姓名',
+        index: 'name',
+        nzLeft: true,
+        width: '300px',
+      },
+      {
+        title: '姓名',
+        index: 'score',
+        width: '200px',
+        nzLeft: true,
+      },
+      {
+        title: '姓名',
+        index: 'score',
+        width: '200px',
+        render: this.ellipsisComponent,
+      },
+      {
+        title: '姓名',
+        index: 'score',
+        width: '200px',
+      },
+      {
+        title: '姓名',
+        index: 'score',
+        width: '200px',
+      },
+      {
+        title: '姓名',
+        index: 'score',
+        width: '200px',
+      },
+      {
+        title: '姓名',
+        index: 'score',
+        width: '200px',
+      },
+      {
+        title: '姓名',
+        index: 'score',
+        width: '200px',
+      },
+      {
+        title: '姓名',
+        index: 'score',
+        width: '200px',
+      },
+      {
+        title: '姓名',
+        index: 'score',
+        width: '200px',
+      },
+      {
+        title: '姓名',
+        index: 'score',
+        width: '200px',
+      },
+      {
+        title: '姓名',
+        index: 'score',
+        width: '200px',
+      },
+      {
+        title: '姓名',
+        index: 'score',
+        // width: '200px',
+      },
+      {
+        title: '姓名',
+        index: 'score',
+        width: '100px',
+        nzRight: true,
+      },
+      {
+        title: '姓名1',
+        index: 'score',
+        width: '200px',
+        nzRight: true,
+      },
+    ]
+  }
 
   searchHandler(value) {
     this.searchValue = value
@@ -193,16 +201,23 @@ export class CustomerManagementComponent implements OnInit {
 
   initSearch() {
     this.searchBarConfig = [
-      { label: '姓名', index: 'name', type: 'input', defaultValue: '明月' },
-      { label: '城市', index: 'city', type: 'select', options: [{ value: '1', label: '承德' }, { value: '2', label: '株洲' }] },
+      { label: '姓名', index: 'name', type: 'input', defaultValue: '丛丛' },
+      { label: '城市', index: 'city', type: 'select', options: [{ value: '1', label: '衡水' }, { value: '2', label: '株洲' }] },
       { label: '时间', index: 'date', type: 'render', render: this.dateComponent, defaultValue: new Date('2000/09/12 20:20:20') },
     ]
   }
 
   ngOnInit(): void {
     this.initSearch()
+    this.initRender()
+    // setTimeout(() => {
+    //   this.searchValue = {}
+    // }, 3000)
     setTimeout(() => {
-      this.searchValue = {}
-    }, 3000)
+      this.tableConfig = {
+        ...this.tableConfig,
+        totalData: [{ name: '总数1', score: 11 }, { name: '总数2', score: 66 }],
+      }
+    }, 5000)
   }
 }

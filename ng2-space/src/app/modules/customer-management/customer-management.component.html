@@ -82,3 +82,7 @@
 <ng-template #date let-index="index" let-value="value">
     <nz-date-picker [(ngModel)]="value[index]"></nz-date-picker>
 </ng-template>
+
+<ng-template #ellipsis let-data>
+  <div nz-typography nz-tooltip nzEllipsis [nzTooltipTitle]="data">11{{data}}</div>
+</ng-template>

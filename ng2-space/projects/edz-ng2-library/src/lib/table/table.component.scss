@@ -36,14 +36,32 @@
       }
     }
 
+    .ant-typography {
+      color: inherit;
+      margin-bottom: 0;
+    }
+
     .ant-table-pagination.ant-pagination {
       margin: 0;
       padding: 8px 0;
     }
 
     .td-content {
-      display: inline-block;
-      min-height: 1em;
+      display: block;
+      overflow: hidden;
+    }
+
+    .total {
+      td {
+        background-color: #fff;
+        position: sticky;
+      }
+
+      &.first-row {
+        td {
+          border-top: 1px solid #ddd;
+        }
+      }
     }
   }
 }
