@@ -30,10 +30,6 @@ export interface IColumnItem<T = { [k: string]: any }> {
   titleRender?: TemplateRef<any>
   /** 数据组件渲染 */
   render?: TemplateRef<any>
-  /** 数据渲染格式映射 */
-  transfer?: ITransfer
-  /** 管道 */
-  pipe?: IPipe
   /** 是否排序 */
   nzShowSort?: boolean
   /** 排序名 */
@@ -46,10 +42,6 @@ export interface IColumnItem<T = { [k: string]: any }> {
   rowspan?: number
   /** 列合并 */
   colspan?: number
-  /** 鼠标悬浮提示 */
-  tooltip?: boolean
-  /** 鼠标悬浮提示组件渲染 */
-  tooltipTpl?: TemplateRef<any>
   /** 行高, 当设置列宽的时候, 可能出现表格对不齐的问题, 需要设置行高 */
   lineHeight?: number
   /** webkit设置多行省略 */
@@ -80,18 +72,23 @@ export interface ICheckedMap {
   [id: string]: boolean
 }
 /** 表格的配置 */
-export interface ITableConfig {
+export interface ITableConfig<T=object> {
   /** 表格总宽度, 出现横向滚动条 */
   width?: string
   /** 是否显示边框 */
   nzBordered?: boolean
-  checkIndex?: string
   /** 分页大小范围 */
   nzPageSizeOptions?: number[]
   /** 单页是否隐藏分页 */
   nzHideOnSinglePage?: boolean
   /** 是否固定表格内容, false为不固定 */
   scroll?: boolean
+  /** 表格总数 */
+  totalData?: T[] | T
+  /** 表格行高度 */
+  rowHeight?: number
+  /** 字体行高 */
+  lineHeight?: number
 }
 
 /** 表格滚动区域 */

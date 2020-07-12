@@ -4,7 +4,6 @@ import { Debounce } from 'lodash-decorators'
 import { NzTableComponent, NzResizeObserver } from 'ng-zorro-antd'
 import { debounceTime } from 'rxjs/operators'
 import { Subscription } from 'rxjs'
-import { cloneDeep } from 'lodash'
 import { ICheckedMap, IColumnItem, IPagination, ITableConfig, ITableItem, ITableScroll } from '../interfaces'
 
 interface IRenderColumnItem extends IColumnItem {
@@ -62,6 +61,21 @@ export class TableComponent implements OnInit, OnDestroy {
   // 数据缓存
   private _data = []
 
+  get totalData() {
+    if (this.config && Array.isArray(this.config.totalData)) {
+      const rowHeight = this.config.rowHeight + 9 || 33
+      return this.config.totalData.map((item, index, arr) => ({
+        ...item,
+        stickyBottom: (arr.length - index - 1) * rowHeight,
+      }
+      ))
+    }
+    if (this.config && typeof this.config.totalData === 'object') {
+      return [{ ...this.config.totalData, stickyBottom: 0 }]
+    }
+    return []
+  }
+
   @ViewChild(NzTableComponent, { static: true })
   nzTable: NzTableComponent
 
@@ -108,8 +122,8 @@ export class TableComponent implements OnInit, OnDestroy {
   }
 
   /** 每行选中触发的事件 */
-  checkHanlder(checked, data: ITableItem) {
-    this.checkedMap[data[this.config.checkIndex || 'id']] = checked
+  checkHanlder(checked, data: ITableItem, col: IRenderColumnItem) {
+    this.checkedMap[data[col.index || 'id']] = checked
     this.checkChange.next({ data, checked })
   }
 
@@ -167,7 +181,7 @@ export class TableComponent implements OnInit, OnDestroy {
     // TODO: 暂时没有实现表头分组
     // 判断列配置中是否含有表头合并相关配置
     const hasCallapse = this.column.some(item => item.colspan && item.colspan > 1)
-    this.renderColumn = cloneDeep(this.column)
+    this.renderColumn = [...this.column]
     const collapseConfigLeft = this.setNzLeftOrRightWidth(this.renderColumn)
     const collapseConfigRight = this.setNzLeftOrRightWidth(this.renderColumn, true).reverse()
     this.renderColumn = collapseConfigLeft.map((item, index) => ({
@@ -195,7 +209,9 @@ export class TableComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.nzScroll = { ...this.nzScroll, x: this.config.width }
+    // console.log(this.column);
     this.setTableScroll()
+    this.cdr.detectChanges()
   }
 
   ngOnChanges(simpleChange: SimpleChanges) {
