@@ -1,5 +1,6 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core'
-import { IColumnItem, ITableConfig, ISearchItem } from '../../../../projects/edz-ng2-library/src/lib/interfaces'
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core'
+import { IColumnItem, ISearchItem, ITableConfig } from '../../../../projects/edz-ng2-library/src/lib/interfaces'
+import { HttpService } from '../../../../projects/edz-ng2-library/src/lib/services'
 
 @Component({
   selector: 'app-customer-management',
@@ -100,7 +101,7 @@ export class CustomerManagementComponent implements OnInit, OnDestroy {
   @ViewChild('ellipsis', { static: true })
   ellipsisComponent
 
-  constructor() { }
+  constructor(private http: HttpService) { }
 
   initRender() {
     this.column = [
@@ -210,15 +211,15 @@ export class CustomerManagementComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.initSearch()
     this.initRender()
-    // setTimeout(() => {
-    //   this.searchValue = {}
-    // }, 3000)
     setTimeout(() => {
-      this.tableConfig = {
-        ...this.tableConfig,
-        totalData: [{ name: '总数1', score: 11 }, { name: '总数2', score: 66 }],
-      }
-    }, 5000)
+      console.log(this.searchValue);
+    }, 8000)
+    // setTimeout(() => {
+    //   this.tableConfig = {
+    //     ...this.tableConfig,
+    //     totalData: [{ name: '总数1', score: 11 }, { name: '总数2', score: 66 }],
+    //   }
+    // }, 5000)
   }
 
   ngOnDestroy() {
