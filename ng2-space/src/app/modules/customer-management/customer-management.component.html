@@ -3,6 +3,10 @@
 <edz-bool-text [condition]="false" [text]="'启用'"></edz-bool-text>
 <edz-scroll>
   <edz-search-bar [config]="searchBarConfig" [value]="searchValue" (search)="searchHandler($event)">
+    <div class="extra">
+      <button nz-button >上传</button>
+      <button nz-button class="ml-8">导出</button>
+    </div>
   </edz-search-bar>
   <edz-scroll-content>
     <edz-tab-set>
