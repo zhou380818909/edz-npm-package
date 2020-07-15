@@ -1,12 +1,25 @@
+/*
+ * @Author: ChouEric
+ * @Date: 2020-07-15 11:39:46
+ * @Last Modified by: ChouEric
+ * @Last Modified time: 2020-07-15 11:48:27
+ * @Description: tab组件, 和路径相关, 在Router中,可以访问路由复用策略
+ */
 import { Component, OnInit, OnDestroy, Input } from '@angular/core'
 import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown'
-import { Router, NavigationEnd } from '@angular/router'
+import { Router, NavigationEnd, ActivatedRouteSnapshot } from '@angular/router'
 import { filter } from 'rxjs/operators'
 import { IMenuItem } from '../interfaces'
 
 interface ITabItem {
+  /** url地址 */
   url?: string
+  /** tab显示的名字 */
   title?: string
+  /** 是否可关闭 */
+  closable?: boolean
+  /** 不同路径对应相同组件的组件 */
+  component?: any
 }
 
 @Component({
@@ -17,12 +30,18 @@ interface ITabItem {
 export class TabComponent implements OnInit, OnDestroy {
   @Input()
   menuList: IMenuItem[] = []
-
+  // 当前激活的tab的索引
   activeIndex = 0
+  // 当前的菜单数量
   tabs: ITabItem[] = []
   // 右键菜单选中的tab
   private contextMenuTab: ITabItem
+  // 路径参数的同一组件
+  private sameRoute: ActivatedRouteSnapshot
+  // 用来取消订阅
   private routerSub$
+  // 根路由事件订阅
+  private rootRoute$
 
   constructor(
     private nzContextMenuService: NzContextMenuService,
@@ -31,17 +50,36 @@ export class TabComponent implements OnInit, OnDestroy {
 
   registerSub() {
     this.routerSub$ = this.router.events.pipe(
+      // 当当前路由事件已经完成了切换
       filter(event => event instanceof NavigationEnd),
     ).subscribe((event: NavigationEnd) => {
-      // TODO: 未完成动态路由不缓存
+      // 根据url地址转换为数组
       const currentPaths = event.url.replace(/^\//, '').split('/')
+      // 从数组中获取当前的tab能够展示的title
       const title = this.getTabTitleFromMenu(currentPaths)
+      // 当前的url在tab中的索引
       const existIndex = this.tabs.findIndex(tab => tab.title === title && tab.url === event.url)
+      // 如果当前url的索引小于0, 即是当前url不在tab中
       if (existIndex < 0 && title) {
-        this.tabs.push({ url: event.url, title })
+        const tab = { url: event.url, title, component: this.sameRoute && this.sameRoute.component }
+
+        if (this.sameRoute && this.sameRoute.component) {
+          const equalIndex = this.tabs.findIndex(item => item.component === this.sameRoute.component)
+          if (equalIndex > -1) {
+            this.tabs.splice(equalIndex, 1, tab)
+            this.activeIndex = equalIndex
+            return
+          }
+        }
+        this.tabs.push(tab)
         this.activeIndex = this.tabs.length - 1
       } else {
         this.activeIndex = existIndex
+      }
+    })
+    this.rootRoute$ = (this.router.routeReuseStrategy as any).rootRoute().subscribe((route: ActivatedRouteSnapshot) => {
+      if (route && Array.isArray(route.children)) {
+        this.setRouteParamTab(route.children)
       }
     })
   }
@@ -57,7 +95,7 @@ export class TabComponent implements OnInit, OnDestroy {
     if (menuItem.children) {
       return this.getTabTitleFromMenu(pathArr, menuItem.children)
     }
-    return menuItem.title
+    return menuItem.title || '未命名'
   }
 
   /** 点击tab */
@@ -66,20 +104,34 @@ export class TabComponent implements OnInit, OnDestroy {
   }
 
   /** 关闭tab */
-  closeTab(tab: ITabItem): void {
+  closeTab(tab: ITabItem, event: MouseEvent): void {
+    // 关闭按钮阻止事件冒泡
+    event.stopPropagation()
+
     const closeIndex = this.tabs.indexOf(tab)
-    // 如果关闭tab是当前激活的tab, 则需要打开其他tab
+    // 如果关闭tab是当前激活的tab, 则需要打开其他tab, 并删除其他tab对应的路由复用数据缓存
     if (this.activeIndex === closeIndex) {
       this.tabs.splice(closeIndex, 1)
+      // 如果关闭的tab不是第一个, 则打开上一个tab
       if (closeIndex > 0) {
         const { url } = [...this.tabs].splice(closeIndex - 1, 1)[0]
-        this.router.navigateByUrl(url)
+        this.router.navigateByUrl(url).then(() => {
+          this.deleteHandlerByUrl(tab.url)
+        })
+
+      // 如果关闭的是第一个, 则打开下一个tab
       } else {
         const { url } = [...this.tabs].splice(0, 1)[0]
-        this.router.navigateByUrl(url)
+        this.router.navigateByUrl(url).then(() => {
+          this.deleteHandlerByUrl(tab.url)
+        })
       }
+
+    // 如果关闭的tab不是当前激活的tab, 则删除其他tab对应的路由复用数据缓存
+    } else {
+      this.deleteHandlerByUrl(tab.url)
+      this.tabs.splice(this.tabs.indexOf(tab), 1)
     }
-    this.tabs.splice(this.tabs.indexOf(tab), 1)
   }
 
   /** tab的右键菜单 */
@@ -122,15 +174,50 @@ export class TabComponent implements OnInit, OnDestroy {
 
   /** 关闭范围 */
   contextCloseToTab(fromIndex, toIndex) {
-    this.tabs = this.tabs.filter((item, index) => index < fromIndex || index > toIndex)
-    this.router.navigateByUrl(this.contextMenuTab.url)
+    const closedUrls = []
+    this.tabs = this.tabs.filter((item, index) => {
+      if (index >= fromIndex && index <= toIndex) {
+        closedUrls.push(item.url)
+      }
+      return index < fromIndex || index > toIndex
+    })
+    this.router.navigateByUrl(this.contextMenuTab.url).then(() => {
+      this.deleteHandlerByUrl(closedUrls)
+    })
   }
 
   /** 关闭其他 */
   contextCloseOtherTab(index) {
+    const closedUrls = this.tabs.filter((item, ind) => ind !== index).map(item => item.url)
     const tab = this.tabs[index]
     this.tabs = [tab]
-    this.router.navigateByUrl(tab.url)
+    this.router.navigateByUrl(tab.url).then(() => {
+      this.deleteHandlerByUrl(closedUrls)
+    })
+  }
+
+  /** 通过tab的url销毁路由复用的中的实例 */
+  deleteHandlerByUrl(urls: string | string[]) {
+    if (this.router && this.router.routeReuseStrategy
+       && typeof (this.router.routeReuseStrategy as any).deleteHandlerByUrl === 'function'
+    ) {
+      (this.router.routeReuseStrategy as any)?.deleteHandlerByUrl(urls)
+    }
+  }
+
+  /** 如果url中含有路径参数并且只有路径参数不一致, 则只生成一个tab */
+  setRouteParamTab(activatedRouteSnapshotList: ActivatedRouteSnapshot[]) {
+    activatedRouteSnapshotList.forEach(item => {
+      if (item.children && item.children.length > 0) {
+        this.setRouteParamTab(item.children)
+
+        // 如果路径参数param的键名长度大于0, 则说明是不同路径的同一组件
+      } else if (Object.keys(item.params).length > 0) {
+        this.sameRoute = item
+      } else {
+        this.sameRoute = null
+      }
+    })
   }
 
   ngOnInit(): void {
@@ -138,8 +225,11 @@ export class TabComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.routerSub$ && typeof this.routerSub$.unsubscribe) {
+    if (this.routerSub$ && typeof this.routerSub$.unsubscribe === 'function') {
       this.routerSub$.unsubscribe()
+    }
+    if (this.rootRoute$ && typeof this.rootRoute$.unsubscribe === 'function') {
+      this.rootRoute$.unsubscribe()
     }
   }
 }

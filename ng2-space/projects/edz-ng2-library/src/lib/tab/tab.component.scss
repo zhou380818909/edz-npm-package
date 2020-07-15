@@ -18,6 +18,13 @@
 
       .ant-tabs-close-x {
         transition: none !important;
+
+        &:hover {
+          > svg {
+            transform: rotateZ(180deg);
+            transition: all 0.5s;
+          }
+        }
       }
     }
   }
