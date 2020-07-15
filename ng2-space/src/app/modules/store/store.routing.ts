@@ -12,7 +12,6 @@ const routes: Route[] = [
     children: [
       { path: ':id', component: StoreComponent },
     ],
-    // component: StoreComponent,
   },
 ]
 

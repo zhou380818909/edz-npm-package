@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core'
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core'
 import { IColumnItem, ITableConfig, ISearchItem } from '../../../../projects/edz-ng2-library/src/lib/interfaces'
 
 @Component({
@@ -6,7 +6,7 @@ import { IColumnItem, ITableConfig, ISearchItem } from '../../../../projects/edz
   templateUrl: './customer-management.component.html',
   styleUrls: ['./customer-management.component.scss'],
 })
-export class CustomerManagementComponent implements OnInit {
+export class CustomerManagementComponent implements OnInit, OnDestroy {
   text = '13211111111'
   options = [
     { key: 'id', value: '北京' },
@@ -219,5 +219,9 @@ export class CustomerManagementComponent implements OnInit {
         totalData: [{ name: '总数1', score: 11 }, { name: '总数2', score: 66 }],
       }
     }, 5000)
+  }
+
+  ngOnDestroy() {
+    console.log('customer-destroy')
   }
 }

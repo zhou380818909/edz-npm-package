@@ -46,9 +46,7 @@ export class LayerComponent implements OnInit {
     this.onCollapse.next(this.isCollapsed)
   }
 
-  ngOnInit() {
-
-  }
+  ngOnInit() {}
 
   ngAfterViewInit() {
     this.setSiderMax()

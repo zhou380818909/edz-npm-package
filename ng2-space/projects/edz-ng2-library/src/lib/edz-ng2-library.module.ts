@@ -34,3 +34,5 @@ const modules = [
   ],
 })
 export class EdzNg2LibraryModule { }
+
+export * from './services'
