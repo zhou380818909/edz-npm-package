@@ -2,7 +2,7 @@
  * @Author: ChouEric
  * @Date: 2020-07-15 11:39:46
  * @Last Modified by: ChouEric
- * @Last Modified time: 2020-07-15 11:48:27
+ * @Last Modified time: 2020-07-15 13:47:49
  * @Description: tab组件, 和路径相关, 在Router中,可以访问路由复用策略
  */
 import { Component, OnInit, OnDestroy, Input } from '@angular/core'
@@ -77,11 +77,13 @@ export class TabComponent implements OnInit, OnDestroy {
         this.activeIndex = existIndex
       }
     })
-    this.rootRoute$ = (this.router.routeReuseStrategy as any).rootRoute().subscribe((route: ActivatedRouteSnapshot) => {
-      if (route && Array.isArray(route.children)) {
-        this.setRouteParamTab(route.children)
-      }
-    })
+    if (typeof (this.router.routeReuseStrategy as any).rootRoute === 'function') {
+      this.rootRoute$ = (this.router.routeReuseStrategy as any).rootRoute().subscribe((route: ActivatedRouteSnapshot) => {
+        if (route && Array.isArray(route.children)) {
+          this.setRouteParamTab(route.children)
+        }
+      })
+    }
   }
 
   /**
