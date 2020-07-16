@@ -5,11 +5,13 @@
  * @Last Modified time: 2020-07-15 13:47:49
  * @Description: tab组件, 和路径相关, 在Router中,可以访问路由复用策略
  */
-import { Component, OnInit, OnDestroy, Input } from '@angular/core'
+import { Component, Input, OnDestroy, OnInit } from '@angular/core'
+import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router'
 import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown'
-import { Router, NavigationEnd, ActivatedRouteSnapshot } from '@angular/router'
 import { filter } from 'rxjs/operators'
 import { IMenuItem } from '../interfaces'
+import { LocalStorageService } from '../services/local-storage.service'
+import { SessionStorageService } from '../services/session-storage.service'
 
 interface ITabItem {
   /** url地址 */
@@ -30,10 +32,13 @@ interface ITabItem {
 export class TabComponent implements OnInit, OnDestroy {
   @Input()
   menuList: IMenuItem[] = []
+  /** 是否使用浏览器本地缓存储存tab列表 */
+  @Input()
+  useStorage: 'session' | 'local' | false = 'session'
   // 当前激活的tab的索引
   activeIndex = 0
   // 当前的菜单数量
-  tabs: ITabItem[] = []
+  tabs: ITabItem[]
   // 右键菜单选中的tab
   private contextMenuTab: ITabItem
   // 路径参数的同一组件
@@ -46,6 +51,8 @@ export class TabComponent implements OnInit, OnDestroy {
   constructor(
     private nzContextMenuService: NzContextMenuService,
     private router: Router,
+    private sessionStorage: SessionStorageService,
+    private localStorage: LocalStorageService,
   ) {}
 
   registerSub() {
@@ -68,11 +75,13 @@ export class TabComponent implements OnInit, OnDestroy {
           if (equalIndex > -1) {
             this.tabs.splice(equalIndex, 1, tab)
             this.activeIndex = equalIndex
+            this.saveTabToStorage()
             return
           }
         }
         this.tabs.push(tab)
         this.activeIndex = this.tabs.length - 1
+        this.saveTabToStorage()
       } else {
         this.activeIndex = existIndex
       }
@@ -128,11 +137,13 @@ export class TabComponent implements OnInit, OnDestroy {
           this.deleteHandlerByUrl(tab.url)
         })
       }
+      this.saveTabToStorage()
 
-    // 如果关闭的tab不是当前激活的tab, 则删除其他tab对应的路由复用数据缓存
+      // 如果关闭的tab不是当前激活的tab, 则删除其他tab对应的路由复用数据缓存
     } else {
       this.deleteHandlerByUrl(tab.url)
       this.tabs.splice(this.tabs.indexOf(tab), 1)
+      this.saveTabToStorage()
     }
   }
 
@@ -183,6 +194,7 @@ export class TabComponent implements OnInit, OnDestroy {
       }
       return index < fromIndex || index > toIndex
     })
+    this.saveTabToStorage()
     this.router.navigateByUrl(this.contextMenuTab.url).then(() => {
       this.deleteHandlerByUrl(closedUrls)
     })
@@ -193,6 +205,7 @@ export class TabComponent implements OnInit, OnDestroy {
     const closedUrls = this.tabs.filter((item, ind) => ind !== index).map(item => item.url)
     const tab = this.tabs[index]
     this.tabs = [tab]
+    this.saveTabToStorage()
     this.router.navigateByUrl(tab.url).then(() => {
       this.deleteHandlerByUrl(closedUrls)
     })
@@ -222,7 +235,32 @@ export class TabComponent implements OnInit, OnDestroy {
     })
   }
 
+  private saveTabToStorage() {
+    if (!this.useStorage) return
+    if (this.useStorage === 'session') {
+      this.sessionStorage.setItem('TAB_LIST', this.tabs)
+      return
+    }
+    if (this.useStorage === 'local') {
+      this.localStorage.setItem('TAB_LIST', this.tabs)
+    }
+  }
+
+  private getTabFromStorage() {
+    if (this.useStorage === 'session') {
+      return this.sessionStorage.getItem('TAB_LIST')
+    }
+    if (this.useStorage === 'local') {
+      return this.localStorage.getItem('TAB_LIST')
+    }
+    return []
+  }
+
   ngOnInit(): void {
+    const tabs = this.getTabFromStorage()
+    if (Array.isArray(tabs)) {
+      this.tabs = this.getTabFromStorage()
+    }
     this.registerSub()
   }
 
