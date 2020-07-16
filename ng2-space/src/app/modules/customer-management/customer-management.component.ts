@@ -220,9 +220,7 @@ export class CustomerManagementComponent implements OnInit, OnDestroy {
     //     totalData: [{ name: '总数1', score: 11 }, { name: '总数2', score: 66 }],
     //   }
     // }, 5000)
-    this.http.get('http://localhost:3000/posts1', {}, { callback: console.log, }).subscribe(res => {
-      console.log(res);
-    })
+    this.http.get('http://localhost:3000/posts1', {}, { callback: console.log, })
   }
 
   ngOnDestroy() {
