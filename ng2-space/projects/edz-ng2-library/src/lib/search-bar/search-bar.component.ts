@@ -2,7 +2,7 @@
  * @Author: ChouEric
  * @Date: 2020-07-09 17:47:34
  * @Last Modified by: ChouEric
- * @Last Modified time: 2020-07-15 20:34:21
+ * @Last Modified time: 2020-07-16 11:17:01
  * @Description: 优先调用父组件的ngOnChanges, 再调用ngOnInit钩子, 再调用子组件的ngOnChanges钩子, 再调用子组件的ngOnInit
  */
 import {
@@ -70,7 +70,7 @@ export class SearchBarComponent implements OnInit, OnChanges {
       return
     }
     // 深克隆, 防止子组件修改数据影响父组件
-    const value = cloneDeep(data)
+    const value = data
     // 搜索栏数据和传入的数据键名交集, 然后将传入的数据赋值给搜索栏数据
     union(Object.keys(this.searchValue), Object.keys(this.value)).forEach(key => {
       this.searchValue[key] = value[key]
@@ -83,7 +83,7 @@ export class SearchBarComponent implements OnInit, OnChanges {
       return
     }
     // 深克隆, 防止子组件修改数据影响父组件
-    const value = cloneDeep(data)
+    const value = data
     Object.keys(value).forEach(key => {
       if (value[key]) {
         this.searchValue[key] = value[key]
@@ -93,22 +93,22 @@ export class SearchBarComponent implements OnInit, OnChanges {
 
   // 搜索按钮触发
   searchHandler() {
-    this.search.emit(this.searchValue)
+    this.search.emit(cloneDeep(this.searchValue))
   }
   // 键盘触发搜索
   keyHandler(event: KeyboardEvent) {
     if (event.key === 'Enter') {
-      this.search.emit(this.searchValue)
+      this.search.emit(cloneDeep(this.searchValue))
     }
   }
   // 重置触发事件
   resetHandler() {
     this.searchValue = cloneDeep(this.initValue)
-    this.reset.next(this.searchValue)
+    this.reset.emit(this.searchValue)
   }
 
   ngOnInit() {
-    this.searchHandler()
+    this.search.emit(cloneDeep(this.searchValue))
   }
 
   ngOnChanges(changes: SimpleChanges) {
