@@ -2,7 +2,7 @@
  * @Author: ChouEric
  * @Date: 2020-07-15 15:05:59
  * @Last Modified by: ChouEric
- * @Last Modified time: 2020-07-15 15:05:59
+ * @Last Modified time: 2020-07-16 17:39:36
  * @Description: 封装 http 请求
  */
 import { HttpClient, HttpHeaders } from '@angular/common/http'
@@ -19,9 +19,13 @@ interface IMap {
   message: string
 }
 
-interface IHttpServiceConfig {
+export interface IHttpServiceConfig {
+  /** code, data, message的映射关系 */
   map: IMap,
-  successCode: number
+  /** 返回成功的状态码 */
+  successCode: number,
+  /** 是否使用后端返回的错误信息 */
+  useBackEndErrorMessage: boolean
 }
 
 /** 基本请求参数 */
@@ -70,15 +74,16 @@ interface IGetOption extends IPostOption {
 /** 请求服务配置令牌 */
 export const HTTP_SERVICE_CONFIG = new InjectionToken<IHttpServiceConfig>('HTTP_SERVICE_CONFIG')
 
+/** 请求服务, 注意: 此服务依赖ng-zorro-antd的NzMessageService服务, 所以需要在根模块引入NzMessageModule模块 */
 @Injectable({
   providedIn: 'root',
 })
-/** 请求服务 */
 export class HttpService {
   private code: string
   private data: string
   private message: string
   private successCode: number
+  private useBackEndErrorMessage: boolean
   // 缓存数据
   private static cache = {}
   constructor(
@@ -88,11 +93,13 @@ export class HttpService {
     @Inject(HTTP_SERVICE_CONFIG) private config: IHttpServiceConfig,
   ) {
     // 解构配置文件
-    const { map: { code, data, message } = { code: 'code', data: 'data', message: 'message' }, successCode = 0 } = config || {}
+    const { map: { code = 'code', data = 'data', message = 'message' } = { },
+      successCode = 0, useBackEndErrorMessage = true } = config || {}
     this.code = code
     this.data = data
     this.message = message
     this.successCode = successCode
+    this.useBackEndErrorMessage = useBackEndErrorMessage
   }
 
   /**
@@ -269,13 +276,17 @@ export class HttpService {
       return EMPTY
     }
     if (typeof error === 'string') {
-      this.messageService.error('未知错误，请与研发中心技术客服联系！')
+      this.messageService.error(this.useBackEndErrorMessage ? error : '未知错误，请与研发中心技术客服联系！')
       return EMPTY
     }
     if (error && error.status) {
       const { status } = error
       if (status < 400) {
         this.messageService.error('服务端处理异常，请与研发中心技术客服联系！')
+        return EMPTY
+      }
+      if (status === 404) {
+        this.messageService.error('请求地址不存，请与研发中心技术客服联系！')
         return EMPTY
       }
       if (status < 500) {
