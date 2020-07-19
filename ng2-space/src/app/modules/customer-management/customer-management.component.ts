@@ -208,6 +208,11 @@ export class CustomerManagementComponent implements OnInit, OnDestroy {
     ]
   }
 
+  clickHandler(e) {
+    console.log(e);
+
+  }
+
   ngOnInit(): void {
     this.initSearch()
     this.initRender()
