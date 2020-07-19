@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { NZ_I18N, zh_CN } from 'ng-zorro-antd'
 import { BoolTextModule } from './bool-text/bool-text.module'
+import { DidrectivesModule } from './directives/directives.module'
 import { GroupDatepickerModule } from './group-datepicker/group-datepicker.module'
 import { LayerModule } from './layer/layer.module'
 import { MenuModule } from './menu/menu.module'
@@ -24,6 +25,7 @@ const modules = [
   SearchBarModule,
   TabSetModule,
   ScrollModule,
+  DidrectivesModule,
 ]
 
 @NgModule({

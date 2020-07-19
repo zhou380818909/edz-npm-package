@@ -2,7 +2,7 @@
  * @Author: ChouEric
  * @Date: 2020-07-15 11:39:46
  * @Last Modified by: ChouEric
- * @Last Modified time: 2020-07-15 13:47:49
+ * @Last Modified time: 2020-07-19 22:44:50
  * @Description: tab组件, 和路径相关, 在Router中,可以访问路由复用策略
  */
 import { Component, Input, OnDestroy, OnInit } from '@angular/core'
@@ -248,10 +248,10 @@ export class TabComponent implements OnInit, OnDestroy {
 
   private getTabFromStorage() {
     if (this.useStorage === 'session') {
-      return this.sessionStorage.getItem('TAB_LIST')
+      return this.sessionStorage.getItem('TAB_LIST') || []
     }
     if (this.useStorage === 'local') {
-      return this.localStorage.getItem('TAB_LIST')
+      return this.localStorage.getItem('TAB_LIST') || []
     }
     return []
   }
@@ -259,7 +259,7 @@ export class TabComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const tabs = this.getTabFromStorage()
     if (Array.isArray(tabs)) {
-      this.tabs = this.getTabFromStorage()
+      this.tabs = tabs
     }
     this.registerSub()
   }

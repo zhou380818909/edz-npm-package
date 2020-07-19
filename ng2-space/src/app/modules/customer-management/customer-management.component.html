@@ -4,7 +4,7 @@
 <edz-scroll>
   <edz-search-bar [config]="searchBarConfig" [value]="searchValue" (search)="searchHandler($event)">
     <div class="extra">
-      <button nz-button >上传</button>
+      <button nz-button *appShowButton="11" (click)="clickHandler($event)">上传</button>
       <button nz-button class="ml-8">{{searchValue?.name}}</button>
     </div>
   </edz-search-bar>
