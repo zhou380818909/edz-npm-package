@@ -13,6 +13,8 @@ import { stringify } from 'querystring'
 import { EMPTY, Observable, of } from 'rxjs'
 import { catchError, switchMap } from 'rxjs/operators'
 
+type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never }
+type XOR<T, U> = (T | U) extends object ? (Without<T, U> & U) | (Without<U, T> & T) : T | U
 interface IMap {
   data: string
   code: string
@@ -39,13 +41,14 @@ interface IBaseHttpParam {
 interface IFormHttpParam extends IBaseHttpParam {
   /** contentType: application/x-www-form-urlencoded  */
   form?: object
+
 }
 interface IJsonHttpParam extends IBaseHttpParam {
   /** contentType: application/json */
   json?: object
 }
 /** 带请求体的请求参数 */
-type IBodyHttpParam = IFormHttpParam | IJsonHttpParam
+type IBodyHttpParam = XOR<IFormHttpParam, IJsonHttpParam>
 
 /** 后端返回的数据 */
 interface IResponse<T = any> {
