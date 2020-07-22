@@ -1,0 +1,19 @@
+<div nz-row [nzGutter]="configRender?.nzGutter">
+  <!-- 响应式布局 -->
+  <div nz-col *ngFor="let item of list" [nzXs]="item?.nzXl || configRender?.nzSpan?.xl" [nzXl]="item?.nzXl || configRender?.nzSpan?.xl" [nzXXl]="item?.nzXXl || configRender?.nzSpan?.xxl" >
+    <!-- label渲染 -->
+    <span class="label" [ngStyle]="item?.labelStyle || configRender.labelStyle"><span class="text">{{item.label}}</span><i *ngIf="item.tips" nz-tooltip nz-icon nzType="question-circle" [nzTooltipTitle]="item.tips"></i>
+    </span>
+    <!-- 有组件渲染则定义模板出口 -->
+    <span class="value" [ngStyle]="item?.valueStyle || configRender.valueStyle" *ngIf="item.render; else noRenderTpl">
+      <ng-container *ngTemplateOutlet="item.render; context: { data: data, index: item.index }"></ng-container>
+    </span>
+    <!-- 如果没有渲染组件 -->
+    <ng-template #noRenderTpl>
+      <span class="value" [ngStyle]="item?.valueStyle || configRender.valueStyle" *ngIf="item.nzEllipsis || configRender.nzEllipsis; else noNzEllipsis" nz-tooltip [nzTooltipTitle]="data[item.index]" nz-typography nzEllipsis>{{data[item.index]}}</span>
+      <ng-template #noNzEllipsis>
+        <span class="value" [ngStyle]="item?.valueStyle || configRender.valueStyle">{{data[item.index]}}</span>
+      </ng-template>
+    </ng-template>
+  </div>
+</div>

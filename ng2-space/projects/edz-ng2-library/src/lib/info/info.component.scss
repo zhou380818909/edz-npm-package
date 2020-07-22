@@ -1,0 +1,31 @@
+div[nz-col] {
+  display: flex;
+
+  .label {
+    display: flex;
+    font-weight: 700;
+    justify-content: space-between;
+
+    &::after {
+      content: ':';
+      margin-left: 4px;
+      margin-right: 8px;
+    }
+
+    .text {
+      flex: 1;
+      text-align: justify;
+      text-align-last: justify;
+    }
+
+    i[nz-tooltip] {
+      line-height: unset;
+      margin-left: 2px;
+    }
+  }
+
+  .value {
+    flex: 1;
+    overflow: hidden;
+  }
+}

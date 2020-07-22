@@ -4,8 +4,10 @@ import { NZ_I18N, zh_CN } from 'ng-zorro-antd'
 import { BoolTextModule } from './bool-text/bool-text.module'
 import { DidrectivesModule } from './directives/directives.module'
 import { GroupDatepickerModule } from './group-datepicker/group-datepicker.module'
+import { InfoModule } from './info/info.module'
 import { LayerModule } from './layer/layer.module'
 import { MenuModule } from './menu/menu.module'
+import { PipesModule } from './pipes/pipes.module'
 import { ScrollModule } from './scroll/scroll.module'
 import { SearchBarModule } from './search-bar/search-bar.module'
 import { SecretTextModule } from './secret-text/secret-text.module'
@@ -26,6 +28,8 @@ const modules = [
   TabSetModule,
   ScrollModule,
   DidrectivesModule,
+  PipesModule,
+  InfoModule,
 ]
 
 @NgModule({

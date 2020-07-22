@@ -1,4 +1,4 @@
-import { TemplateRef, EventEmitter } from '@angular/core'
+import { EventEmitter, TemplateRef } from '@angular/core'
 import { NzMenuItemDirective } from 'ng-zorro-antd'
 import { Observable } from 'rxjs'
 
@@ -184,4 +184,58 @@ export type ISearchItem<T = any> =
 /** 搜索数据 */
 export type ISearchValue<T = any> = {
   [K in keyof T]?: T[K]
+}
+
+interface INzGrid {
+  span?: number
+  offset?: number
+}
+
+interface IInfoStyle {
+  color?: string
+  fontWeight?: string
+  fontSize?: string
+}
+
+interface IInfoLabelStyle extends IInfoStyle {
+  width?: string
+}
+
+/** 信息展示组件 */
+export interface IInfoItem {
+  /** 需要显示的label */
+  label: string
+  /** 展示数据的索引 */
+  index: string
+  /** 网格化列宽,总列宽24 */
+  nzSpan?: number
+  /** 栅格左侧的间隔格数，间隔内不可以有栅格 */
+  nzOffset?: number
+  /** 自定义渲染 */
+  render?: TemplateRef<any>
+  /** 是否溢出隐藏 */
+  nzEllipsis?: boolean
+  /** ≥1200px 响应式栅格 */
+  nzXl?: INzGrid
+  /** ≥1600px 响应式栅格  */
+  nzXXl?: INzGrid
+  /** 提示 */
+  tips?: string
+  /** label样式 */
+  labelStyle?: IInfoLabelStyle
+  /** value样式 */
+  valueStyle?: IInfoStyle
+}
+
+export interface IInfoConfig {
+  /** 栅格之间的宽度或者, 水平和垂直的宽度 */
+  nzGutter?: [number, number]
+  /** 默认的栅格占位, Xl: ≥1200px 响应式栅格, XXl: ≥1600px 响应式栅格 */
+  nzSpan?: { xl: number, xxl: number }
+  /** 自动溢出省略 */
+  nzEllipsis?: boolean
+  /** label样式 */
+  labelStyle?: IInfoLabelStyle
+  /** value样式 */
+  valueStyle?: IInfoStyle
 }
