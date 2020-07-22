@@ -35,6 +35,7 @@ interface IBaseHttpParam {
   /** 路径参数, /a/b */
   path?: string[]
 }
+
 interface IFormHttpParam extends IBaseHttpParam {
   /** contentType: application/x-www-form-urlencoded  */
   form?: object
@@ -44,7 +45,7 @@ interface IJsonHttpParam extends IBaseHttpParam {
   json?: object
 }
 /** 带请求体的请求参数 */
-type IBodyHttpParam = IFormHttpParam & IJsonHttpParam
+type IBodyHttpParam = IFormHttpParam | IJsonHttpParam
 
 /** 后端返回的数据 */
 interface IResponse<T = any> {
@@ -163,7 +164,7 @@ export class HttpService {
    * @param params 请求参数
    * @param option 请求配置, 默认: 显示错误showError=true, 没有请求头noHeader=true
    */
-  post<T = any>(url: string, param?, option?: IPostOption): Observable<T | never> {
+  post<T = any>(url: string, param?: IBodyHttpParam, option?: IPostOption): Observable<T | never> {
     return this.bodyRequest<T>(url, param, option, 'post')
   }
 
@@ -173,7 +174,7 @@ export class HttpService {
    * @param params 请求参数
    * @param option 请求配置, 默认: 显示错误showError=true, 没有请求头noHeader=true
    */
-  put<T = any>(url: string, param?, option?: IPostOption): Observable<T | never> {
+  put<T = any>(url: string, param?: IBodyHttpParam, option?: IPostOption): Observable<T | never> {
     return this.bodyRequest<T>(url, param, option, 'put')
   }
 
@@ -220,7 +221,7 @@ export class HttpService {
   /** 请求体请求, 主要指put和post */
   private bodyRequest<T>(
     url: string,
-    { form = {}, json = {}, query = {}, path = [] } = {} as IBodyHttpParam,
+    { form = {}, json = {}, query = {}, path = [] } = {} as any,
     { showError = true, noHeader = false, callback = () => {}, observe } = {} as IPostOption,
     method = 'post',
   ) {
