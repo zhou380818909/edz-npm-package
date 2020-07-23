@@ -10,10 +10,12 @@ import { HTTP_SERVICE_CONFIG, RouteReuseServiceFactory } from '../../projects/ed
 import { AppComponent } from './app.component'
 // import { MenuModule } from '../../projects/edz-ng2-library/src/lib/menu/menu.module'
 import { AppRoutingModule } from './app.routing'
+import { LayoutComponent } from './layout.component'
 
 @NgModule({
   declarations: [
     AppComponent,
+    LayoutComponent,
   ],
   imports: [
     BrowserModule,
@@ -35,5 +37,6 @@ import { AppRoutingModule } from './app.routing'
       useValue: { successCode: 0, map: { code: 'status' } },
     },
   ],
+  entryComponents: [LayoutComponent],
 })
 export class AppModule { }

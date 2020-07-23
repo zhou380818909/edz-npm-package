@@ -1,14 +1,1 @@
-
-<edz-layer [siderMinWidth]="70" [siderMaxWidth]="200" (onCollapse)="onCollapse()">
-    <div class="layer-sider">
-        <edz-menu [menuList]="menuList" [config]="menuConfig" (handler)="menuHanlder($event)"></edz-menu>
-    </div>
-    <div class="layer-header">
-        sdfsd
-    </div>
-    <edz-tab class="layer-second-header" [menuList]="menuList" useStorage="session">
-    </edz-tab>
-    <div class="layer-body">
-        <router-outlet></router-outlet>
-    </div>
-</edz-layer>
+<router-outlet></router-outlet>

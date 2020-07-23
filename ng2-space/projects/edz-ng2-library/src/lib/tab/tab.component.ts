@@ -8,6 +8,7 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core'
 import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router'
 import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown'
+import { BehaviorSubject } from 'rxjs'
 import { filter } from 'rxjs/operators'
 import { IMenuItem } from '../interfaces'
 import { LocalStorageService } from '../services/local-storage.service'
@@ -47,51 +48,61 @@ export class TabComponent implements OnInit, OnDestroy {
   private routerSub$
   // 根路由事件订阅
   private rootRoute$
+  // 首次路由
+  private firstRouterEvent$: BehaviorSubject<NavigationEnd>
 
   constructor(
     private nzContextMenuService: NzContextMenuService,
     private router: Router,
     private sessionStorage: SessionStorageService,
     private localStorage: LocalStorageService,
-  ) {}
-
-  registerSub() {
+  ) {
     this.routerSub$ = this.router.events.pipe(
       // 当当前路由事件已经完成了切换
       filter(event => event instanceof NavigationEnd),
     ).subscribe((event: NavigationEnd) => {
-      // 根据url地址转换为数组
-      const currentPaths = event.url.replace(/^\//, '').split('/')
-      // 从数组中获取当前的tab能够展示的title
-      const title = this.getTabTitleFromMenu(currentPaths)
-      // 当前的url在tab中的索引
-      const existIndex = this.tabs.findIndex(tab => tab.title === title && tab.url === event.url)
-      // 如果当前url的索引小于0, 即是当前url不在tab中
-      if (existIndex < 0 && title) {
-        const tab = { url: event.url, title, component: this.sameRoute && this.sameRoute.component }
-
-        if (this.sameRoute && this.sameRoute.component) {
-          const equalIndex = this.tabs.findIndex(item => item.component === this.sameRoute.component)
-          if (equalIndex > -1) {
-            this.tabs.splice(equalIndex, 1, tab)
-            this.activeIndex = equalIndex
-            this.saveTabToStorage()
-            return
-          }
-        }
-        this.tabs.push(tab)
-        this.activeIndex = this.tabs.length - 1
-        this.saveTabToStorage()
-      } else {
-        this.activeIndex = existIndex
+      if (!this.tabs) {
+        this.firstRouterEvent$ = new BehaviorSubject(event)
+        return
       }
+      this.routerEvent(event)
     })
+    // 如果路由复用策略中存在函数
     if (typeof (this.router.routeReuseStrategy as any).rootRoute === 'function') {
       this.rootRoute$ = (this.router.routeReuseStrategy as any).rootRoute().subscribe((route: ActivatedRouteSnapshot) => {
         if (route && Array.isArray(route.children)) {
           this.setRouteParamTab(route.children)
         }
       })
+    }
+  }
+
+  /** 更加路由事件来打开tab或者设置为激活, 或者关闭 */
+  routerEvent(event: NavigationEnd) {
+    // 根据url地址转换为数组
+    const currentPaths = event.urlAfterRedirects.replace(/^\//, '').split('/')
+    // 从数组中获取当前的tab能够展示的title
+    const title = this.getTabTitleFromMenu(currentPaths)
+    // 当前的url在tab中的索引
+    const existIndex = this.tabs.findIndex(tab => tab.title === title && tab.url === event.urlAfterRedirects)
+    // 如果当前url的索引小于0, 即是当前url不在tab中
+    if (existIndex < 0 && title) {
+      const tab = { url: event.urlAfterRedirects, title, component: this.sameRoute && this.sameRoute.component }
+
+      if (this.sameRoute && this.sameRoute.component) {
+        const equalIndex = this.tabs.findIndex(item => item.component === this.sameRoute.component)
+        if (equalIndex > -1) {
+          this.tabs.splice(equalIndex, 1, tab)
+          this.activeIndex = equalIndex
+          this.saveTabToStorage()
+          return
+        }
+      }
+      this.tabs.push(tab)
+      this.activeIndex = this.tabs.length - 1
+      this.saveTabToStorage()
+    } else {
+      this.activeIndex = existIndex
     }
   }
 
@@ -235,6 +246,7 @@ export class TabComponent implements OnInit, OnDestroy {
     })
   }
 
+  /** 将tabs存入缓存 */
   private saveTabToStorage() {
     if (!this.useStorage) return
     if (this.useStorage === 'session') {
@@ -246,6 +258,7 @@ export class TabComponent implements OnInit, OnDestroy {
     }
   }
 
+  /** 从缓存获取tabs */
   private getTabFromStorage() {
     if (this.useStorage === 'session') {
       return this.sessionStorage.getItem('TAB_LIST') || []
@@ -261,7 +274,11 @@ export class TabComponent implements OnInit, OnDestroy {
     if (Array.isArray(tabs)) {
       this.tabs = tabs
     }
-    this.registerSub()
+    this.firstRouterEvent$.subscribe((event: NavigationEnd) => {
+      this.routerEvent(event)
+      this.firstRouterEvent$.complete()
+      this.firstRouterEvent$ = null
+    })
   }
 
   ngOnDestroy() {
