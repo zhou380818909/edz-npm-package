@@ -6,7 +6,7 @@ import { RouteReuseStrategy } from '@angular/router'
 import { NzMessageModule } from 'ng-zorro-antd'
 // import { SecretTextModule } from 'projects/edz-ng2-library/src/public-api';
 import { EdzNg2LibraryModule } from '../../projects/edz-ng2-library/src/lib/edz-ng2-library.module'
-import { HTTP_SERVICE_CONFIG, RouteReuseServiceFactory } from '../../projects/edz-ng2-library/src/public-api'
+import { RouteReuseServiceFactory } from '../../projects/edz-ng2-library/src/public-api'
 import { AppComponent } from './app.component'
 // import { MenuModule } from '../../projects/edz-ng2-library/src/lib/menu/menu.module'
 import { AppRoutingModule } from './app.routing'
@@ -31,10 +31,6 @@ import { LayoutComponent } from './layout.component'
     {
       provide: RouteReuseStrategy,
       useClass: RouteReuseServiceFactory(10),
-    },
-    {
-      provide: HTTP_SERVICE_CONFIG,
-      useValue: { successCode: 0, map: { code: 'status' } },
     },
   ],
   entryComponents: [LayoutComponent],
