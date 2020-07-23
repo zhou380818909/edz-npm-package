@@ -2,11 +2,11 @@
  * @Author: ChouEric
  * @Date: 2020-07-15 15:05:59
  * @Last Modified by: ChouEric
- * @Last Modified time: 2020-07-16 17:39:36
+ * @Last Modified time: 2020-07-23 22:40:15
  * @Description: 封装 http 请求
  */
 import { HttpClient, HttpHeaders } from '@angular/common/http'
-import { Inject, Injectable, InjectionToken } from '@angular/core'
+import { Inject, Injectable, InjectionToken, Optional } from '@angular/core'
 import { cloneDeep, isEmpty, isNil } from 'lodash'
 import { NzMessageService } from 'ng-zorro-antd'
 import { stringify } from 'querystring'
@@ -93,6 +93,7 @@ export class HttpService {
     private http: HttpClient,
     private messageService: NzMessageService,
     // 将配置文件通过服务商令牌注入
+    @Optional()
     @Inject(HTTP_SERVICE_CONFIG) private config: IHttpServiceConfig,
   ) {
     // 解构配置文件
