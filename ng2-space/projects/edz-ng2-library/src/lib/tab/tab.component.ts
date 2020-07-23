@@ -274,11 +274,13 @@ export class TabComponent implements OnInit, OnDestroy {
     if (Array.isArray(tabs)) {
       this.tabs = tabs
     }
-    this.firstRouterEvent$.subscribe((event: NavigationEnd) => {
-      this.routerEvent(event)
-      this.firstRouterEvent$.complete()
-      this.firstRouterEvent$ = null
-    })
+    if (this.firstRouterEvent$ && typeof this.firstRouterEvent$.subscribe === 'function') {
+      this.firstRouterEvent$.subscribe((event: NavigationEnd) => {
+        this.routerEvent(event)
+        this.firstRouterEvent$.complete()
+        this.firstRouterEvent$ = null
+      })
+    }
   }
 
   ngOnDestroy() {

@@ -116,11 +116,13 @@ export class MenuComponent implements OnInit, OnDestroy {
      * 首次路由事件, 由于路由是和组逐级加载, 所以首次加载的路由事件只能在构造函数中访问
      * 在构造函数中menuList还没没有数据, 所以在没有数据的时候采用一个BehaviorSubject
      */
-    this.fisrtRouterEvent$.subscribe(event => {
-      this.routerEvent(event)
-      this.fisrtRouterEvent$.complete()
-      this.fisrtRouterEvent$ = null
-    })
+    if (this.fisrtRouterEvent$ && typeof this.fisrtRouterEvent$.subscribe === 'function') {
+      this.fisrtRouterEvent$.subscribe(event => {
+        this.routerEvent(event)
+        this.fisrtRouterEvent$.complete()
+        this.fisrtRouterEvent$ = null
+      })
+    }
   }
 
   ngOnDestroy() {
