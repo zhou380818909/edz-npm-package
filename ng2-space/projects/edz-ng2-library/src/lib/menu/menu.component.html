@@ -8,7 +8,7 @@
         [nzPaddingLeft]="menu.level * 24"
         [nzSelected]="menu.selected"
       >
-        <a (click)="menuHanlder($event, menu)">
+        <a [routerLink]="menu.url">
           <i nz-icon [nzType]="menu.icon" *ngIf="menu.icon"></i>
           <span>{{ menu.title }}</span>
         </a>

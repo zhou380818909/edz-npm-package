@@ -2,6 +2,10 @@ import { EventEmitter, TemplateRef } from '@angular/core'
 import { NzMenuItemDirective } from 'ng-zorro-antd'
 import { Observable } from 'rxjs'
 
+type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never }
+/** 互斥类型 */
+export type XOR<T, U> = (T | U) extends object ? (Without<T, U> & U) | (Without<U, T> & T) : T | U
+
 /** 表格的转换数据 */
 export interface ITransfer {
   [index: string]:
@@ -150,23 +154,24 @@ export interface ISelectOption {
   value?: string | number
   disabled?: boolean
 }
-// 下拉框带数组
-interface ISearchSelectWithOption<T> extends ISearchBase<T> {
+
+interface ISearchSelectBase<T> extends ISearchBase<T> {
   type: 'select'
+  /** 提示 */
   placeholder?: string
   /** 是否允许搜索 */
   nzShowSearch?: boolean
+}
+
+// 下拉框带数组
+interface ISearchSelectWithOption<T> extends ISearchSelectBase<T> {
   /** 下拉框选项 */
   options: ISelectOption[]
 }
 // 下拉框带Observable
-interface ISearchSelecWithObservable<T> extends ISearchBase<T> {
-  type: 'select'
-  placeholder?: string
-  /** 是否允许搜索 */
-  nzShowSearch?: boolean
+interface ISearchSelecWithObservable<T> extends ISearchSelectBase<T> {
   /** 下拉选择框流 */
-  options: Observable<ISelectOption[]>
+  options$: Observable<ISelectOption[]>
 }
 
 // 模板引用
@@ -175,11 +180,12 @@ interface ISearchRender<T> extends ISearchBase {
   render: TemplateRef<T>
 }
 
+type ISearchSelect<T> = XOR<ISearchSelectWithOption<T>, ISearchSelecWithObservable<T>>
+
 /** 搜索栏组件配置 */
 export type ISearchItem<T = any> =
   | ISearchInput<T>
-  | ISearchSelectWithOption<T>
-  | ISearchSelecWithObservable<T>
+  | ISearchSelect<T>
   | ISearchRender<T>
 /** 搜索数据 */
 export type ISearchValue<T = any> = {

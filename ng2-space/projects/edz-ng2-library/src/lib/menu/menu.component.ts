@@ -1,7 +1,8 @@
-import { Component, OnInit, Input, OnDestroy, ChangeDetectorRef } from '@angular/core'
-import { Router, NavigationEnd } from '@angular/router'
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core'
+import { NavigationEnd, Router } from '@angular/router'
+import { BehaviorSubject, timer } from 'rxjs'
 import { filter } from 'rxjs/operators'
-import { IMenuItem, IMenuConfig } from '../interfaces'
+import { IMenuConfig, IMenuItem } from '../interfaces'
 
 interface IMenuRenderItem extends IMenuItem {
   open?: boolean
@@ -26,21 +27,35 @@ export class MenuComponent implements OnInit, OnDestroy {
   menus: IMenuRenderItem[] = []
   /** 路由的订阅 */
   routerSub$
+  /** 页面刷新时候路由事件 */
+  fisrtRouterEvent$: BehaviorSubject<NavigationEnd>
   /** 前一个url地址 */
   previousUrl = ''
 
-  constructor(private router: Router, private cdr: ChangeDetectorRef) {}
-
-  regesiterSub() {
+  constructor(private router: Router, private cdr: ChangeDetectorRef) {
     this.routerSub$ = this.router.events.pipe(filter(event => event instanceof NavigationEnd)).subscribe((event: NavigationEnd) => {
-      const currentPaths = event.url.replace(/^\//, '').split('/')
-      const previousePaths = this.previousUrl.replace(/^\//, '').split('/')
-      this.cdr.detach()
-      this.setMenuUnActive(previousePaths)
-      this.setMenuActive(currentPaths)
-      this.previousUrl = event.url
-      this.cdr.reattach()
+      if (this.menus.length > 0) {
+        this.routerEvent(event)
+      } else {
+        this.fisrtRouterEvent$ = new BehaviorSubject(event)
+      }
     })
+  }
+
+  /** 根据路由事件才激活当前菜单,以及失活上一个菜单 */
+  routerEvent(event: NavigationEnd) {
+    const currentPaths = event.urlAfterRedirects.replace(/^\//, '').split('/')
+    const previousePaths = this.previousUrl.replace(/^\//, '').split('/')
+    this.cdr.detach()
+    this.setMenuUnActive(previousePaths)
+    if (this.fisrtRouterEvent$) {
+      // 触发展开动画
+      timer(100).subscribe(() => this.setMenuActive(currentPaths))
+    } else {
+      this.setMenuActive(currentPaths)
+    }
+    this.cdr.reattach()
+    this.previousUrl = event.urlAfterRedirects
   }
 
   /** 根据传入的菜单配置生成模板需要的菜单 */
@@ -90,13 +105,22 @@ export class MenuComponent implements OnInit, OnDestroy {
     }
   }
 
+  /** 菜单跳转 */
   menuHanlder(event: MouseEvent, value: IMenuRenderItem) {
     this.router.navigateByUrl(value.url)
   }
 
   ngOnInit(): void {
-    this.regesiterSub()
-    this.setMenus(this.menuList)
+    this.setMenus()
+    /**
+     * 首次路由事件, 由于路由是和组逐级加载, 所以首次加载的路由事件只能在构造函数中访问
+     * 在构造函数中menuList还没没有数据, 所以在没有数据的时候采用一个BehaviorSubject
+     */
+    this.fisrtRouterEvent$.subscribe(event => {
+      this.routerEvent(event)
+      this.fisrtRouterEvent$.complete()
+      this.fisrtRouterEvent$ = null
+    })
   }
 
   ngOnDestroy() {
