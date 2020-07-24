@@ -1,9 +1,13 @@
-import { Component, EventEmitter, Input, OnInit, Output,
-  SimpleChanges, ViewChild, ChangeDetectorRef, ChangeDetectionStrategy, ElementRef, Renderer2, OnDestroy } from '@angular/core'
+import {
+  ChangeDetectionStrategy, ChangeDetectorRef, Component,
+  ElementRef, EventEmitter, Input,
+  OnDestroy, OnInit, Output,
+  Renderer2, SimpleChanges, ViewChild,
+} from '@angular/core'
 import { Debounce } from 'lodash-decorators'
-import { NzTableComponent, NzResizeObserver } from 'ng-zorro-antd'
-import { debounceTime } from 'rxjs/operators'
+import { NzResizeObserver, NzTableComponent } from 'ng-zorro-antd'
 import { Subscription } from 'rxjs'
+import { debounceTime } from 'rxjs/operators'
 import { ICheckedMap, IColumnItem, IPagination, ITableConfig, ITableItem, ITableScroll } from '../interfaces'
 
 interface IRenderColumnItem extends IColumnItem {
@@ -36,7 +40,7 @@ export class TableComponent implements OnInit, OnDestroy {
   @Input()
   checkedMap: ICheckedMap = {}
   @Input()
-  loading = true
+  loading = false
   /** 表格的配置 */
   @Input()
   config: ITableConfig = {
