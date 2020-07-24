@@ -7,7 +7,7 @@
   [nzShowTotal]="rangeTemplate" [nzShowQuickJumper]="true" [nzShowSizeChanger]="true"
   [nzPageSizeOptions]="config.nzPageSizeOptions || [10, 20, 50, 100]" [nzTotal]="pagination.total"
   [nzHideOnSinglePage]="config.nzHideOnSinglePage" (nzPageIndexChange)="paginationHanlder()"
-  (nzPageSizeChange)="paginationHanlder()" [nzScroll]="nzScroll" nzSize="middle"
+  (nzPageSizeChange)="paginationHanlder()" [nzScroll]="nzScroll" nzSize="middle" [nzLoading]="loading"
   [nzFrontPagination]="false" [class.empty]="data?.length === 0">
   <thead>
     <!-- *ngFor="let collapseItem of collapseConfig" -->
