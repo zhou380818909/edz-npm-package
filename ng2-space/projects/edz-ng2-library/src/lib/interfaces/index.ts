@@ -117,6 +117,10 @@ export interface IMenuItem {
   children?: IMenuItem[]
   /** 是否隐藏 */
   hidden?: boolean
+  /** 是否新开窗口 */
+  isBlank?: boolean
+  /** tab页不可关闭 */
+  disableClose?: boolean
 }
 
 export interface IMenuConfig {

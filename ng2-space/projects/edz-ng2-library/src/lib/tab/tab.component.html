@@ -1,7 +1,7 @@
 <nz-tabset [nzType]="'card'" [(nzSelectedIndex)]="activeIndex">
   <nz-tab *ngFor="let tab of tabs" [nzTitle]="titleTemplate">
     <ng-template #titleTemplate>
-      <div class="tab-title" (contextmenu)="contextMenu($event, menu, tab)" (click)="tabHandler(tab)">{{ tab.title }}<i nz-icon *ngIf="tabs?.length > 1" nzType="close-circle" class="ant-tabs-close-x" (click)="closeTab(tab, $event)"></i></div>
+      <div class="tab-title" (contextmenu)="contextMenu($event, menu, tab)" (click)="tabHandler(tab)">{{ tab.title }}<i nz-icon *ngIf="tabs?.length > 1 && !tab.disableClose" nzType="close-circle" class="ant-tabs-close-x" (click)="closeTab(tab, $event)"></i></div>
     </ng-template>
   </nz-tab>
 </nz-tabset>

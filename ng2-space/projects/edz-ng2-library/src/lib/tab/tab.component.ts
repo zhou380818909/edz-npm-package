@@ -2,7 +2,7 @@
  * @Author: ChouEric
  * @Date: 2020-07-15 11:39:46
  * @Last Modified by: ChouEric
- * @Last Modified time: 2020-07-19 22:44:50
+ * @Last Modified time: 2020-07-24 20:00:29
  * @Description: tab组件, 和路径相关, 在Router中,可以访问路由复用策略
  */
 import { Component, Input, OnDestroy, OnInit } from '@angular/core'
@@ -19,8 +19,8 @@ interface ITabItem {
   url?: string
   /** tab显示的名字 */
   title?: string
-  /** 是否可关闭 */
-  closable?: boolean
+  /** 禁用关闭 */
+  disableClose?: boolean
   /** 不同路径对应相同组件的组件 */
   component?: any
 }
@@ -81,13 +81,14 @@ export class TabComponent implements OnInit, OnDestroy {
   routerEvent(event: NavigationEnd) {
     // 根据url地址转换为数组
     const currentPaths = event.urlAfterRedirects.replace(/^\//, '').split('/')
-    // 从数组中获取当前的tab能够展示的title
-    const title = this.getTabTitleFromMenu(currentPaths)
+    // 从数组中获取当前的tab能够展示的tab
+    const tabMenu = this.getTabFromMenu(currentPaths)
+    const { title = '未命名', disableClose } = tabMenu
     // 当前的url在tab中的索引
     const existIndex = this.tabs.findIndex(tab => tab.title === title && tab.url === event.urlAfterRedirects)
     // 如果当前url的索引小于0, 即是当前url不在tab中
     if (existIndex < 0 && title) {
-      const tab = { url: event.urlAfterRedirects, title, component: this.sameRoute && this.sameRoute.component }
+      const tab = { url: event.urlAfterRedirects, title, disableClose, component: this.sameRoute && this.sameRoute.component }
 
       if (this.sameRoute && this.sameRoute.component) {
         const equalIndex = this.tabs.findIndex(item => item.component === this.sameRoute.component)
@@ -107,17 +108,17 @@ export class TabComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 从路由菜单获取tab的title
+   * 从路由菜单获取tab的
    * @param pathArr path的数组
    * @param menus 菜单
    */
-  getTabTitleFromMenu(pathArr: string[], menus = this.menuList): string {
+  getTabFromMenu(pathArr: string[], menus = this.menuList): IMenuItem {
     const path = pathArr.shift()
     const menuItem = menus.find(menu => menu.path === path) || {} as IMenuItem
     if (menuItem.children) {
-      return this.getTabTitleFromMenu(pathArr, menuItem.children)
+      return this.getTabFromMenu(pathArr, menuItem.children)
     }
-    return menuItem.title || '未命名'
+    return menuItem || {} as IMenuItem
   }
 
   /** 点击tab */
@@ -200,10 +201,10 @@ export class TabComponent implements OnInit, OnDestroy {
   contextCloseToTab(fromIndex, toIndex) {
     const closedUrls = []
     this.tabs = this.tabs.filter((item, index) => {
-      if (index >= fromIndex && index <= toIndex) {
+      if (index >= fromIndex && index <= toIndex && !item.disableClose) {
         closedUrls.push(item.url)
       }
-      return index < fromIndex || index > toIndex
+      return item.disableClose || index < fromIndex || index > toIndex
     })
     this.saveTabToStorage()
     this.router.navigateByUrl(this.contextMenuTab.url).then(() => {
@@ -213,9 +214,14 @@ export class TabComponent implements OnInit, OnDestroy {
 
   /** 关闭其他 */
   contextCloseOtherTab(index) {
-    const closedUrls = this.tabs.filter((item, ind) => ind !== index).map(item => item.url)
+    const closedUrls = this.tabs.filter(item => !item.disableClose).filter((item, ind) => ind !== index).map(item => item.url)
     const tab = this.tabs[index]
-    this.tabs = [tab]
+    const disableCloseTabs = this.tabs.filter(item => item.disableClose)
+    if (disableCloseTabs.findIndex(item => item.url === tab.url) > -1) {
+      this.tabs = disableCloseTabs
+    } else {
+      this.tabs = [...disableCloseTabs, tab]
+    }
     this.saveTabToStorage()
     this.router.navigateByUrl(tab.url).then(() => {
       this.deleteHandlerByUrl(closedUrls)

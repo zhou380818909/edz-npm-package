@@ -10,9 +10,14 @@ import { IColumnItem, IMenuConfig, IMenuItem, ITableConfig } from "../../project
 })
 export class LayoutComponent {
   title = 'ng2-space'
-  onCollapse() {
-    console.log(1)
-    // alert(v)
+  onCollapse(isCollase) {
+    if (isCollase) {
+      this.menuConfig = { nzMode: 'vertical' }
+    } else {
+      this.menuConfig = { nzMode: 'inline' }
+    }
+    console.log(this.menuConfig);
+
   }
   text = '13211111111'
   options = [
@@ -182,10 +187,12 @@ export class LayoutComponent {
     {
       title: '仓库管理',
       path: 'store',
+      icon: 'home',
       children: [
         {
           title: '库存列表',
           path: 'list',
+          disableClose: true,
         },
         {
           title: '详情',
@@ -200,16 +207,22 @@ export class LayoutComponent {
       ],
     },
     {
-      title: '三级',
-      path: 'c',
-      children: [{ title: '2-2',
-        path: '2',
+      title: '用户',
+      path: 'user',
+      icon: 'user',
+      children: [{ title: 'info',
+        path: 'info',
         children: [
           {
-            title: '2-2-1',
-            path: 'c',
+            title: 'eric',
+            path: 'eric',
           },
-        ] }],
+          {
+            title: 'chou',
+            path: 'http://www.baidu.com',
+            isBlank: true,
+          },
+        ] },{ title: '列表', path: 'list' }, { title: '详情', path: 'detail', children: [{ path: '1', title: '详情1' }] }],
     },
 
   ]
