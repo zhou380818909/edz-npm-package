@@ -2,7 +2,7 @@
  * @Author: ChouEric
  * @Date: 2020-07-15 15:05:59
  * @Last Modified by: ChouEric
- * @Last Modified time: 2020-07-23 22:40:15
+ * @Last Modified time: 2020-07-24 19:01:43
  * @Description: 封装 http 请求
  */
 import { HttpClient, HttpHeaders } from '@angular/common/http'
@@ -232,9 +232,10 @@ export class HttpService {
     if (path instanceof Array) {
       url = path.reduce((pre, cur) => `${pre}/${cur}`, url)
     }
-    const hasQuery = isEmpty(query)
-    const hasForm = isEmpty(form)
-    const hasJson = isEmpty(json)
+    const hasQuery = !isEmpty(query)
+    const hasForm = !isEmpty(form)
+    const hasJson = !isEmpty(json)
+
     query = this.deleteEmptyParams(query)
     query = this.trimParams(query)
     let param = null

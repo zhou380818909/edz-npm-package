@@ -61,7 +61,7 @@ export class MenuComponent implements OnInit, OnDestroy {
   /** 根据传入的菜单配置生成模板需要的菜单 */
   private setMenus(list = this.menuList, level = 1, url = '') {
     this.menus = list.filter(menu => !menu.hidden).map(item => {
-      const menu = { ...item, url: `${url}/${item.path}`, level, open: false }
+      const menu = { ...item, url: item.isBlank ? item.path : `${url}/${item.path}`, level, open: false }
       if (menu.children) {
         menu.children = this.setMenus(menu.children, level + 1, menu.url)
       }

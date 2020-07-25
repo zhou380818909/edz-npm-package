@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common'
-import { NgModule } from '@angular/core'
-import { NzMenuModule, NzIconModule } from 'ng-zorro-antd'
-import { RouterModule } from '@angular/router'
 import { HttpClientModule } from '@angular/common/http'
+import { NgModule } from '@angular/core'
+import { RouterModule } from '@angular/router'
+import { NzIconModule, NzMenuModule, NzToolTipModule } from 'ng-zorro-antd'
 import { MenuComponent } from './menu.component'
 
 @NgModule({
@@ -13,7 +13,8 @@ import { MenuComponent } from './menu.component'
     RouterModule,
     NzIconModule,
     HttpClientModule,
+    NzToolTipModule,
   ],
-  exports: [RouterModule, NzMenuModule, MenuComponent, NzIconModule, HttpClientModule],
+  exports: [RouterModule, NzMenuModule, MenuComponent, NzIconModule, HttpClientModule, NzToolTipModule],
 })
 export class MenuModule {}
