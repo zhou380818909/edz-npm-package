@@ -138,6 +138,10 @@ export class HttpService {
     })
       .pipe(
         switchMap(res => {
+          if (observe === 'response') {
+            callback()
+            return of(res)
+          }
           if (res && res[this.code] === this.successCode) {
             // 部分接口缓存数据, 以url作为唯一标识符, 以cache字段作为是否缓存的参数
             if (cache || fresh) {
@@ -146,9 +150,6 @@ export class HttpService {
               HttpService.cache[url] = observe !== 'response' ? cloneDeep(res.data) : cloneDeep(res)
             }
             callback()
-            if (observe === 'response') {
-              return of(res)
-            }
             return of(res[this.data])
           }
           callback(res[this.message])
@@ -190,7 +191,7 @@ export class HttpService {
   delete<T = any>(
     url,
     { query = {}, path = [] } = {} as IBaseHttpParam,
-    { showError = true, noHeader = false, callback = () => {} } = {} as IPostOption,
+    { showError = true, noHeader = false, callback = () => {}, observe } = {} as IPostOption,
   ): Observable<T | never> {
     // 拼接路径参数
     if (path instanceof Array) {
@@ -207,6 +208,10 @@ export class HttpService {
     })
       .pipe(
         switchMap(res => {
+          if (observe === 'response') {
+            callback()
+            return of(res)
+          }
           if (res && res[this.code] === this.successCode) {
             callback()
             return of(res[this.data])
@@ -257,11 +262,12 @@ export class HttpService {
     }).pipe(
       // 根据返回结果转换
       switchMap((res: IResponse) => {
+        if (observe === 'response') {
+          callback()
+          return of(res)
+        }
         if (res && res[this.code] === this.successCode) {
           callback()
-          if (observe === 'response') {
-            return of(res)
-          }
           return of(res[this.data])
         }
         callback(res[this.message])
@@ -312,7 +318,16 @@ export class HttpService {
     if (!(params instanceof Object)) {
       return {}
     }
-    const param = { ...params }
+    const isArray = Array.isArray(params)
+    const param = isArray ? [...params] : { ...params }
+    if (isArray) {
+      return param.map(item => {
+        if (typeof item === 'string') {
+          return item.trim()
+        }
+        return item
+      })
+    }
     Object.keys(param).forEach(key => {
       if (typeof param[key] === 'string') {
         param[key] = param[key].trim()

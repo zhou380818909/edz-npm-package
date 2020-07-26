@@ -102,7 +102,7 @@ export class CustomerManagementComponent implements OnInit, OnDestroy {
   ellipsisComponent
 
   constructor(private http: HttpService) {
-    this.http.post('http://localhost:3000/posts', { query: { a: 1 }, json: { b: 1 } }).subscribe(() => {})
+    this.http.post('http://localhost:3000/posts', { query: { a: 1 }, json: [{ b: 1 }] }).subscribe(() => {})
   }
 
   initRender() {
