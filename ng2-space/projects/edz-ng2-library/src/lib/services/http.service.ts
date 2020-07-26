@@ -312,7 +312,16 @@ export class HttpService {
     if (!(params instanceof Object)) {
       return {}
     }
-    const param = { ...params }
+    const isArray = Array.isArray(params)
+    const param = isArray ? [...params] : { ...params }
+    if (isArray) {
+      return param.map(item => {
+        if (typeof item === 'string') {
+          return item.trim()
+        }
+        return item
+      })
+    }
     Object.keys(param).forEach(key => {
       if (typeof param[key] === 'string') {
         param[key] = param[key].trim()
