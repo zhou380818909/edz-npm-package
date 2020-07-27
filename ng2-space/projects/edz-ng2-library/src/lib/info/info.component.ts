@@ -3,7 +3,7 @@ import { assign } from 'lodash'
 import { IInfoConfig, IInfoItem } from '../interfaces'
 
 @Component({
-  selector: 'app-info',
+  selector: 'edz-info',
   templateUrl: './info.component.html',
   styleUrls: ['./info.component.scss'],
 })
