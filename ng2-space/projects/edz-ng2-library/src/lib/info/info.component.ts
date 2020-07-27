@@ -19,7 +19,7 @@ export class InfoComponent implements OnChanges {
   private defaultConfig: IInfoConfig = { nzGutter: [0, 8], nzSpan: { xl: 8, xxl: 6 }, labelStyle: { width: '60px' } }
 
   ngOnChanges(changes: SimpleChanges) {
-    if (changes.config.currentValue && typeof changes.config.currentValue === 'object') {
+    if (changes.config && changes.config.currentValue && typeof changes.config.currentValue === 'object') {
       this.configRender = assign(this.defaultConfig, changes.config.currentValue)
     }
   }
