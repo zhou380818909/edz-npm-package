@@ -79,13 +79,13 @@
         <!-- 没有多选框 -->
         <ng-template #noCheckBox>
           <td [style.bottom.px]="item?.stickyBottom || 0" *ngIf="!col.nzLeft && !col.nzRight">
-            <ng-container *ngTemplateOutlet="tdContent;context: { $implicit: col, item: item }"></ng-container>
+            <ng-container *ngTemplateOutlet="tdContent;context: { $implicit: col, item: item, i: index }"></ng-container>
           </td>
           <td [style.bottom.px]="item?.stickyBottom || 0" *ngIf="col.nzLeft" [nzLeft]="col.nzLeftWidth">
-            <ng-container *ngTemplateOutlet="tdContent;context: { $implicit: col, item: item }"></ng-container>
+            <ng-container *ngTemplateOutlet="tdContent;context: { $implicit: col, item: item, i: index }"></ng-container>
           </td>
           <td [style.bottom.px]="item?.stickyBottom || 0" *ngIf="col.nzRight" [nzRight]="col.nzRightWidth">
-            <ng-container *ngTemplateOutlet="tdContent;context: { $implicit: col, item: item }"></ng-container>
+            <ng-container *ngTemplateOutlet="tdContent;context: { $implicit: col, item: item, i: index }"></ng-container>
           </td>
         </ng-template>
       </ng-container>
@@ -105,11 +105,11 @@
 </ng-template>
 
 <!-- td的内容渲染 -->
-<ng-template #tdContent let-col let-item="item">
+<ng-template #tdContent let-col let-item="item" let-i="i">
   <!-- 如果有渲染模板, 则根据模板渲染, 同时需要把当前行的数据传到对应的模板 -->
   <ng-template [ngIf]="col.render">
     <ng-container
-      *ngTemplateOutlet="col.render; context: {$implicit: item[col['index']], index: col['index'], row: item}">
+      *ngTemplateOutlet="col.render; context: {$implicit: item[col['index']], index: col['index'], row: item, i: i}">
     </ng-container>
   </ng-template>
   <!-- 如果没有模板则直接渲染 -->
