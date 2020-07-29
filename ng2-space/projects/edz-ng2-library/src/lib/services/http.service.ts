@@ -153,7 +153,7 @@ export class HttpService {
             return of(res[this.data])
           }
           callback(res[this.message])
-          return this.errorHandler(res[this.message] || '请求失败 ,请重试!', !showError)
+          return this.errorHandler(res[this.message] || res || '请求失败 ,请重试!', !showError)
         }),
         catchError((error: any) => {
           callback(error)
@@ -217,7 +217,7 @@ export class HttpService {
             return of(res[this.data])
           }
           callback(res[this.message])
-          return this.errorHandler(res[this.message] || '请求失败 ,请重试!', !showError)
+          return this.errorHandler(res[this.message] || res || '请求失败 ,请重试!', !showError)
         }),
         catchError((error: any) => {
           callback(error)
@@ -271,7 +271,7 @@ export class HttpService {
           return of(res[this.data])
         }
         callback(res[this.message])
-        return this.errorHandler(res[this.message] || '请求失败, 请重试!', !showError)
+        return this.errorHandler(res[this.message] || res || '请求失败, 请重试!', !showError)
       }),
       // 如果失败则处理失败
       catchError((error: any) => {
@@ -287,7 +287,15 @@ export class HttpService {
       return EMPTY
     }
     if (typeof error === 'string') {
-      this.messageService.error(this.useBackEndErrorMessage ? error : '未知错误，请与研发中心技术客服联系！')
+      let message = ''
+      /** 匹配后端弹出alert('***')中的字符串 */
+      const match = /alert\((['"'].*['"'])\)/.exec(error)
+      if (match) {
+        message = match[match.length - 1]
+      } else {
+        message = error
+      }
+      this.messageService.error(this.useBackEndErrorMessage ? message : '未知错误，请与研发中心技术客服联系！')
       return EMPTY
     }
     if (error && error.status) {
