@@ -2,10 +2,10 @@
  * @Author: ChouEric
  * @Date: 2020-07-15 15:05:59
  * @Last Modified by: ChouEric
- * @Last Modified time: 2020-07-24 19:01:43
+ * @Last Modified time: 2020-07-30 11:56:52
  * @Description: 封装 http 请求
  */
-import { HttpClient, HttpHeaders } from '@angular/common/http'
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http'
 import { Inject, Injectable, InjectionToken, Optional } from '@angular/core'
 import { cloneDeep, isEmpty, isNil } from 'lodash'
 import { NzMessageService } from 'ng-zorro-antd'
@@ -287,19 +287,28 @@ export class HttpService {
       return EMPTY
     }
     if (typeof error === 'string') {
-      let message = ''
-      /** 匹配后端弹出alert('***')中的字符串 */
-      const match = /alert\((['"'].*['"'])\)/.exec(error)
-      if (match) {
-        message = match[match.length - 1]
-      } else {
-        message = error
-      }
-      this.messageService.error(this.useBackEndErrorMessage ? message : '未知错误，请与研发中心技术客服联系！')
+      this.messageService.error(this.useBackEndErrorMessage ? error : '未知错误，请与研发中心技术客服联系！')
       return EMPTY
     }
     if (error && error.status) {
-      const { status } = error
+      const { status, error: { text } = {} } = error as HttpErrorResponse
+      if (status <= 200) {
+        // 如果返回的是包含 html 关键字的文本, 则认为是重定向到了登录页
+        if (/<html/i.test(text)) {
+          this.messageService.error('登录失效, 请重新登录!')
+          return EMPTY
+        }
+        let message = ''
+        // 匹配后端弹出alert('***')中的字符串
+        const match = /alert\((['"'].*['"'])\)/.exec(text)
+        if (match) {
+          message = match[match.length - 1]
+        } else {
+          message = '未知错误，请与研发中心技术客服联系！'
+        }
+        this.messageService.error(message)
+        return EMPTY
+      }
       if (status < 400) {
         this.messageService.error('服务端处理异常，请与研发中心技术客服联系！')
         return EMPTY
