@@ -2,7 +2,7 @@
  * @Author: ChouEric
  * @Date: 2020-07-15 15:05:59
  * @Last Modified by: ChouEric
- * @Last Modified time: 2020-07-30 11:56:52
+ * @Last Modified time: 2020-07-30 20:02:49
  * @Description: 封装 http 请求
  */
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http'
@@ -300,7 +300,7 @@ export class HttpService {
         }
         let message = ''
         // 匹配后端弹出alert('***')中的字符串
-        const match = /alert\((['"'].*['"'])\)/.exec(text)
+        const match = /alert\(['"'](.*)['"']\)/.exec(text)
         if (match) {
           message = match[match.length - 1]
         } else {

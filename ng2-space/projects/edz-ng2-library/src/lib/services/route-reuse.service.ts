@@ -2,12 +2,12 @@
  * @Author: ChouEric
  * @Date: 2019-12-08 10:41:31
  * @Last Modified by: ChouEric
- * @Last Modified time: 2020-07-15 11:52:36
+ * @Last Modified time: 2020-07-30 14:34:48
  * @Description: 路由复用策略
  * // TODO: 未完成路由通配符
  */
 import { ComponentRef } from '@angular/core'
-import { ActivatedRouteSnapshot, DetachedRouteHandle, RouteReuseStrategy, Route } from '@angular/router'
+import { ActivatedRouteSnapshot, DetachedRouteHandle, Route, RouteReuseStrategy } from '@angular/router'
 import { Subject } from 'rxjs'
 
 /**
@@ -22,11 +22,15 @@ export const RouteReuseServiceFactory = (handlerSize = 20) => (
     static urlRoutes: Map<string, Route> = new Map()
     /** 根路由事件 */
     static rootRoute$ = new Subject<ActivatedRouteSnapshot>()
+    static rootEnterRoute$ = new Subject<ActivatedRouteSnapshot>()
+    static rootLeveaRoute$ = new Subject<ActivatedRouteSnapshot>()
 
     /** 路由是否复用, 如果true则直接复用当前组件, 不会触发下面的方法 */
     shouldReuseRoute(future: ActivatedRouteSnapshot, curr: ActivatedRouteSnapshot) {
       if (future.routeConfig === future.root.routeConfig) {
         RouteReuseService.rootRoute$.next(future.root)
+        RouteReuseService.rootEnterRoute$.next(future.root)
+        RouteReuseService.rootLeveaRoute$.next(curr.root)
       }
       return future.routeConfig === curr.routeConfig
     }
@@ -95,6 +99,14 @@ export const RouteReuseServiceFactory = (handlerSize = 20) => (
     /** 可以在任意组件的router.routeReuseStrategy.rootRoute, 此方法可以在任意组件监听从根组件开始的路由事件 */
     rootRoute(): Subject<ActivatedRouteSnapshot> {
       return RouteReuseService.rootRoute$
+    }
+    /** 进入路由事件 */
+    rootEnterRoute(): Subject<ActivatedRouteSnapshot> {
+      return RouteReuseService.rootEnterRoute$
+    }
+    /** 离开路由事件 */
+    rootLeaveRoute(): Subject<ActivatedRouteSnapshot> {
+      return RouteReuseService.rootLeveaRoute$
     }
   }
 )
