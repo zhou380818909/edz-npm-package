@@ -2,7 +2,7 @@
  * @Author: ChouEric
  * @Date: 2020-07-15 11:39:46
  * @Last Modified by: ChouEric
- * @Last Modified time: 2020-07-24 20:00:29
+ * @Last Modified time: 2020-07-30 14:23:20
  * @Description: tab组件, 和路径相关, 在Router中,可以访问路由复用策略
  */
 import { Component, Input, OnDestroy, OnInit } from '@angular/core'
