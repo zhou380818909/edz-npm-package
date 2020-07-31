@@ -2,7 +2,7 @@
  * @Author: ChouEric
  * @Date: 2020-07-15 15:05:59
  * @Last Modified by: ChouEric
- * @Last Modified time: 2020-07-30 20:30:31
+ * @Last Modified time: 2020-07-30 20:41:17
  * @Description: 封装 http 请求
  */
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http'
@@ -315,7 +315,7 @@ export class HttpService {
         return EMPTY
       }
       if (status === 404) {
-        this.messageService.error('请求地址不存，请与研发中心技术客服联系！')
+        this.messageService.error('请求地址不存在，请与研发中心技术客服联系！')
         return EMPTY
       }
       if (status < 500) {

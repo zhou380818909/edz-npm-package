@@ -10,8 +10,17 @@ const routes: Route[] = [
     component: UserListComponent,
   },
   {
-    path: 'detail/:id',
-    component: UserDetailComponent,
+    path: 'detail',
+    children: [
+      {
+        path: ':id',
+        component: UserDetailComponent,
+        data: {
+          // multi: true,
+          title: '用户详情',
+        },
+      },
+    ],
   },
   {
     path: 'info',

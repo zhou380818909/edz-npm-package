@@ -222,7 +222,7 @@ export class LayoutComponent {
             path: 'http://www.baidu.com',
             isBlank: true,
           },
-        ] },{ title: '列表', path: 'list' }, { title: '详情', path: 'detail', children: [{ path: '1', title: '详情1' }] }],
+        ] },{ title: '列表', path: 'list' }, { title: '详情', path: 'detail', children: [{ path: '**', title: '详情1' }] }],
     },
 
   ]

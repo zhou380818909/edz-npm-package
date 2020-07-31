@@ -2,11 +2,11 @@
  * @Author: ChouEric
  * @Date: 2020-07-15 11:39:46
  * @Last Modified by: ChouEric
- * @Last Modified time: 2020-07-30 14:23:20
+ * @Last Modified time: 2020-07-31 11:34:41
  * @Description: tab组件, 和路径相关, 在Router中,可以访问路由复用策略
  */
 import { Component, Input, OnDestroy, OnInit } from '@angular/core'
-import { ActivatedRouteSnapshot, NavigationEnd, Router } from '@angular/router'
+import { ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd, Route, Router } from '@angular/router'
 import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown'
 import { BehaviorSubject } from 'rxjs'
 import { filter } from 'rxjs/operators'
@@ -56,6 +56,7 @@ export class TabComponent implements OnInit, OnDestroy {
     private router: Router,
     private sessionStorage: SessionStorageService,
     private localStorage: LocalStorageService,
+    private activeRoute: ActivatedRoute,
   ) {
     this.routerSub$ = this.router.events.pipe(
       // 当当前路由事件已经完成了切换
@@ -65,7 +66,7 @@ export class TabComponent implements OnInit, OnDestroy {
         this.firstRouterEvent$ = new BehaviorSubject(event)
         return
       }
-      this.routerEvent(event)
+      this.routerEvent(event, activeRoute.snapshot)
     })
     // 如果路由复用策略中存在函数
     if (typeof (this.router.routeReuseStrategy as any).rootRoute === 'function') {
@@ -77,19 +78,20 @@ export class TabComponent implements OnInit, OnDestroy {
     }
   }
 
-  /** 更加路由事件来打开tab或者设置为激活, 或者关闭 */
-  routerEvent(event: NavigationEnd) {
+  /** 根据路由事件来打开tab或者设置为激活, 或者关闭 */
+  routerEvent(event: NavigationEnd, activeRouterSnapshot: ActivatedRouteSnapshot) {
+    // console.log(activeRouterSnapshot.routeConfig)
+    this.getTitleFromRouterConfig(activeRouterSnapshot.routeConfig)
     // 根据url地址转换为数组
     const currentPaths = event.urlAfterRedirects.replace(/^\//, '').split('/')
     // 从数组中获取当前的tab能够展示的tab
     const tabMenu = this.getTabFromMenu(currentPaths)
-    const { title = '未命名', disableClose } = tabMenu
+    const { title = activeRouterSnapshot?.routeConfig?.data?.title || '未命名', disableClose } = tabMenu
     // 当前的url在tab中的索引
     const existIndex = this.tabs.findIndex(tab => tab.title === title && tab.url === event.urlAfterRedirects)
     // 如果当前url的索引小于0, 即是当前url不在tab中
     if (existIndex < 0 && title) {
       const tab = { url: event.urlAfterRedirects, title, disableClose, component: this.sameRoute && this.sameRoute.component }
-
       if (this.sameRoute && this.sameRoute.component) {
         const equalIndex = this.tabs.findIndex(item => item.component === this.sameRoute.component)
         if (equalIndex > -1) {
@@ -114,7 +116,7 @@ export class TabComponent implements OnInit, OnDestroy {
    */
   getTabFromMenu(pathArr: string[], menus = this.menuList): IMenuItem {
     const path = pathArr.shift()
-    const menuItem = menus.find(menu => menu.path === path) || {} as IMenuItem
+    const menuItem = menus.find(menu => menu.path === path || menu.path === '**') || {} as IMenuItem
     if (menuItem.children) {
       return this.getTabFromMenu(pathArr, menuItem.children)
     }
@@ -243,8 +245,8 @@ export class TabComponent implements OnInit, OnDestroy {
       if (item.children && item.children.length > 0) {
         this.setRouteParamTab(item.children)
 
-        // 如果路径参数param的键名长度大于0, 则说明是不同路径的同一组件
-      } else if (Object.keys(item.params).length > 0) {
+        // 同一组件只开一个tab, 条件是有路径参数和路由的data的multi参数不能设置为true
+      } else if (Object.keys(item.params).length > 0 && !item.routeConfig.data.multi) {
         this.sameRoute = item
       } else {
         this.sameRoute = null
@@ -282,9 +284,22 @@ export class TabComponent implements OnInit, OnDestroy {
     }
     if (this.firstRouterEvent$ && typeof this.firstRouterEvent$.subscribe === 'function') {
       this.firstRouterEvent$.subscribe((event: NavigationEnd) => {
-        this.routerEvent(event)
+        this.routerEvent(event, this.activeRoute.snapshot)
         this.firstRouterEvent$.complete()
         this.firstRouterEvent$ = null
+      })
+    }
+  }
+
+  getTitleFromRouterConfig(config: Route | Route[]) {
+    if (Array.isArray(config)) {
+      config.forEach(item => {
+        this.getTitleFromRouterConfig(item)
+      })
+    } else if (config) {
+      config.children.forEach((item: any) => {
+        // console.log(item._loadedConfig)
+        this.getTitleFromRouterConfig(item.children)
       })
     }
   }
