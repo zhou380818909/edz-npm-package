@@ -2,7 +2,7 @@
  * @Author: ChouEric
  * @Date: 2020-07-15 11:39:46
  * @Last Modified by: ChouEric
- * @Last Modified time: 2020-07-31 11:34:41
+ * @Last Modified time: 2020-08-01 18:54:37
  * @Description: tab组件, 和路径相关, 在Router中,可以访问路由复用策略
  */
 import { Component, Input, OnDestroy, OnInit } from '@angular/core'
@@ -246,7 +246,7 @@ export class TabComponent implements OnInit, OnDestroy {
         this.setRouteParamTab(item.children)
 
         // 同一组件只开一个tab, 条件是有路径参数和路由的data的multi参数不能设置为true
-      } else if (Object.keys(item.params).length > 0 && !item.routeConfig.data.multi) {
+      } else if (Object.keys(item.params).length > 0 && !(item.routeConfig?.data?.multi || false)) {
         this.sameRoute = item
       } else {
         this.sameRoute = null
