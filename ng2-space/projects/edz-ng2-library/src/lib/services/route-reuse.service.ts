@@ -1,8 +1,11 @@
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable no-else-return */
+/* eslint-disable prefer-destructuring */
 /*
  * @Author: ChouEric
  * @Date: 2019-12-08 10:41:31
  * @Last Modified by: ChouEric
- * @Last Modified time: 2020-07-30 14:34:48
+ * @Last Modified time: 2020-08-01 18:50:15
  * @Description: 路由复用策略
  * // TODO: 未完成路由通配符
  */
@@ -10,16 +13,25 @@ import { ComponentRef } from '@angular/core'
 import { ActivatedRouteSnapshot, DetachedRouteHandle, Route, RouteReuseStrategy } from '@angular/router'
 import { Subject } from 'rxjs'
 
+interface IHandler extends Route {
+  /** 详情页多开 */
+  multi?: boolean
+  /** 详情页多开路径 */
+  url?: string
+}
+
 /**
  * 返回一个路由复用的类
  * @param handlerSize 路由复用的缓存数量, 默认是20
  */
 export const RouteReuseServiceFactory = (handlerSize = 20) => (
   class RouteReuseService implements RouteReuseStrategy {
-    /** 缓存数据 */
+    /** 缓存数据-不带参数的 */
     static handlers: Map<Route, any > = new Map()
+    /** 缓存数据-带路由参数 */
+    static handlersWithParam: Map<string, any> = new Map()
     /** url地址和路由配置的映射, 主要是用于对外通过url来查找到对应路由配置 */
-    static urlRoutes: Map<string, Route> = new Map()
+    static urlRoutes: Map<string, IHandler> = new Map()
     /** 根路由事件 */
     static rootRoute$ = new Subject<ActivatedRouteSnapshot>()
     static rootEnterRoute$ = new Subject<ActivatedRouteSnapshot>()
@@ -32,11 +44,24 @@ export const RouteReuseServiceFactory = (handlerSize = 20) => (
         RouteReuseService.rootEnterRoute$.next(future.root)
         RouteReuseService.rootLeveaRoute$.next(curr.root)
       }
-      return future.routeConfig === curr.routeConfig
+      const isRouteConfigEqual = future.routeConfig === curr.routeConfig
+      if (isRouteConfigEqual) {
+        const multi = future.data.multi
+        return !multi
+      } else {
+        return false
+      }
     }
     /** 获取对应的缓存数据 */
     retrieve(route: ActivatedRouteSnapshot): DetachedRouteHandle {
-      return RouteReuseService.handlers.get(route.routeConfig)
+      const { data: { multi = false } = {} } = route.routeConfig
+      if (!multi) {
+        return RouteReuseService.handlers.get(route.routeConfig)
+      } else {
+        const _routerState = (route as any)._routerState
+        const { url } = _routerState || {}
+        return RouteReuseService.handlersWithParam.get(url)
+      }
     }
     /** 路由是否分离, true分离才能存储缓存数据 */
     shouldDetach(route: ActivatedRouteSnapshot): boolean {
@@ -55,27 +80,59 @@ export const RouteReuseServiceFactory = (handlerSize = 20) => (
         RouteReuseService.runNgOnDestroy(deleteKey)
         RouteReuseService.urlRoutes.delete(url)
       }
-      RouteReuseService.urlRoutes.set((route as any)._routerState.url, route.routeConfig)
-      RouteReuseService.handlers.set(route.routeConfig, handle)
+      if (RouteReuseService.handlersWithParam.size > 10) {
+        const deleteKey = [...RouteReuseService.handlersWithParam.keys()].shift()
+        RouteReuseService.runNgOnDestroy(deleteKey)
+      }
+      // 存储缓存数据
+      const { data: { multi } } = route
+      if (!multi) {
+        RouteReuseService.urlRoutes.set((route as any)._routerState.url, route.routeConfig)
+        RouteReuseService.handlers.set(route.routeConfig, handle)
+      } else {
+        const _routerState = (route as any)._routerState
+        const { url } = _routerState || {}
+        RouteReuseService.handlersWithParam.set(url, handle)
+      }
     }
     /** 是否将缓存恢复到对应的路由. 如果为true则需要执行retrieve, 和store方法(第二个参数将会是null) */
     shouldAttach(route: ActivatedRouteSnapshot): boolean {
-      return !!RouteReuseService.handlers.has(route.routeConfig)
+      if (!route.data.multi) {
+        return !!RouteReuseService.handlers.has(route.routeConfig)
+      } else {
+        const _routerState = (route as any)._routerState
+        const { url } = _routerState || {}
+        return !!RouteReuseService.handlersWithParam.has(url)
+      }
     }
 
     /** 通过route访问到对应到实例, 然后调用组件的销毁方法 */
-    static runNgOnDestroy(route: Route) {
+    static runNgOnDestroy(route: Route | string) {
       if (!route) {
         return
       }
-      // 删除handlers中的缓存
-      const handler = RouteReuseService.handlers.get(route) || {} as DetachedRouteHandle
-      const componentRef = handler.componentRef as ComponentRef<any>
-      if (componentRef && componentRef.instance && componentRef.instance.ngOnDestroy) {
-        // 销毁实例
-        componentRef.destroy()
+      if (typeof route === 'object') {
+        // 删除handlers中的缓存
+        const handler = RouteReuseService.handlers.get(route) || {} as DetachedRouteHandle
+        const componentRef = handler.componentRef as ComponentRef<any>
+        if (componentRef && componentRef.instance && componentRef.instance.ngOnDestroy) {
+          // 销毁实例
+          componentRef.destroy()
+        }
+      } else {
+        // 多开模式, 删除handlers中的缓存
+        const handler = RouteReuseService.handlersWithParam.get(route) || {} as DetachedRouteHandle
+        const componentRef = handler.componentRef as ComponentRef<any>
+        if (componentRef && componentRef.instance && componentRef.instance.ngOnDestroy) {
+          // 销毁实例
+          componentRef.destroy()
+        }
       }
-      RouteReuseService.handlers.delete(route)
+      if (typeof route === 'object') {
+        RouteReuseService.handlers.delete(route)
+      } else {
+        RouteReuseService.handlersWithParam.delete(route)
+      }
     }
 
     /**
@@ -84,14 +141,28 @@ export const RouteReuseServiceFactory = (handlerSize = 20) => (
      */
     deleteHandlerByUrl(url: string | string[]) {
       if (typeof url === 'string') {
-        const urlRoute = RouteReuseService.urlRoutes.get(url) || {}
-        RouteReuseService.runNgOnDestroy(urlRoute)
-        RouteReuseService.urlRoutes.delete(url)
+        // 首先按照 url 去查找routeConfig, 如果找到了就不是多开模式
+        const urlRoute = RouteReuseService.urlRoutes.get(url)
+        if (typeof urlRoute === 'object') {
+          RouteReuseService.runNgOnDestroy(urlRoute)
+          RouteReuseService.urlRoutes.delete(url)
+
+        // 可能是多开模式
+        } else if (!urlRoute && typeof url === 'string') {
+          RouteReuseService.runNgOnDestroy(url)
+        }
       } else if (url instanceof Array) {
         url.forEach(item => {
-          const urlRoute = RouteReuseService.urlRoutes.get(item) || {}
-          RouteReuseService.runNgOnDestroy(urlRoute)
-          RouteReuseService.urlRoutes.delete(item)
+          // 首先按照 url 去查找routeConfig, 如果找到了就不是多开模式
+          const urlRoute = RouteReuseService.urlRoutes.get(item)
+          if (typeof urlRoute === 'object') {
+            RouteReuseService.runNgOnDestroy(urlRoute)
+            RouteReuseService.urlRoutes.delete(item)
+
+          // 可能是多开模式
+          } else if (!urlRoute && typeof item === 'string') {
+            RouteReuseService.runNgOnDestroy(item)
+          }
         })
       }
     }

@@ -16,8 +16,7 @@ const routes: Route[] = [
         path: ':id',
         component: UserDetailComponent,
         data: {
-          // multi: true,
-          title: '用户详情',
+          multi: true,
         },
       },
     ],
