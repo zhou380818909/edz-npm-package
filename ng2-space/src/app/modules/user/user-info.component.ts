@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { TabService } from "../../../../projects/edz-ng2-library/src/lib/tab/tab-service.service";
 
 @Component({
   selector: 'app-user-info',
@@ -12,8 +13,16 @@ import { Component } from "@angular/core";
   </p>
     <p>
       info
+      <button nz-button nzType="primary" (click)="clickHandler()">关闭当前</button>
       <input >
     </p>
   `,
 })
-export class UserInfoComponent {}
+export class UserInfoComponent {
+  constructor(private tabServcie: TabService) {}
+
+  clickHandler() {
+    this.tabServcie.close$.next()
+  }
+
+}
