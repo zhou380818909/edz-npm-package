@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core'
 import { RouterModule } from '@angular/router'
 import { CloseOutline } from '@ant-design/icons-angular/icons'
 import { NzDropDownModule, NzIconModule, NzTabsModule } from 'ng-zorro-antd'
-import { TabService } from './tab-service.service'
 import { TabComponent } from './tab.component'
 
 const icons = [CloseOutline]
@@ -18,6 +17,5 @@ const icons = [CloseOutline]
     RouterModule,
   ],
   exports: [RouterModule, NzTabsModule, NzIconModule, NzDropDownModule, TabComponent],
-  providers: [TabService],
 })
 export class TabModule { }
