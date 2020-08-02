@@ -213,7 +213,6 @@ export class TableComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.nzScroll = { ...this.nzScroll, x: this.config.width }
-    // console.log(this.column);
     this.setTableScroll()
     this.cdr.detectChanges()
   }

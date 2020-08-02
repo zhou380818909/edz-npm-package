@@ -2,7 +2,7 @@
  * @Author: ChouEric
  * @Date: 2020-07-15 11:39:46
  * @Last Modified by: ChouEric
- * @Last Modified time: 2020-08-01 18:54:37
+ * @Last Modified time: 2020-08-02 20:56:42
  * @Description: tab组件, 和路径相关, 在Router中,可以访问路由复用策略
  */
 import { Component, Input, OnDestroy, OnInit } from '@angular/core'
@@ -13,6 +13,7 @@ import { filter } from 'rxjs/operators'
 import { IMenuItem } from '../interfaces'
 import { LocalStorageService } from '../services/local-storage.service'
 import { SessionStorageService } from '../services/session-storage.service'
+import { TabService } from './tab-service.service'
 
 interface ITabItem {
   /** url地址 */
@@ -57,9 +58,13 @@ export class TabComponent implements OnInit, OnDestroy {
     private sessionStorage: SessionStorageService,
     private localStorage: LocalStorageService,
     private activeRoute: ActivatedRoute,
+    private service: TabService,
   ) {
+    this.service.close$.subscribe(() => {
+      this.closeTab(this.tabs[this.activeIndex])
+    })
     this.routerSub$ = this.router.events.pipe(
-      // 当当前路由事件已经完成了切换
+      // 当前路由事件已经完成了切换
       filter(event => event instanceof NavigationEnd),
     ).subscribe((event: NavigationEnd) => {
       if (!this.tabs) {
@@ -129,9 +134,11 @@ export class TabComponent implements OnInit, OnDestroy {
   }
 
   /** 关闭tab */
-  closeTab(tab: ITabItem, event: MouseEvent): void {
-    // 关闭按钮阻止事件冒泡
-    event.stopPropagation()
+  closeTab(tab: ITabItem, event?: MouseEvent): void {
+    if (event) {
+      // 关闭按钮阻止事件冒泡
+      event.stopPropagation()
+    }
 
     const closeIndex = this.tabs.indexOf(tab)
     // 如果关闭tab是当前激活的tab, 则需要打开其他tab, 并删除其他tab对应的路由复用数据缓存
@@ -291,6 +298,7 @@ export class TabComponent implements OnInit, OnDestroy {
     }
   }
 
+  /** 从router配置中获取title */
   getTitleFromRouterConfig(config: Route | Route[]) {
     if (Array.isArray(config)) {
       config.forEach(item => {
@@ -298,7 +306,6 @@ export class TabComponent implements OnInit, OnDestroy {
       })
     } else if (config) {
       config.children.forEach((item: any) => {
-        // console.log(item._loadedConfig)
         this.getTitleFromRouterConfig(item.children)
       })
     }
