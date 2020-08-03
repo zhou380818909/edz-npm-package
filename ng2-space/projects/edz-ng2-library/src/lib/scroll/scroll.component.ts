@@ -1,4 +1,4 @@
-import { Component } from '@angular/core'
+import { AfterViewInit, Component, ElementRef, Renderer2 } from '@angular/core'
 
 @Component({
   selector: 'edz-scroll',
@@ -10,4 +10,16 @@ import { Component } from '@angular/core'
     edz-scroll-content: { flex: 1; overflow: auto; }
   `],
 })
-export class ScrollComponent {}
+export class ScrollComponent implements AfterViewInit {
+  constructor(private ele: ElementRef<HTMLDivElement>, private render: Renderer2) {
+  }
+
+  ngAfterViewInit() {
+    if (this.ele && this.ele.nativeElement && this.ele.nativeElement.parentElement) {
+      this.render.setStyle(this.ele.nativeElement.parentElement, 'display', 'flex')
+      this.render.setStyle(this.ele.nativeElement.parentElement, 'height', '100%')
+      this.render.setStyle(this.ele.nativeElement.parentElement, 'overflow', 'auto')
+      this.render.setStyle(this.ele.nativeElement.parentElement, 'flex-direction', 'column')
+    }
+  }
+}
