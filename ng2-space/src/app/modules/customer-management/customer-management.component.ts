@@ -136,11 +136,14 @@ export class CustomerManagementComponent implements OnInit, OnDestroy {
         title: '姓名',
         index: 'score',
         width: '200px',
+        textOverflow: 'hidden',
       },
       {
         title: '姓名',
         index: 'score',
         width: '200px',
+        textOverflow: 'ellipsis',
+        lineCamp: 2,
       },
       {
         title: '姓名',
@@ -189,6 +192,7 @@ export class CustomerManagementComponent implements OnInit, OnDestroy {
         nzRight: true,
         textOverflow: 'ellipsis',
         tooltip: true,
+        lineCamp: 3,
       },
       {
         title: '姓名1',

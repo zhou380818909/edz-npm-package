@@ -46,10 +46,8 @@ export interface IColumnItem<T = { [k: string]: any }> {
   rowspan?: number
   /** 列合并 */
   colspan?: number
-  /** 行高, 当设置列宽的时候, 可能出现表格对不齐的问题, 需要设置行高 */
+  /** 行高, 当设置列宽的时候, 可能s出现表格对不齐的问题, 需要设置行高 */
   lineHeight?: number
-  /** webkit设置多行省略 */
-  lineClamp?: number
   /** 列宽固定左侧, 不要和左边的选择框同时使用 */
   nzLeft?: boolean
   /** 列表固定右侧 */
@@ -58,6 +56,8 @@ export interface IColumnItem<T = { [k: string]: any }> {
   textOverflow?: 'ellipsis' | 'hidden'
   /** 文字悬浮提示 */
   tooltip?: boolean
+  /** 文字溢出隐藏行数 */
+  lineCamp?: number
 }
 /** 表格数据 */
 export interface ITableItem {

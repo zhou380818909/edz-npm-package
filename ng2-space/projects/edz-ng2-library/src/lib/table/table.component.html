@@ -115,13 +115,24 @@
   <!-- 如果没有模板则直接渲染 -->
   <ng-template [ngIf]="!col.render">
     <span
+      *ngIf="col.textOverflow !== 'ellipsis' || col.lineCamp < 2; else elseText"
       nz-tooltip
       [nzTooltipTitle]="col.tooltip ? item[col.index] : ''"
       [style.height.px]="config?.rowHeight || 24"
       [style.lineHeight.px]="config?.lineHeight || config?.rowHeight || 24"
-      [ngClass]="{ellipsis: col.textOverflow === 'ellipsis', hidden: col.textOverflow === 'hidden'}">
+      [ngClass]="{hidden: col.textOverflow === 'hidden', ellipsis: col.textOverflow === 'ellipsis'}">
       {{item[col.index]}}
     </span>
+    <ng-template #elseText>
+      <p
+        nz-tooltip
+        nz-typography
+        [nzTooltipTitle]="col.tooltip ? item[col.index] : ''"
+        [nzEllipsis]="true"
+        [nzEllipsisRows]="col.lineCamp">
+        {{item[col.index]}}
+      </p>
+    </ng-template>
   </ng-template>
 </ng-template>
 
