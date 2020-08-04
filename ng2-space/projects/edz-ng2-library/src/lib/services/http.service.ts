@@ -7,11 +7,12 @@
  */
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http'
 import { Inject, Injectable, InjectionToken, Optional } from '@angular/core'
+import { ActivatedRoute } from '@angular/router'
 import { cloneDeep, isEmpty, isNil } from 'lodash'
 import { NzMessageService } from 'ng-zorro-antd'
 import { stringify } from 'querystring'
-import { EMPTY, Observable, of } from 'rxjs'
-import { catchError, switchMap } from 'rxjs/operators'
+import { EMPTY, Observable, of, Subject } from 'rxjs'
+import { catchError, switchMap, throttleTime } from 'rxjs/operators'
 import { XOR } from '../interfaces'
 
 interface IMap {
@@ -22,11 +23,13 @@ interface IMap {
 
 export interface IHttpServiceConfig {
   /** code, data, message的映射关系 */
-  map: IMap,
+  map?: IMap,
   /** 返回成功的状态码 */
-  successCode: number,
+  successCode?: number,
   /** 是否使用后端返回的错误信息 */
-  useBackEndErrorMessage: boolean
+  useBackEndErrorMessage?: boolean
+  /** 未登录回调 */
+  unAuthCallback?: () => void
 }
 
 /** 基本请求参数 */
@@ -82,28 +85,43 @@ export const HTTP_SERVICE_CONFIG = new InjectionToken<IHttpServiceConfig>('HTTP_
   providedIn: 'root',
 })
 export class HttpService {
+  /** 字段-成功状态 */
   private code: string
+  /** 字段-成功数据 */
   private data: string
+  /** 字段-成功消息 */
   private message: string
+  /** 成功状态码 */
   private successCode: number
+  /** 是否使用后端返回的错误消息 */
   private useBackEndErrorMessage: boolean
-  // 缓存数据
+  /** 未登录 */
+  private unAuth$ = new Subject()
+  /** 缓存数据 */
   private static cache = {}
   constructor(
     private http: HttpClient,
     private messageService: NzMessageService,
+    private activatedRoute: ActivatedRoute,
     // 将配置文件通过服务商令牌注入
     @Optional()
     @Inject(HTTP_SERVICE_CONFIG) private config: IHttpServiceConfig,
   ) {
     // 解构配置文件
     const { map: { code = 'code', data = 'data', message = 'message' } = { },
-      successCode = 0, useBackEndErrorMessage = true } = config || {}
+      successCode = 0, useBackEndErrorMessage = true, unAuthCallback } = config || {} as IHttpServiceConfig
     this.code = code
     this.data = data
     this.message = message
     this.successCode = successCode
     this.useBackEndErrorMessage = useBackEndErrorMessage
+    this.unAuth$.pipe(throttleTime(200)).subscribe((msg: string) => {
+      messageService.remove()
+      messageService.warning(msg)
+      if (typeof unAuthCallback === 'function') {
+        unAuthCallback()
+      }
+    })
   }
 
   /**
@@ -283,7 +301,7 @@ export class HttpService {
 
   /** 处理错误 */
   private errorHandler(error: any, notShowErrorMessagee): Observable<never> {
-    if (notShowErrorMessagee) {
+    if (notShowErrorMessagee && (error && error.status !== 200)) {
       return EMPTY
     }
     if (typeof error === 'string') {
@@ -293,10 +311,11 @@ export class HttpService {
     if (error && error.status) {
       const { status, error: errorData } = error as HttpErrorResponse
       const { text } = errorData || {}
+      // 此处出现错误一般是返回的非JSON数据, JSON.parse()调用失败, 认为返回的是未登录的情况
       if (status <= 200) {
         // 如果返回的是包含 html 关键字的文本, 则认为是重定向到了登录页
         if (/<html/i.test(text)) {
-          this.messageService.error('登录失效, 请重新登录!')
+          this.unAuth$.next('登录失效, 请重新登录!')
           return EMPTY
         }
         let message = ''
@@ -307,7 +326,7 @@ export class HttpService {
         } else {
           message = '未知错误，请与研发中心技术客服联系！'
         }
-        this.messageService.error(message)
+        this.unAuth$.next(message)
         return EMPTY
       }
       if (status < 400) {

@@ -17,7 +17,7 @@
           <span>{{ menu.title }}</span>
         </a>
         <ng-template #blankTpl>
-          <a [href]="menu.url" target="_blank" (click)="blankHandler(menu)">
+          <a [href]="menu.url" target="_blank">
             <i nz-icon [nzType]="menu.icon" *ngIf="menu.icon"></i>
             <span>{{ menu.title }}</span>
           </a>
