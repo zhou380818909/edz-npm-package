@@ -115,9 +115,11 @@
   <!-- 如果没有模板则直接渲染 -->
   <ng-template [ngIf]="!col.render">
     <span
+      nz-tooltip
+      [nzTooltipTitle]="col.tooltip ? item[col.index] : ''"
       [style.height.px]="config?.rowHeight || 24"
       [style.lineHeight.px]="config?.lineHeight || config?.rowHeight || 24"
-      class="td-content">
+      [ngClass]="{ellipsis: col.textOverflow === 'ellipsis', hidden: col.textOverflow === 'hidden'}">
       {{item[col.index]}}
     </span>
   </ng-template>

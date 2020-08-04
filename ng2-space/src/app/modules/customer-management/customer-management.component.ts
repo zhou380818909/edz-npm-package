@@ -28,7 +28,7 @@ export class CustomerManagementComponent implements OnInit, OnDestroy {
   searchBarConfig: ISearchItem[] = []
   column: IColumnItem[] = []
   tableConfig: ITableConfig = {
-    width: '2200px',
+    width: '3000px',
     scroll: true,
   }
   tableData = [
@@ -187,6 +187,8 @@ export class CustomerManagementComponent implements OnInit, OnDestroy {
         index: 'score',
         width: '100px',
         nzRight: true,
+        textOverflow: 'ellipsis',
+        tooltip: true,
       },
       {
         title: '姓名1',

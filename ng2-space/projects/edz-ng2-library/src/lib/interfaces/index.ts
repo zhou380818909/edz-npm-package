@@ -54,6 +54,10 @@ export interface IColumnItem<T = { [k: string]: any }> {
   nzLeft?: boolean
   /** 列表固定右侧 */
   nzRight?: boolean
+  /** 文字溢出处理 */
+  textOverflow?: 'ellipsis' | 'hidden'
+  /** 文字悬浮提示 */
+  tooltip?: boolean
 }
 /** 表格数据 */
 export interface ITableItem {

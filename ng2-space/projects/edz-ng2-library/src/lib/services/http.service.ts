@@ -115,12 +115,13 @@ export class HttpService {
     this.message = message
     this.successCode = successCode
     this.useBackEndErrorMessage = useBackEndErrorMessage
-    this.unAuth$.pipe(throttleTime(200)).subscribe((msg: string) => {
+    this.unAuth$.pipe(throttleTime(600)).subscribe((msg: string) => {
       messageService.remove()
-      messageService.warning(msg)
-      if (typeof unAuthCallback === 'function') {
-        unAuthCallback()
-      }
+      messageService.warning(msg, { nzDuration: 500 }).onClose.subscribe(() => {
+        if (typeof unAuthCallback === 'function') {
+          unAuthCallback()
+        }
+      })
     })
   }
 
