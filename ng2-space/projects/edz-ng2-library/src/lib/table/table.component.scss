@@ -46,9 +46,16 @@
       padding: 8px 0;
     }
 
-    .td-content {
+    .hidden {
       display: block;
       overflow: hidden;
+    }
+
+    .ellipsis {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .total {
