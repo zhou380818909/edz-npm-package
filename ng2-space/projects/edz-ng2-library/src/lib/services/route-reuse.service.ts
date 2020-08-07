@@ -5,7 +5,7 @@
  * @Author: ChouEric
  * @Date: 2019-12-08 10:41:31
  * @Last Modified by: ChouEric
- * @Last Modified time: 2020-08-01 18:50:15
+ * @Last Modified time: 2020-08-07 11:31:45
  * @Description: 路由复用策略
  * // TODO: 未完成路由通配符
  */
@@ -54,7 +54,10 @@ export const RouteReuseServiceFactory = (handlerSize = 20) => (
     }
     /** 获取对应的缓存数据 */
     retrieve(route: ActivatedRouteSnapshot): DetachedRouteHandle {
-      const { data: { multi = false } = {} } = route.routeConfig
+      const { data: { multi = false, noCache } = {} } = route.routeConfig
+      if (noCache) {
+        return null
+      }
       if (!multi) {
         return RouteReuseService.handlers.get(route.routeConfig)
       } else {
@@ -65,10 +68,16 @@ export const RouteReuseServiceFactory = (handlerSize = 20) => (
     }
     /** 路由是否分离, true分离才能存储缓存数据 */
     shouldDetach(route: ActivatedRouteSnapshot): boolean {
+      if (route?.data?.noCache) {
+        return false
+      }
       return !!route.component
     }
     /** 根据路由配置存储对应的缓存数据 */
     store(route: ActivatedRouteSnapshot, handle: DetachedRouteHandle): void {
+      if (route?.data?.noCache) {
+        return
+      }
       if (!handle) {
         return
       }
@@ -97,7 +106,10 @@ export const RouteReuseServiceFactory = (handlerSize = 20) => (
     }
     /** 是否将缓存恢复到对应的路由. 如果为true则需要执行retrieve, 和store方法(第二个参数将会是null) */
     shouldAttach(route: ActivatedRouteSnapshot): boolean {
-      if (!route.data.multi) {
+      if (route?.data?.noCache) {
+        return false
+      }
+      if (!(route?.data?.multi)) {
         return !!RouteReuseService.handlers.has(route.routeConfig)
       } else {
         const _routerState = (route as any)._routerState

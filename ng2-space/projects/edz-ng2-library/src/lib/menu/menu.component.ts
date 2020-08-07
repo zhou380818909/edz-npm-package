@@ -20,9 +20,14 @@ interface IMenuRenderItem extends IMenuItem {
 export class MenuComponent implements OnInit, OnDestroy {
   @Input()
   menuList: IMenuItem[] = []
-
   @Input()
   config: IMenuConfig = {}
+  /** 是否切换路由时自动收起非激活菜单 */
+  @Input()
+  autoOpen = true
+  /** 默认是否全部展开 */
+  @Input()
+  defaultOpen = false
   /** 待渲染的菜单列表 */
   menus: IMenuRenderItem[] = []
   /** 路由的订阅 */
@@ -61,7 +66,7 @@ export class MenuComponent implements OnInit, OnDestroy {
   /** 根据传入的菜单配置生成模板需要的菜单 */
   private setMenus(list = this.menuList, level = 1, url = '') {
     this.menus = list.filter(menu => !menu.hidden).map(item => {
-      const menu = { ...item, url: item.isBlank ? item.path : `${url}/${item.path}`, level, open: false, selected: false }
+      const menu = { ...item, url: item.isBlank ? item.path : `${url}/${item.path}`, level, open: this.defaultOpen, selected: false }
       if (menu.children) {
         menu.children = this.setMenus(menu.children, level + 1, menu.url)
       }

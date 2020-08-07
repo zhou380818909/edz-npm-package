@@ -215,6 +215,14 @@ export class TableComponent implements OnInit, OnDestroy {
     this.nzScroll = { ...this.nzScroll, x: this.config.width }
     this.setTableScroll()
     this.cdr.detectChanges()
+    const measureWidth = this.nzTable.listOfAutoColWidth.reduce((pre, cur) => {
+      pre += cur ? parseInt(cur, 10) : 0
+      return pre
+    }, 0)
+    const configWidth = this.config.width ? parseInt(this.config.width, 10) : 0
+    if (measureWidth > configWidth) {
+      console.warn('表格config宽度小于column总宽度')
+    }
   }
 
   ngOnChanges(simpleChange: SimpleChanges) {

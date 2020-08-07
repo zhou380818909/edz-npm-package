@@ -24,10 +24,22 @@
         </ng-template>
       </li>
       <li
-        *ngIf="menu.children"
+        *ngIf="autoOpen && menu.children"
         nz-submenu
         [nzPaddingLeft]="menu.level * 24"
         [(nzOpen)]="menu.open"
+        [nzTitle]="menu.title"
+        [nzIcon]="menu.icon"
+        >
+        <ul>
+          <ng-container *ngTemplateOutlet="menuTpl; context: { $implicit: menu.children }"></ng-container>
+        </ul>
+      </li>
+      <li
+        *ngIf="!autoOpen && menu.children"
+        nz-submenu
+        [nzPaddingLeft]="menu.level * 24"
+        [nzOpen]="defaultOpen"
         [nzTitle]="menu.title"
         [nzIcon]="menu.icon"
         >
