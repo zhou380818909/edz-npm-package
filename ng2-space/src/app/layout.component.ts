@@ -201,6 +201,7 @@ export class LayoutComponent {
             {
               title: '详情2',
               path: '1',
+              hiddenInTab: true,
             },
           ],
         },

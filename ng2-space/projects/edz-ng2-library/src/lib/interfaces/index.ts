@@ -119,12 +119,14 @@ export interface IMenuItem {
   iconUrl?: string
   /** 子菜单 */
   children?: IMenuItem[]
-  /** 是否隐藏 */
+  /** 是否在菜单中隐藏 */
   hidden?: boolean
   /** 是否新开窗口 */
   isBlank?: boolean
   /** tab页不可关闭 */
   disableClose?: boolean
+  /** 不在tab中显示 */
+  hiddenInTab?: boolean
 }
 
 export interface IMenuConfig {

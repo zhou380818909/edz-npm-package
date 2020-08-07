@@ -28,8 +28,8 @@ export class CustomerManagementComponent implements OnInit, OnDestroy {
   searchBarConfig: ISearchItem[] = []
   column: IColumnItem[] = []
   tableConfig: ITableConfig = {
-    width: '3000px',
     scroll: true,
+    width: '2600px',
   }
   tableData = [
     {
@@ -124,24 +124,6 @@ export class CustomerManagementComponent implements OnInit, OnDestroy {
         title: '姓名',
         index: 'score',
         width: '200px',
-        nzLeft: true,
-      },
-      {
-        title: '姓名',
-        index: 'score',
-        width: '200px',
-        render: this.ellipsisComponent,
-      },
-      {
-        title: '姓名',
-        index: 'score',
-        width: '200px',
-        textOverflow: 'hidden',
-      },
-      {
-        title: '姓名',
-        index: 'score',
-        width: '200px',
         textOverflow: 'ellipsis',
         lineCamp: 2,
       },
@@ -183,7 +165,11 @@ export class CustomerManagementComponent implements OnInit, OnDestroy {
       {
         title: '姓名',
         index: 'score',
-        // width: '200px',
+        width: '200px',
+      },
+      {
+        title: '姓名',
+        index: 'score',
       },
       {
         title: '姓名',
