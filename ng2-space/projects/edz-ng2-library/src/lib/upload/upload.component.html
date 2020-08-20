@@ -1,0 +1,23 @@
+<nz-upload
+  [nzAccept]="uploadConfig.accept"
+  [(nzFileList)]="fileList"
+  [nzMultiple]="uploadConfig.multiple"
+  [nzSize]="uploadConfig.size"
+  [nzFilter]="uploadConfig.filters"
+  [nzDisabled]="readonly"
+  [nzShowUploadList]="{ showPreviewIcon: true, showRemoveIcon: !readonly }"
+  [nzListType]="listType"
+  [nzPreview]="previewFile"
+  [nzBeforeUpload]="beforeUpload"
+  [nzCustomRequest]="uploader"
+  (nzChange)="changeHandler($event)"
+  [nzShowButton]="!readonly && fileList.length < uploadConfig.count"
+  >
+  <i nz-tooltip nzTooltipTitle="点击或者将文件拖拽到此区域上传">
+    <ng-content></ng-content>
+  </i>
+</nz-upload>
+
+<nz-modal [nzVisible]="showPreview" (nzOnOk)="okHandler()" [nzWidth]="900" (nzOnCancel)="okHandler()">
+  <img [src]="previewUrl" alt="图片不存在或者当前文件不是图片" [style.width]="'100%'">
+</nz-modal>

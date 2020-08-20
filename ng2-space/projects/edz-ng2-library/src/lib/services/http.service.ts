@@ -96,7 +96,7 @@ export class HttpService {
   /** 是否使用后端返回的错误消息 */
   private useBackEndErrorMessage: boolean
   /** 未登录 */
-  private unAuth$ = new Subject()
+  private unAuth$ = new Subject<{ message: string, notShowErrorMessagee: boolean }>()
   /** 缓存数据 */
   private static cache = {}
   constructor(
@@ -115,13 +115,16 @@ export class HttpService {
     this.message = message
     this.successCode = successCode
     this.useBackEndErrorMessage = useBackEndErrorMessage
-    this.unAuth$.pipe(throttleTime(600)).subscribe((msg: string) => {
-      messageService.remove()
-      messageService.warning(msg, { nzDuration: 500 }).onClose.subscribe(() => {
+    this.unAuth$.pipe(throttleTime(600)).subscribe(({ message: msg, notShowErrorMessagee }) => {
+      if (notShowErrorMessagee) {
         if (typeof unAuthCallback === 'function') {
           unAuthCallback()
         }
-      })
+      } else {
+        messageService.remove()
+        messageService.warning(msg, { nzDuration: 500 }).onClose.subscribe(() => {
+        })
+      }
     })
   }
 
@@ -316,7 +319,7 @@ export class HttpService {
       if (status <= 200) {
         // 如果返回的是包含 html 关键字的文本, 则认为是重定向到了登录页
         if (/<html/i.test(text)) {
-          this.unAuth$.next('登录失效, 请重新登录!')
+          this.unAuth$.next({ message: '登录失效, 请重新登录!', notShowErrorMessagee })
           return EMPTY
         }
         let message = ''
@@ -327,7 +330,7 @@ export class HttpService {
         } else {
           message = '未知错误，请与研发中心技术客服联系！'
         }
-        this.unAuth$.next(message)
+        this.unAuth$.next({ message, notShowErrorMessagee })
         return EMPTY
       }
       if (status < 400) {

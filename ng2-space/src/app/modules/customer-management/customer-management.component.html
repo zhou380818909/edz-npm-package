@@ -13,10 +13,12 @@
       <nz-tabset [nzAnimated]="false">
           <nz-tab nzTitle="Tab 1">
             12312321
-            <!-- <div> -->
-              kkkkk
-              <edz-table [config]="tableConfig" [column]="column" [data]="tableData" [loading]="false"></edz-table>
-            <!-- </div> -->
+            <edz-upload [(ngModel)]="uploadFile" [config]="uploadConfig" (valueChange)="uploadChangeHandler()">
+              <button nz-button>
+                <i nz-icon nzType="upload" nzTheme="outline"></i>
+                <span>点击上传</span>
+              </button>
+            </edz-upload>
           </nz-tab>
           <nz-tab nzTitle="Tab 2">
             1233

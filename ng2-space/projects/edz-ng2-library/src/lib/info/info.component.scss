@@ -1,9 +1,9 @@
 div[nz-col] {
+  align-items: center;
   display: flex;
 
   .label {
     display: flex;
-    font-weight: 700;
     justify-content: space-between;
 
     &::after {
@@ -12,11 +12,26 @@ div[nz-col] {
       margin-right: 8px;
     }
 
-    .text {
+    span {
       flex: 1;
+    }
+
+    .justify {
       text-align: justify;
       text-align-last: justify;
       text-justify: distribute-all-lines;
+    }
+
+    .right {
+      text-align: right;
+    }
+
+    .left {
+      text-align: left;
+    }
+
+    .center {
+      text-align: center;
     }
 
     i[nz-tooltip] {

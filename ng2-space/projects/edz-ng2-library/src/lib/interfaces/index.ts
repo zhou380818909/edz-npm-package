@@ -1,5 +1,6 @@
-import { EventEmitter, TemplateRef } from '@angular/core'
-import { NzMenuItemDirective } from 'ng-zorro-antd'
+import { HttpResponse } from '@angular/common/http'
+import { EventEmitter, TemplateRef, Type } from '@angular/core'
+import { NzMenuItemDirective, NzUploadFile, UploadFilter, UploadXHRArgs } from 'ng-zorro-antd'
 import { Observable } from 'rxjs'
 
 type Without<T, U> = { [P in Exclude<keyof T, keyof U>]?: never }
@@ -32,8 +33,10 @@ export interface IColumnItem<T = { [k: string]: any }> {
   nzShowCheckbox?: boolean
   /** 列标题的渲染 */
   titleRender?: TemplateRef<any>
-  /** 数据组件渲染 */
+  /** 数据组件模板渲染 */
   render?: TemplateRef<any>
+  /** 数据组件渲染,  */
+  component?: Type<any>
   /** 是否排序 */
   nzShowSort?: boolean
   /** 排序名 */
@@ -239,6 +242,8 @@ export interface IInfoItem {
   tips?: string
   /** label样式 */
   labelStyle?: IInfoLabelStyle
+  /** label对齐的样式 */
+  labelAlign?: 'right' | 'left' | 'center' | 'justify'
   /** value样式 */
   valueStyle?: IInfoStyle
 }
@@ -254,4 +259,34 @@ export interface IInfoConfig {
   labelStyle?: IInfoLabelStyle
   /** value样式 */
   valueStyle?: IInfoStyle
+  /** label对齐的样式 */
+  labelAlign?: 'right' | 'left' | 'center' | 'justify'
+}
+
+export interface IUploadConfig<T = any> {
+  /** 文件数量限制, 默认为5 */
+  count?: number
+  /** 文件大小限制, 单位M, 最终将加入到filters */
+  size?: number
+  /** 文件类型, 限制选中文件夹选中 https://developer.mozilla.org/zh-CN/docs/Web/HTML/Element/input#attr-accept */
+  accept?: string
+  /** 文件类型, 有message提示 */
+  type?: string[]
+  /** 文件上传到服务器的字段, 默认 file */
+  name?: string
+  /** 文件过滤器 */
+  filters?: UploadFilter[]
+  /** 是否支持多文件上传, 默认true */
+  multiple?: boolean
+  /** 文件上传的地址 */
+  url: string
+  /** 上传回调 */
+  handler: (upload: UploadXHRArgs, res: HttpResponse<any>) => void,
+  /** 数据转换 */
+  transfer: {
+    /** 将fileList转换为value, 双向数据绑定更新数据 */
+    fileListToValue: (fileList: NzUploadFile[]) => T[],
+    /** 将value转换为fileList, 双向数据绑定初始化数据 */
+    valueToFileList: (value: T) => NzUploadFile[],
+  }
 }

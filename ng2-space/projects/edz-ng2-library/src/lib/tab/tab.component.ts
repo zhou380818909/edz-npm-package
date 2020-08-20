@@ -75,17 +75,9 @@ export class TabComponent implements OnInit, OnDestroy {
     })
     // 如果路由复用策略中存在函数
     if (typeof (this.router.routeReuseStrategy as any).rootRoute === 'function') {
-      // 如果路由复用策略中存在路由事件订阅, 则取消路由订阅
-      this.routerSub$.unsubscribe()
       this.rootRoute$ = (this.router.routeReuseStrategy as any).rootRoute().subscribe((route: ActivatedRouteSnapshot) => {
         if (route && Array.isArray(route.children)) {
           this.setRouteParamTab(route.children)
-        }
-        if (this.routerSub$.closed) {
-          this.routerEvent(
-            { url: (route as any)._routerState.url, urlAfterRedirects: (route as any)._routerState.url } as NavigationEnd,
-            activeRoute.snapshot,
-          )
         }
       })
     }

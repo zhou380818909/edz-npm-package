@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core'
-import { IColumnItem, ISearchItem, ITableConfig } from '../../../../projects/edz-ng2-library/src/lib/interfaces'
+import { NzMessageService } from 'ng-zorro-antd'
+import { IColumnItem, ISearchItem, ITableConfig, IUploadConfig } from '../../../../projects/edz-ng2-library/src/lib/interfaces'
 import { HttpService } from '../../../../projects/edz-ng2-library/src/lib/services'
 
 @Component({
@@ -19,14 +20,15 @@ export class CustomerManagementComponent implements OnInit, OnDestroy {
     }, 1000)
   }
   onBtnClick() {
-    console.log(this.date)
+    console.warn(this.date)
   }
   dateChange(date) {
-    console.log(date)
+    console.warn(date)
   }
   searchValue = { city: '2' } as any
   searchBarConfig: ISearchItem[] = []
   column: IColumnItem[] = []
+  columnGroup: IColumnItem[] = []
   tableConfig: ITableConfig = {
     scroll: true,
     width: '2600px',
@@ -93,6 +95,35 @@ export class CustomerManagementComponent implements OnInit, OnDestroy {
       score: '清风',
     },
   ]
+  uploadFile = ['https://dss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=3644870016,1608664289&fm=26&gp=0.jpg',
+    'http://placekitten.com/300/300',
+    'https://edianzu-oss-work-order.oss-cn-beijing.aliyuncs.com/order_attachments/6bc73abdd87750d23c4422d67bfeb5a6.pdf']
+  uploadConfig: IUploadConfig<string[]> = {
+    name: 'fileData',
+    url: '/upload-api/fileOpt/fileUpload',
+    handler: (upload, res) => {
+      if (res.body && res.body.code === 0) {
+        upload.onSuccess(res.body, upload.file, res)
+      } else {
+        this.message.warning('上传失败')
+        upload.onError('上传失败!', upload.file)
+      }
+    },
+    transfer: {
+      valueToFileList: value => value.map((item, index) => ({
+        name: `文件${index + 1}`,
+        uid: Math.random().toString(36).substring(2),
+        filename: `文件${index + 1}`,
+        response: { code: 0, data: item },
+        percent: 100,
+        thumbUrl: item,
+        status: 'done',
+        url: item,
+      })),
+      fileListToValue: fileList => fileList.filter(item => item.status === 'done' || item.status === 'success')
+        .map(item => item.response?.data || ''),
+    },
+  }
 
   dateValue = null
 
@@ -101,7 +132,7 @@ export class CustomerManagementComponent implements OnInit, OnDestroy {
   @ViewChild('ellipsis', { static: true })
   ellipsisComponent
 
-  constructor(private http: HttpService) {
+  constructor(private http: HttpService, private message: NzMessageService) {
     // this.http.post('http://localhost:3000/posts', { query: { a: 1 }, json: [{ b: 1 }] }).subscribe(() => {})
   }
 
@@ -187,11 +218,71 @@ export class CustomerManagementComponent implements OnInit, OnDestroy {
         nzRight: true,
       },
     ]
+    this.columnGroup = [
+      {
+        title: '1',
+        index: 'name',
+        colspan: 2,
+        rowspan: 1,
+      },
+      {
+        title: '2',
+        index: 'name',
+        colspan: 1,
+        rowspan: 1,
+      },
+      {
+        title: '2',
+        index: 'name',
+        colspan: 1,
+        rowspan: 1,
+      },
+      {
+        title: '1',
+        index: 'name',
+        rowspan: 2,
+        colspan: 1,
+      },
+      {
+        title: '1',
+        index: 'name',
+        rowspan: 2,
+        colspan: 1,
+      },
+      {
+        title: '1',
+        index: 'name',
+        colspan: 2,
+        rowspan: 1,
+      },
+      {
+        title: '2',
+        index: 'name',
+        colspan: 1,
+        rowspan: 1,
+      },
+      {
+        title: '2',
+        index: 'name',
+        colspan: 1,
+        rowspan: 1,
+      },
+      {
+        title: '2',
+        index: 'name',
+        colspan: 2,
+        rowspan: 1,
+      },
+    ]
   }
 
   searchHandler(value) {
     this.searchValue = value
-    console.log(value)
+    console.warn(value)
+  }
+
+  uploadChangeHandler() {
+    console.log(this.uploadFile);
   }
 
   initSearch() {
@@ -203,14 +294,14 @@ export class CustomerManagementComponent implements OnInit, OnDestroy {
   }
 
   clickHandler(e) {
-    console.log(e);
+    console.warn(e)
   }
 
   ngOnInit(): void {
     this.initSearch()
     this.initRender()
     setTimeout(() => {
-      console.log(this.searchValue);
+      console.warn(this.searchValue)
     }, 8000)
     // setTimeout(() => {
     //   this.tableConfig = {
@@ -218,10 +309,10 @@ export class CustomerManagementComponent implements OnInit, OnDestroy {
     //     totalData: [{ name: '总数1', score: 11 }, { name: '总数2', score: 66 }],
     //   }
     // }, 5000)
-    this.http.get('http://localhost:3000/api/', {}, { callback: console.log, }).subscribe(() => {})
+    this.http.get('http://localhost:3000/api/', {}, { callback: console.warn }).subscribe(() => {})
   }
 
   ngOnDestroy() {
-    console.log('customer-destroy')
+    console.warn('customer-destroy')
   }
 }
