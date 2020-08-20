@@ -2,7 +2,7 @@
  * @Author: ChouEric
  * @Date: 2020-07-15 11:39:46
  * @Last Modified by: ChouEric
- * @Last Modified time: 2020-08-07 13:26:56
+ * @Last Modified time: 2020-08-20 20:18:04
  * @Description: tab组件, 和路径相关, 在Router中,可以访问路由复用策略
  */
 import { Component, Input, OnDestroy, OnInit } from '@angular/core'
@@ -36,7 +36,7 @@ export class TabComponent implements OnInit, OnDestroy {
   menuList: IMenuItem[] = []
   /** 是否使用浏览器本地缓存储存tab列表 */
   @Input()
-  useStorage: 'session' | 'local' | false = 'session'
+  useStorage: 'session' | 'local' | 'none' = 'session'
   // 当前激活的tab的索引
   activeIndex = 0
   // 当前的菜单数量
@@ -266,7 +266,7 @@ export class TabComponent implements OnInit, OnDestroy {
 
   /** 将tabs存入缓存 */
   private saveTabToStorage() {
-    if (!this.useStorage) return
+    if (this.useStorage === 'none') return
     if (this.useStorage === 'session') {
       this.sessionStorage.setItem('TAB_LIST', this.tabs)
       return
