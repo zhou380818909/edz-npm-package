@@ -1,0 +1,15 @@
+:host {
+  ::ng-deep {
+    .ant-upload-list-item-name {
+      color: #1890ff;
+      cursor: pointer;
+    }
+
+    .ant-upload-list-item-actions {
+      a {
+        opacity: 1 !important;
+        pointer-events: unset !important;
+      }
+    }
+  }
+}

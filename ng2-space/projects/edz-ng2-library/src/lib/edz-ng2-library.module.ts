@@ -14,6 +14,7 @@ import { SecretTextModule } from './secret-text/secret-text.module'
 import { TabSetModule } from './tab-set/tab-set.module'
 import { TabModule } from './tab/tab.module'
 import { TableModule } from './table/table.module'
+import { UploadModule } from './upload/upload.module'
 
 const modules = [
   CommonModule,
@@ -30,6 +31,7 @@ const modules = [
   DidrectivesModule,
   PipesModule,
   InfoModule,
+  UploadModule,
 ]
 
 @NgModule({

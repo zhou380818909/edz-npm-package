@@ -9,6 +9,7 @@ import { NzResizeObserver, NzTableComponent } from 'ng-zorro-antd'
 import { Subscription } from 'rxjs'
 import { debounceTime } from 'rxjs/operators'
 import { ICheckedMap, IColumnItem, IPagination, ITableConfig, ITableItem, ITableScroll } from '../interfaces'
+import { TableService } from './table.service'
 
 interface IRenderColumnItem extends IColumnItem {
   nzLeftWidth?: string | boolean
@@ -25,6 +26,7 @@ interface ICollapseItem extends IRenderColumnItem {
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [TableService],
 })
 export class TableComponent implements OnInit, OnDestroy {
   /** 列配置 */
@@ -106,6 +108,7 @@ export class TableComponent implements OnInit, OnDestroy {
     private ele: ElementRef<HTMLElement>,
     private render: Renderer2,
     private resize: NzResizeObserver,
+    private service: TableService,
   ) {}
 
   /** 当页码和页大小同时改变的时候使用防抖 */
@@ -151,7 +154,7 @@ export class TableComponent implements OnInit, OnDestroy {
     }
   }
 
-  // 提升表格循环渲染性能, 可能没用
+  // 提升表格循环渲染性能, 目前用索引, 如果为了实现排序则会需要为的index.
   trackBy(index) {
     return index
   }
@@ -184,7 +187,7 @@ export class TableComponent implements OnInit, OnDestroy {
     this.cdr.detach()
     // TODO: 暂时没有实现表头分组
     // 判断列配置中是否含有表头合并相关配置
-    const hasCallapse = this.column.some(item => item.colspan && item.colspan > 1)
+    const hasCallapse = this.column.some(item => item.rowspan > 1 || item.colspan > 1)
     this.renderColumn = [...this.column]
     const collapseConfigLeft = this.setNzLeftOrRightWidth(this.renderColumn)
     const collapseConfigRight = this.setNzLeftOrRightWidth(this.renderColumn, true).reverse()
@@ -200,6 +203,7 @@ export class TableComponent implements OnInit, OnDestroy {
       // 如果有表头合并
       // 宽度配置为colspan不设置或者为1的宽度
       this.nzWidthConfig = this.column.filter(item => !item.colspan || item.colspan < 2).map(item => item.width)
+      this.collapseConfig = this.service.getCollapse(this.column)
       // const rowspanMax = Math.max(...this.column.filter(item => item.rowspan && item.rowspan > 1).map(item => item.rowspan))
       // 根据最大的行合并数生成合并配置的外层数量
       // this.collapseConfig = new Array(rowspanMax).fill([])

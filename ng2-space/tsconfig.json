@@ -19,10 +19,16 @@
       "edz-ng2-library": [
         "dist/edz-ng2-library/edz-ng2-library",
         "dist/edz-ng2-library"
+      ],
+      "form": [
+        "dist/form/form",
+        "dist/form"
       ]
     }
   },
-  "files": [".eslintrc.js"],
+  "files": [
+    ".eslintrc.js"
+  ],
   "angularCompilerOptions": {
     "fullTemplateTypeCheck": true,
     "strictInjectionParameters": true

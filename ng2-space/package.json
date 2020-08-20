@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "ng serve --host localhost --port 4820",
+    "start": "ng serve --host localhost --port 4820 --proxy-config proxy.conf.json",
     "build": "npm run lint:ts && npm run lint:scss && ng build edz-ng2-library --prod",
     "publish": "npm run build && cd projects/edz-ng2-library && npm version patch && cd ../../dist/edz-ng2-library && npm version patch && npm publish",
     "test": "ng test",

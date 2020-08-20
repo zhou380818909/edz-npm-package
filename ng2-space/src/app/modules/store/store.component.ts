@@ -8,7 +8,7 @@ import { IInfoConfig, IInfoItem } from '../../../../projects/edz-ng2-library/src
 })
 export class StoreComponent implements OnInit {
   list: IInfoItem[] = []
-  config: IInfoConfig = { nzSpan: { xxl: 6, xl: 8 }, labelStyle: { width: '74px' } }
+  config: IInfoConfig = { nzSpan: { xxl: 6, xl: 8 }, labelStyle: { width: '74px', fontSize: '12px' }, valueStyle: { fontSize: '12px' } }
   data = { name: '清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风清风', age: 24 }
 
   @ViewChild('render', { static: true })

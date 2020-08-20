@@ -2,7 +2,7 @@
   <!-- 响应式布局 -->
   <div nz-col *ngFor="let item of list" [nzXs]="item?.nzXl || configRender?.nzSpan?.xl" [nzXl]="item?.nzXl || configRender?.nzSpan?.xl" [nzXXl]="item?.nzXXl || configRender?.nzSpan?.xxl" >
     <!-- label渲染 -->
-    <span class="label" [ngStyle]="item?.labelStyle || configRender.labelStyle"><span class="text">{{item.label}}</span><i *ngIf="item.tips" nz-tooltip nz-icon nzType="question-circle" [nzTooltipTitle]="item.tips"></i>
+    <span class="label" [ngStyle]="item?.labelStyle || configRender.labelStyle"><span [ngClass]="item.labelAlign || configRender.labelAlign || 'right'">{{item.label}}</span><i *ngIf="item.tips" nz-tooltip nz-icon nzType="question-circle" [nzTooltipTitle]="item.tips"></i>
     </span>
     <!-- 有组件渲染则定义模板出口 -->
     <span class="value" [ngStyle]="item?.valueStyle || configRender.valueStyle" *ngIf="item.render; else noRenderTpl">
