@@ -2,6 +2,8 @@ import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core'
 import { NzMessageService } from 'ng-zorro-antd'
 import { IColumnItem, ISearchItem, ITableConfig, IUploadConfig } from '../../../../projects/edz-ng2-library/src/lib/interfaces'
 import { HttpService } from '../../../../projects/edz-ng2-library/src/lib/services'
+import { Info } from './info.component'
+import { Summary } from './sumary.component'
 
 @Component({
   selector: 'app-customer-management',
@@ -162,11 +164,13 @@ export class CustomerManagementComponent implements OnInit, OnDestroy {
         title: '姓名',
         index: 'score',
         width: '200px',
+        component: Summary,
       },
       {
         title: '姓名',
         index: 'score',
         width: '200px',
+        component: Info,
       },
       {
         title: '姓名',

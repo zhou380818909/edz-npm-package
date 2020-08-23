@@ -2,7 +2,7 @@
  * @Author: ChouEric
  * @Date: 2020-07-15 15:05:59
  * @Last Modified by: ChouEric
- * @Last Modified time: 2020-07-30 20:41:17
+ * @Last Modified time: 2020-08-23 20:47:09
  * @Description: 封装 http 请求
  */
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http'
@@ -122,7 +122,7 @@ export class HttpService {
         }
       } else {
         messageService.remove()
-        messageService.warning(msg, { nzDuration: 500 }).onClose.subscribe(() => {
+        messageService.warning(msg, { nzDuration: 2000 }).onClose.subscribe(() => {
         })
       }
     })

@@ -2,11 +2,11 @@
  * @Author: ChouEric
  * @Date: 2020-07-15 11:39:46
  * @Last Modified by: ChouEric
- * @Last Modified time: 2020-08-20 20:18:04
+ * @Last Modified time: 2020-08-23 20:41:39
  * @Description: tab组件, 和路径相关, 在Router中,可以访问路由复用策略
  */
 import { Component, Input, OnDestroy, OnInit } from '@angular/core'
-import { ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd, Route, Router } from '@angular/router'
+import { ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd, PRIMARY_OUTLET, Route, Router, UrlTree } from '@angular/router'
 import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown'
 import { BehaviorSubject, Subscription } from 'rxjs'
 import { filter } from 'rxjs/operators'
@@ -24,6 +24,18 @@ interface ITabItem {
   disableClose?: boolean
   /** 不同路径对应相同组件的组件 */
   component?: any
+}
+
+export interface IRouteData {
+  /** 动态路由是否支持多个组件实例 */
+  multi?: boolean
+  /** 不缓存路由组件 */
+  noCache?: boolean
+  /** 在tab中禁用关闭 */
+  disableClose?: boolean
+  /** 在tab中隐藏显示 */
+  hiddenInTab?: boolean
+  [k: string]: any
 }
 
 @Component({
@@ -51,6 +63,8 @@ export class TabComponent implements OnInit, OnDestroy {
   private rootRoute$
   // 首次路由
   private firstRouterEvent$: BehaviorSubject<NavigationEnd>
+  /** 路由配置加载完成 */
+  private loadedConfig$: BehaviorSubject<any>
 
   constructor(
     private nzContextMenuService: NzContextMenuService,
@@ -60,9 +74,6 @@ export class TabComponent implements OnInit, OnDestroy {
     private activeRoute: ActivatedRoute,
     private service: TabService,
   ) {
-    this.service.close$.subscribe(() => {
-      this.closeTab(this.tabs[this.activeIndex])
-    })
     this.routerSub$ = this.router.events.pipe(
       // 当前路由事件已经完成了切换
       filter(event => event instanceof NavigationEnd),
@@ -72,6 +83,7 @@ export class TabComponent implements OnInit, OnDestroy {
         return
       }
       this.routerEvent(event, activeRoute.snapshot)
+      // TODO: 可以通过router.config拿到路由配置, 需要匹配到, 多开和禁用关闭tab的名称等配置在Route的data中配置
     })
     // 如果路由复用策略中存在函数
     if (typeof (this.router.routeReuseStrategy as any).rootRoute === 'function') {
@@ -83,23 +95,29 @@ export class TabComponent implements OnInit, OnDestroy {
     }
   }
 
+  /** 将urlTree转换成url数组 */
+  private getUrlArrayFromUrlTree(urlTree: UrlTree) {
+    return urlTree.root.children[PRIMARY_OUTLET].segments.map(item => item.path)
+  }
+
   /** 根据路由事件来打开tab或者设置为激活, 或者关闭 */
   routerEvent(event: NavigationEnd, activeRouterSnapshot: ActivatedRouteSnapshot) {
     this.getTitleFromRouterConfig(activeRouterSnapshot.routeConfig)
     // 根据url地址转换为数组
-    const currentPaths = event.urlAfterRedirects.replace(/^\//, '').split('/')
+    const currentPaths = this.getUrlArrayFromUrlTree(this.router.parseUrl(event.urlAfterRedirects))
     // 从数组中获取当前的tab能够展示的tab
-    const tabMenu = this.getTabFromMenu(currentPaths)
+    const tabMenu = this.getTabFromMenu([...currentPaths])
     const { title = activeRouterSnapshot?.routeConfig?.data?.title || '未命名', disableClose, hiddenInTab } = tabMenu
     if (hiddenInTab) {
       this.activeIndex = this.tabs.length
       return
     }
+    const url = `/${currentPaths.join('/')}`
     // 当前的url在tab中的索引
-    const existIndex = this.tabs.findIndex(tab => tab.title === title && tab.url === event.urlAfterRedirects)
+    const existIndex = this.tabs.findIndex(tab => tab.title === title && tab.url === url)
     // 如果当前url的索引小于0, 即是当前url不在tab中
     if (existIndex < 0 && title) {
-      const tab = { url: event.urlAfterRedirects, title, disableClose, component: this.sameRoute && this.sameRoute.component }
+      const tab = { url, title, disableClose, component: this.sameRoute && this.sameRoute.component }
       if (this.sameRoute && this.sameRoute.component) {
         const equalIndex = this.tabs.findIndex(item => item.component === this.sameRoute.component)
         if (equalIndex > -1) {

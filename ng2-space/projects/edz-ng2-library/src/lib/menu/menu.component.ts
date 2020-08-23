@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core'
-import { NavigationEnd, Router } from '@angular/router'
+import { NavigationEnd, PRIMARY_OUTLET, Router, UrlTree } from '@angular/router'
 import { BehaviorSubject, timer } from 'rxjs'
 import { filter } from 'rxjs/operators'
 import { IMenuConfig, IMenuItem } from '../interfaces'
@@ -47,10 +47,15 @@ export class MenuComponent implements OnInit, OnDestroy {
     })
   }
 
+  /** 将urlTree转换成url数组 */
+  private getUrlArrayFromUrlTree(urlTree: UrlTree) {
+    return urlTree.root.children[PRIMARY_OUTLET].segments.map(item => item.path)
+  }
+
   /** 根据路由事件才激活当前菜单,以及失活上一个菜单 */
   routerEvent(event: NavigationEnd) {
-    const currentPaths = event.urlAfterRedirects.replace(/^\//, '').split('/')
-    const previousePaths = this.previousUrl.replace(/^\//, '').split('/')
+    const currentPaths = this.getUrlArrayFromUrlTree(this.router.parseUrl(event.urlAfterRedirects))
+    const previousePaths = this.previousUrl ? this.getUrlArrayFromUrlTree(this.router.parseUrl(this.previousUrl)) : []
     this.cdr.detach()
     this.setMenuUnActive(previousePaths)
     if (this.fisrtRouterEvent$) {
