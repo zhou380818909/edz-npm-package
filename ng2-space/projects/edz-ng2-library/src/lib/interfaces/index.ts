@@ -35,7 +35,7 @@ export interface IColumnItem<T = { [k: string]: any }> {
   titleRender?: TemplateRef<any>
   /** 数据组件模板渲染 */
   render?: TemplateRef<any>
-  /** 数据组件渲染,  */
+  /** 数据组件渲染  */
   component?: Type<any>
   /** 是否排序 */
   nzShowSort?: boolean

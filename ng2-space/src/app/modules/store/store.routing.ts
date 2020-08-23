@@ -10,7 +10,7 @@ const routes: Route[] = [
   {
     path: 'detail',
     children: [
-      { path: ':id', component: StoreComponent, data: { noCache: false } },
+      { path: ':id', component: StoreComponent, data: { noCache: true } },
     ],
   },
 ]

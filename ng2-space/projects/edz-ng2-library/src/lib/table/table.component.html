@@ -106,14 +106,18 @@
 
 <!-- td的内容渲染 -->
 <ng-template #tdContent let-col let-item="item" let-i="i">
+  <!-- 如果有组件渲染, 则根据组件渲染, 通过方法将当前行的数据传入对应的组件 -->
+  <ng-template [ngIf]="col.component">
+    <span #componentContainer></span>
+  </ng-template>
   <!-- 如果有渲染模板, 则根据模板渲染, 同时需要把当前行的数据传到对应的模板 -->
-  <ng-template [ngIf]="col.render">
+  <ng-template [ngIf]="col.render && !col.component">
     <ng-container
       *ngTemplateOutlet="col.render; context: {$implicit: item[col['index']], index: col['index'], row: item, i: i}">
     </ng-container>
   </ng-template>
   <!-- 如果没有模板则直接渲染 -->
-  <ng-template [ngIf]="!col.render">
+  <ng-template [ngIf]="!col.render && !col.component">
     <span
       *ngIf="col.textOverflow !== 'ellipsis' || col.lineCamp < 2; else elseText"
       nz-tooltip

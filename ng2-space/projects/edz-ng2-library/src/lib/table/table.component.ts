@@ -1,8 +1,8 @@
 import {
   ChangeDetectionStrategy, ChangeDetectorRef, Component,
-  ElementRef, EventEmitter, Input,
+  ComponentFactoryResolver, ElementRef, EventEmitter, Input,
   OnDestroy, OnInit, Output,
-  Renderer2, SimpleChanges, ViewChild,
+  QueryList, Renderer2, SimpleChanges, ViewChild, ViewChildren, ViewContainerRef,
 } from '@angular/core'
 import { Debounce } from 'lodash-decorators'
 import { NzResizeObserver, NzTableComponent } from 'ng-zorro-antd'
@@ -85,6 +85,9 @@ export class TableComponent implements OnInit, OnDestroy {
   @ViewChild(NzTableComponent, { static: true })
   nzTable: NzTableComponent
 
+  @ViewChildren('componentContainer', { read: ViewContainerRef })
+  components: QueryList<ViewContainerRef>
+
   resizeSub: Subscription
 
   /** 是否是全部选中状态 */
@@ -109,6 +112,7 @@ export class TableComponent implements OnInit, OnDestroy {
     private render: Renderer2,
     private resize: NzResizeObserver,
     private service: TableService,
+    private cfr: ComponentFactoryResolver,
   ) {}
 
   /** 当页码和页大小同时改变的时候使用防抖 */
@@ -157,6 +161,23 @@ export class TableComponent implements OnInit, OnDestroy {
   // 提升表格循环渲染性能, 目前用索引, 如果为了实现排序则会需要为的index.
   trackBy(index) {
     return index
+  }
+
+  /** 根据component渲染数据 */
+  componentRender() {
+    if (!this.components) return
+    const cols = this.column.filter(col => col.component)
+    // 视图容器是由行到列
+    this.data.forEach((row, index) => {
+      cols.forEach((col, number) => {
+        const container = this.components.toArray()[index * cols.length + number]
+        if (!container) return
+        container.clear()
+        const componentFactory = this.cfr.resolveComponentFactory(col.component)
+        const componentRef = container.createComponent(componentFactory)
+        Object.assign(componentRef.instance, row)
+      })
+    })
   }
 
   /** 根据宽度自动计算所需要的定位的宽度 */
@@ -233,6 +254,12 @@ export class TableComponent implements OnInit, OnDestroy {
     // 将column里面的宽度width遍历到config的widthConfig中
     if (simpleChange.column && Array.isArray(simpleChange.column.currentValue)) {
       this.createCollapses()
+      if (this.data?.length > 0) {
+        this.componentRender()
+      }
+    }
+    if (simpleChange.data && Array.isArray(simpleChange.data.currentValue)) {
+      this.componentRender()
     }
   }
 
