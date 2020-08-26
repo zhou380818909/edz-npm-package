@@ -6,36 +6,27 @@
  * @Description: tab组件, 和路径相关, 在Router中,可以访问路由复用策略
  */
 import { Component, Input, OnDestroy, OnInit } from '@angular/core'
-import { ActivatedRoute, ActivatedRouteSnapshot, NavigationEnd, PRIMARY_OUTLET, Route, Router, UrlTree } from '@angular/router'
+import { NavigationEnd, Router } from '@angular/router'
 import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown'
 import { BehaviorSubject, Subscription } from 'rxjs'
 import { filter } from 'rxjs/operators'
-import { IMenuItem } from '../interfaces'
+import { IMenuItem, Route } from '../interfaces'
 import { LocalStorageService } from '../services/local-storage.service'
+import { RouterService } from '../services/router.service'
 import { SessionStorageService } from '../services/session-storage.service'
 import { TabService } from './tab-service.service'
 
 interface ITabItem {
   /** url地址 */
-  url?: string
-  /** tab显示的名字 */
+  url: string
+  /** 含有动态路由参数的url */
+  urlWithParam?: string
+  /** 在tab显示的标签名 */
   title?: string
   /** 禁用关闭 */
   disableClose?: boolean
   /** 不同路径对应相同组件的组件 */
   component?: any
-}
-
-export interface IRouteData {
-  /** 动态路由是否支持多个组件实例 */
-  multi?: boolean
-  /** 不缓存路由组件 */
-  noCache?: boolean
-  /** 在tab中禁用关闭 */
-  disableClose?: boolean
-  /** 在tab中隐藏显示 */
-  hiddenInTab?: boolean
-  [k: string]: any
 }
 
 @Component({
@@ -55,24 +46,17 @@ export class TabComponent implements OnInit, OnDestroy {
   tabs: ITabItem[]
   // 右键菜单选中的tab
   private contextMenuTab: ITabItem
-  // 路径参数的同一组件
-  private sameRoute: ActivatedRouteSnapshot
   // 用来取消订阅
   private routerSub$: Subscription
-  // 根路由事件订阅
-  private rootRoute$
   // 首次路由
   private firstRouterEvent$: BehaviorSubject<NavigationEnd>
-  /** 路由配置加载完成 */
-  private loadedConfig$: BehaviorSubject<any>
-
   constructor(
     private nzContextMenuService: NzContextMenuService,
     private router: Router,
     private sessionStorage: SessionStorageService,
     private localStorage: LocalStorageService,
-    private activeRoute: ActivatedRoute,
     private service: TabService,
+    private routerService: RouterService,
   ) {
     this.routerSub$ = this.router.events.pipe(
       // 当前路由事件已经完成了切换
@@ -82,50 +66,45 @@ export class TabComponent implements OnInit, OnDestroy {
         this.firstRouterEvent$ = new BehaviorSubject(event)
         return
       }
-      this.routerEvent(event, activeRoute.snapshot)
-      // TODO: 可以通过router.config拿到路由配置, 需要匹配到, 多开和禁用关闭tab的名称等配置在Route的data中配置
+      this.routerEvent(event)
     })
-    // 如果路由复用策略中存在函数
-    if (typeof (this.router.routeReuseStrategy as any).rootRoute === 'function') {
-      this.rootRoute$ = (this.router.routeReuseStrategy as any).rootRoute().subscribe((route: ActivatedRouteSnapshot) => {
-        if (route && Array.isArray(route.children)) {
-          this.setRouteParamTab(route.children)
-        }
-      })
-    }
-  }
-
-  /** 将urlTree转换成url数组 */
-  private getUrlArrayFromUrlTree(urlTree: UrlTree) {
-    return urlTree.root.children[PRIMARY_OUTLET].segments.map(item => item.path)
+    // 关闭当前激活的tab
+    service.close$.subscribe(() => {
+      const item = this.tabs ? this.tabs[this.activeIndex] : null
+      if (item) {
+        this.closeTab(item)
+      }
+    })
   }
 
   /** 根据路由事件来打开tab或者设置为激活, 或者关闭 */
-  routerEvent(event: NavigationEnd, activeRouterSnapshot: ActivatedRouteSnapshot) {
-    this.getTitleFromRouterConfig(activeRouterSnapshot.routeConfig)
+  routerEvent(event: NavigationEnd) {
     // 根据url地址转换为数组
-    const currentPaths = this.getUrlArrayFromUrlTree(this.router.parseUrl(event.urlAfterRedirects))
-    // 从数组中获取当前的tab能够展示的tab
-    const tabMenu = this.getTabFromMenu([...currentPaths])
-    const { title = activeRouterSnapshot?.routeConfig?.data?.title || '未命名', disableClose, hiddenInTab } = tabMenu
+    const currentPaths = this.routerService.getPathArrayFromUrl(event.urlAfterRedirects)
+    // 从路由配置中获取最后一级路由配置Route
+    const route = this.routerService.getLastRouteConfigFromRouteConfig(this.router.config[0], currentPaths) || {} as Route
+    const { data: { title = '未命名', disableClose = false, hiddenInTab = false, multi = false } = {}, path } = route
     if (hiddenInTab) {
-      this.activeIndex = this.tabs.length
       return
     }
-    const url = `/${currentPaths.join('/')}`
+    // 从路由配置中获取从根路由到最后一级的路由配置
+    const rootFromPath = this.routerService.getDeepRouteConfigFromRouteConfig(this.router.config[0], currentPaths)
+    // 当前的url路径(去掉了query等参数)
+    const url = this.routerService.getPathFromUrl(event.urlAfterRedirects)
+    // 当前的url路径(去掉了query参数, 由路由配置拼接的, 包含路径参数)
+    let urlWithParam: string
+    // 如果路径以:开头则代表路径为动态参数并且multi(多开参数不为truth), 则只生成一个tab, 从路由配置中获取url拼接
+    if (path.startsWith(':') && !multi) {
+      urlWithParam = rootFromPath.reduce((pre, cur) => pre += cur.path ? `/${cur.path}` : '', '')
+    }
     // 当前的url在tab中的索引
-    const existIndex = this.tabs.findIndex(tab => tab.title === title && tab.url === url)
+    const existIndex = this.tabs.findIndex(tab => tab.title === title
+      && ((urlWithParam && urlWithParam === tab.urlWithParam) || tab.url === url))
     // 如果当前url的索引小于0, 即是当前url不在tab中
     if (existIndex < 0 && title) {
-      const tab = { url, title, disableClose, component: this.sameRoute && this.sameRoute.component }
-      if (this.sameRoute && this.sameRoute.component) {
-        const equalIndex = this.tabs.findIndex(item => item.component === this.sameRoute.component)
-        if (equalIndex > -1) {
-          this.tabs.splice(equalIndex, 1, tab)
-          this.activeIndex = equalIndex
-          this.saveTabToStorage()
-          return
-        }
+      const tab = { url, title, disableClose } as ITabItem
+      if (urlWithParam) {
+        tab.urlWithParam = urlWithParam
       }
       this.tabs.push(tab)
       this.activeIndex = this.tabs.length - 1
@@ -133,20 +112,6 @@ export class TabComponent implements OnInit, OnDestroy {
     } else {
       this.activeIndex = existIndex
     }
-  }
-
-  /**
-   * 从路由菜单获取tab的
-   * @param pathArr path的数组
-   * @param menus 菜单
-   */
-  getTabFromMenu(pathArr: string[], menus = this.menuList): IMenuItem {
-    const path = pathArr.shift()
-    const menuItem = menus.find(menu => menu.path === path || menu.path === '**') || {} as IMenuItem
-    if (menuItem.children) {
-      return this.getTabFromMenu(pathArr, menuItem.children)
-    }
-    return menuItem || {} as IMenuItem
   }
 
   /** 点击tab */
@@ -267,21 +232,6 @@ export class TabComponent implements OnInit, OnDestroy {
     }
   }
 
-  /** 如果url中含有路径参数并且只有路径参数不一致, 则只生成一个tab */
-  setRouteParamTab(activatedRouteSnapshotList: ActivatedRouteSnapshot[]) {
-    activatedRouteSnapshotList.forEach(item => {
-      if (item.children && item.children.length > 0) {
-        this.setRouteParamTab(item.children)
-
-        // 同一组件只开一个tab, 条件是有路径参数和路由的data的multi参数不能设置为true
-      } else if (Object.keys(item.params).length > 0 && !(item.routeConfig?.data?.multi || false)) {
-        this.sameRoute = item
-      } else {
-        this.sameRoute = null
-      }
-    })
-  }
-
   /** 将tabs存入缓存 */
   private saveTabToStorage() {
     if (this.useStorage === 'none') return
@@ -313,22 +263,9 @@ export class TabComponent implements OnInit, OnDestroy {
     // 首次路由事件触发, 能够激活tab
     if (this.firstRouterEvent$ && typeof this.firstRouterEvent$.subscribe === 'function') {
       this.firstRouterEvent$.subscribe((event: NavigationEnd) => {
-        this.routerEvent(event, this.activeRoute.snapshot)
+        this.routerEvent(event)
         this.firstRouterEvent$.complete()
         this.firstRouterEvent$ = null
-      })
-    }
-  }
-
-  /** 从router配置中获取title */
-  getTitleFromRouterConfig(config: Route | Route[]) {
-    if (Array.isArray(config)) {
-      config.forEach(item => {
-        this.getTitleFromRouterConfig(item)
-      })
-    } else if (config) {
-      config.children.forEach((item: any) => {
-        this.getTitleFromRouterConfig(item.children)
       })
     }
   }
@@ -336,9 +273,6 @@ export class TabComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     if (this.routerSub$ && typeof this.routerSub$.unsubscribe === 'function') {
       this.routerSub$.unsubscribe()
-    }
-    if (this.rootRoute$ && typeof this.rootRoute$.unsubscribe === 'function') {
-      this.rootRoute$.unsubscribe()
     }
   }
 }

@@ -1,5 +1,6 @@
 import { HttpResponse } from '@angular/common/http'
 import { EventEmitter, TemplateRef, Type } from '@angular/core'
+import { Route as IRoute } from '@angular/router'
 import { NzMenuItemDirective, NzUploadFile, UploadFilter, UploadXHRArgs } from 'ng-zorro-antd'
 import { Observable } from 'rxjs'
 
@@ -126,10 +127,6 @@ export interface IMenuItem {
   hidden?: boolean
   /** 是否新开窗口 */
   isBlank?: boolean
-  /** tab页不可关闭 */
-  disableClose?: boolean
-  /** 不在tab中显示 */
-  hiddenInTab?: boolean
 }
 
 export interface IMenuConfig {
@@ -290,3 +287,25 @@ export interface IUploadConfig<T = any> {
     valueToFileList: (value: T) => NzUploadFile[],
   }
 }
+
+export interface IRouteData {
+  /** 在tab显示的标签名 */
+  title?: string
+  /** 动态路由是否支持多个组件实例 */
+  multi?: boolean
+  /** 不缓存路由组件 */
+  noCache?: boolean
+  /** 在tab中禁用关闭 */
+  disableClose?: boolean
+  /** 在tab中隐藏显示 */
+  hiddenInTab?: boolean
+  [k: string]: any
+}
+
+/** 继承自路由模块的Route, 加入data接口 */
+export interface Route extends IRoute {
+  children?: Route[],
+  data?: IRouteData
+}
+
+export type Routes = Route[]

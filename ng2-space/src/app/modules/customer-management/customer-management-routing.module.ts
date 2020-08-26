@@ -6,7 +6,9 @@ const routes: Routes = [
   {
     path: '',
     component: CustomerManagementComponent,
-    data: {},
+    data: {
+      title: '一级(来自data)',
+    },
   },
 ]
 
