@@ -192,7 +192,6 @@ export class LayoutComponent {
         {
           title: '库存列表',
           path: 'list',
-          disableClose: true,
         },
         {
           title: '详情',
@@ -201,7 +200,6 @@ export class LayoutComponent {
             {
               title: '详情2',
               path: '1',
-              hiddenInTab: true,
             },
           ],
         },
@@ -223,7 +221,7 @@ export class LayoutComponent {
             path: 'http://www.baidu.com',
             isBlank: true,
           },
-        ] },{ title: '列表', path: 'list' }, { title: '详情', path: 'detail', children: [{ path: '**', title: '详情1' }] }],
+        ] }, { title: '列表', path: 'list' }, { title: '详情', path: 'detail', children: [{ path: '1', title: '详情1' }] }],
     },
 
   ]
