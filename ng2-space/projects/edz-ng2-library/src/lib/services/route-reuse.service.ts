@@ -5,7 +5,7 @@
  * @Author: ChouEric
  * @Date: 2019-12-08 10:41:31
  * @Last Modified by: ChouEric
- * @Last Modified time: 2020-08-07 11:31:45
+ * @Last Modified time: 2020-08-27 21:59:23
  * @Description: 路由复用策略
  * // TODO: 未完成路由通配符
  */
@@ -49,6 +49,18 @@ export const RouteReuseServiceFactory = (handlerSize = 20) => (
         const multi = future.data.multi
         return !multi
       } else {
+        // FIXME: 这里是为了防止多个根路由组件直接的切换(全屏布局和侧边栏布局)的时候报错
+        // Cannot reattach ActivatedRouteSnapshot created from a different route
+        // Cannot reattach ActivatedRouteSnapshot with a different number of children
+        // >>>>>> 防止报错
+        const hander = RouteReuseService.handlers.get(curr.routeConfig)
+        if (hander) {
+          const { route: _route } = hander
+          if (_route.value._routerState.snapshot.url !== (curr as any)._routerState.url) {
+            RouteReuseService.handlers.delete(curr.routeConfig)
+          }
+        }
+        // <<<<<<
         return false
       }
     }
@@ -75,9 +87,6 @@ export const RouteReuseServiceFactory = (handlerSize = 20) => (
     }
     /** 根据路由配置存储对应的缓存数据 */
     store(route: ActivatedRouteSnapshot, handle: DetachedRouteHandle): void {
-      if (route?.data?.noCache) {
-        return
-      }
       if (!handle) {
         return
       }

@@ -1,8 +1,17 @@
 import { NgModule } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
 import { LayoutComponent } from './layout.component'
+import { FullScreenComponent } from './layout/full-screen/full-screen.component'
 
 const routes: Routes = [
+  {
+    path: 'login',
+    component: FullScreenComponent,
+    loadChildren: () => import('./modules/login/login.module').then(m => m.LoginModule),
+    data: {
+      noCache: true,
+    }
+  },
   {
     path: '',
     component: LayoutComponent,

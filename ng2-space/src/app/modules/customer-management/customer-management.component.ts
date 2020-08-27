@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core'
+import { Router } from '@angular/router'
 import { NzMessageService } from 'ng-zorro-antd'
 import { IColumnItem, ISearchItem, ITableConfig, IUploadConfig } from '../../../../projects/edz-ng2-library/src/lib/interfaces'
 import { HttpService } from '../../../../projects/edz-ng2-library/src/lib/services'
@@ -134,7 +135,7 @@ export class CustomerManagementComponent implements OnInit, OnDestroy {
   @ViewChild('ellipsis', { static: true })
   ellipsisComponent
 
-  constructor(private http: HttpService, private message: NzMessageService) {
+  constructor(private http: HttpService, private message: NzMessageService, private router: Router) {
     // this.http.post('http://localhost:3000/posts', { query: { a: 1 }, json: [{ b: 1 }] }).subscribe(() => {})
   }
 
@@ -299,6 +300,10 @@ export class CustomerManagementComponent implements OnInit, OnDestroy {
 
   clickHandler(e) {
     console.warn(e)
+  }
+
+  login() {
+    this.router.navigateByUrl('/login')
   }
 
   ngOnInit(): void {

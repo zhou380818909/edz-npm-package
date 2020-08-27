@@ -15,6 +15,7 @@ import { Subscription } from "rxjs";
     <p>
       detail
       <input>
+      <button (click)="click()">登录</button>
     </p>
   `,
 })
@@ -25,6 +26,10 @@ export class UserDetailComponent implements OnDestroy {
   private url: null
 
   constructor(private router: Router, private a: ActivatedRoute) {}
+
+  click() {
+    this.router.navigateByUrl('/login')
+  }
 
   ngOnDestroy() {
     console.log('用户详情组件销毁');

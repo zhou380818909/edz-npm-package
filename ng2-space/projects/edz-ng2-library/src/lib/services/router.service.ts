@@ -27,7 +27,21 @@ export class RouterService {
   }
 
   /** 根据url获取路由配置的当前匹配路由的最后一级路由配置 */
-  getLastRouteConfigFromRouteConfig(route: Route, routeArray: string[]): Route {
+  getLastRouteConfigFromRouteConfig(route: Route | Route[], routeArray: string[]): Route {
+    if (Array.isArray(route)) {
+      const routes = [...routeArray]
+      let matched = true
+      let targetRoute = route.find(item => item.path === routeArray[0] || item.path.startsWith(':'))
+      if (!targetRoute) {
+        targetRoute = route.find(item => item.path === '')
+        matched = false
+      }
+      if (matched) {
+        routes.shift()
+        return this.getLastRouteConfigFromRouteConfig(targetRoute, routes)
+      }
+      return this.getLastRouteConfigFromRouteConfig(targetRoute, routeArray)
+    }
     // 同步的路由配置
     if (route.children && route.children.length > 0) {
       const routes = [...routeArray]
@@ -63,7 +77,22 @@ export class RouterService {
   }
 
   /** 根据url获取当前匹配路由的逐级路由配置 */
-  getDeepRouteConfigFromRouteConfig(route: Route, routeArray: string[], preConfigArray: Route[] = [route]): Route[] {
+  // eslint-disable-next-line max-len
+  getDeepRouteConfigFromRouteConfig(route: Route| Route[], routeArray: string[], preConfigArray: Route[] = Array.isArray(route) ? [] : [route]): Route[] {
+    if (Array.isArray(route)) {
+      const routes = [...routeArray]
+      let matched = true
+      let targetRoute = route.find(item => item.path === routeArray[0] || item.path.startsWith(':'))
+      if (!targetRoute) {
+        targetRoute = route.find(item => item.path === '')
+        matched = false
+      }
+      if (matched) {
+        routes.shift()
+        return this.getDeepRouteConfigFromRouteConfig(targetRoute, routes, [...preConfigArray, targetRoute])
+      }
+      return this.getDeepRouteConfigFromRouteConfig(targetRoute, routeArray, [...preConfigArray, targetRoute])
+    }
     if (route.children && route.children.length > 0) {
       const routes = [...routeArray]
       let matched = true
