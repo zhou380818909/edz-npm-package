@@ -11,6 +11,7 @@ import { AppComponent } from './app.component'
 // import { MenuModule } from '../../projects/edz-ng2-library/src/lib/menu/menu.module'
 import { AppRoutingModule } from './app.routing'
 import { LayoutComponent } from './layout.component'
+import { LayoutModule } from './layout/layout.module'
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { LayoutComponent } from './layout.component'
     // MenuModule,
     AppRoutingModule,
     NzMessageModule,
+    LayoutModule,
   ],
   bootstrap: [AppComponent],
   providers: [

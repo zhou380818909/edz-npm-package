@@ -82,7 +82,7 @@ export class TabComponent implements OnInit, OnDestroy {
     // 根据url地址转换为数组
     const currentPaths = this.routerService.getPathArrayFromUrl(event.urlAfterRedirects)
     // 从路由配置中获取最后一级路由配置Route
-    const route = this.routerService.getLastRouteConfigFromRouteConfig(this.router.config[0], currentPaths) || {} as Route
+    const route = this.routerService.getLastRouteConfigFromRouteConfig(this.router.config, currentPaths) || {} as Route
     const { data: { title = '未命名', disableClose = false, hiddenInTab = false, multi = false } = {}, path } = route
     if (hiddenInTab) {
       return
@@ -125,24 +125,28 @@ export class TabComponent implements OnInit, OnDestroy {
       // 关闭按钮阻止事件冒泡
       event.stopPropagation()
     }
-
     const closeIndex = this.tabs.indexOf(tab)
     // 如果关闭tab是当前激活的tab, 则需要打开其他tab, 并删除其他tab对应的路由复用数据缓存
     if (this.activeIndex === closeIndex) {
       this.tabs.splice(closeIndex, 1)
+
       // 如果关闭的tab不是第一个, 则打开上一个tab
       if (closeIndex > 0) {
-        const { url } = [...this.tabs].splice(closeIndex - 1, 1)[0]
-        this.router.navigateByUrl(url).then(() => {
-          this.deleteHandlerByUrl(tab.url)
-        })
+        const { url } = [...this.tabs].splice(closeIndex - 1, 1)[0] || {}
+        if (url) {
+          this.router.navigateByUrl(url).then(() => {
+            this.deleteHandlerByUrl(tab.url)
+          })
+        }
 
       // 如果关闭的是第一个, 则打开下一个tab
       } else {
-        const { url } = [...this.tabs].splice(0, 1)[0]
-        this.router.navigateByUrl(url).then(() => {
-          this.deleteHandlerByUrl(tab.url)
-        })
+        const { url } = [...this.tabs].splice(0, 1)[0] || {}
+        if (url) {
+          this.router.navigateByUrl(url).then(() => {
+            this.deleteHandlerByUrl(tab.url)
+          })
+        }
       }
       this.saveTabToStorage()
 

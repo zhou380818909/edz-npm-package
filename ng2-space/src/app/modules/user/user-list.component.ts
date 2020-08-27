@@ -1,4 +1,5 @@
 import { Component } from "@angular/core";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-user-list',
@@ -13,9 +14,16 @@ import { Component } from "@angular/core";
     <p>
       list
       <input nz-input [(ngModel)]="text">
+      <button (click)="click()">登录</button>
     </p>
   `,
 })
 export class UserListComponent {
   text = 'list'
+
+  constructor(private router: Router) {}
+
+  click() {
+    this.router.navigateByUrl('/login')
+  }
 }

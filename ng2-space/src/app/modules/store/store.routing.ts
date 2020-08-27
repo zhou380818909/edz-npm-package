@@ -9,7 +9,6 @@ const routes: Route[] = [
     component: StoreComponent,
     data: {
       title: '库存列表(*)',
-      disableClose: true,
     },
   },
   {
