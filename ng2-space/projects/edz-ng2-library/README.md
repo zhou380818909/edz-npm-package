@@ -1,6 +1,6 @@
 # EdzNg2Library
 
-易点租Angular组件库
+This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.1.3.
 
 ## Code scaffolding
 

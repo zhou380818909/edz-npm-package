@@ -1,9 +1,9 @@
-import { NgModule } from "@angular/core";
-import { RouterModule } from "@angular/router";
-import { Route } from "../../../../projects/edz-ng2-library/src/public-api";
-import { UserDetailComponent } from "./user-detail.component";
-import { UserInfoComponent } from "./user-info.component";
-import { UserListComponent } from "./user-list.component";
+import { NgModule } from '@angular/core'
+import { RouterModule } from '@angular/router'
+import { Route } from '../../../../projects/edz-ng2-library/src/public-api'
+import { UserDetailComponent } from './user-detail.component'
+import { UserInfoComponent } from './user-info.component'
+import { UserListComponent } from './user-list.component'
 
 const routes: Route[] = [
   {
@@ -49,7 +49,7 @@ const routes: Route[] = [
 ]
 
 @NgModule({
-  imports: [ RouterModule.forChild(routes) ],
-  exports: [ RouterModule ]
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule],
 })
 export class UserRouting {}

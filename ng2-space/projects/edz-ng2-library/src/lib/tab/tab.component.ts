@@ -2,7 +2,7 @@
  * @Author: ChouEric
  * @Date: 2020-07-15 11:39:46
  * @Last Modified by: ChouEric
- * @Last Modified time: 2020-08-23 20:41:39
+ * @Last Modified time: 2020-10-07 16:22:22
  * @Description: tab组件, 和路径相关, 在Router中,可以访问路由复用策略
  */
 import { Component, Input, OnDestroy, OnInit } from '@angular/core'
@@ -10,10 +10,10 @@ import { NavigationEnd, Router } from '@angular/router'
 import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown'
 import { BehaviorSubject, Subscription } from 'rxjs'
 import { filter } from 'rxjs/operators'
-import { IMenuItem, Route } from '../interfaces'
-import { LocalStorageService } from '../services/local-storage.service'
-import { RouterService } from '../services/router.service'
-import { SessionStorageService } from '../services/session-storage.service'
+import { IMenuItem, Route } from '../../interfaces'
+import { LocalStorageService } from '../../services/local-storage.service'
+import { RouterService } from '../../services/router.service'
+import { SessionStorageService } from '../../services/session-storage.service'
 import { TabService } from './tab-service.service'
 
 interface ITabItem {
@@ -112,6 +112,11 @@ export class TabComponent implements OnInit, OnDestroy {
     } else {
       this.activeIndex = existIndex
     }
+  }
+
+  refreshHandler() {
+    // eslint-disable-next-line no-console
+    console.log(((this.router as any).rootContexts as any).contexts.get('primary'))
   }
 
   /** 点击tab */

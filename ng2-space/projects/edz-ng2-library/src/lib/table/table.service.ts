@@ -1,179 +1,61 @@
+/* eslint-disable no-else-return */
 /*
  * @Author: ChouEric
  * @Date: 2020-08-07 17:35:19
  * @Last Modified by: ChouEric
- * @Last Modified time: 2020-08-07 19:05:40
- * @Description: 感谢珊哥提供方法解决表头分组的实现
+ * @Last Modified time: 2020-10-07 16:23:46
+ * @Description: 目前有bug, 首列如果是行合并, 并且超过两行, 会出现问题
  */
 import { Injectable } from '@angular/core'
+import { IColumnItem } from '../../interfaces'
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class TableService {
-  matrixMul = [[]]
-  findAddress(rowspan, colspan) {
-    let pointerX = 0
-    let pointerY = 0
-    const mLen = this.matrixMul.length
-    let mcLen = 0
-    let isAddress = false
-    let isnCanAdd = false
-    for (let i = 0; i < mLen; i++) {
-      mcLen = this.matrixMul[i].length
-      for (let j = 0; j < mcLen; j++) {
-        if (!this.matrixMul[i][j]) {
-          // 先判断向下   再判断向右
-          if (mcLen - j >= rowspan) { // 满足向下
-            if (mLen - i >= colspan) { // 满足列数
-              // 得看看本列右边 上边是否为空   为空则需要另外起行
-              if (j === 0) {
-                pointerX = i
-                pointerY = j
-                isAddress = true
-              } else {
-                isnCanAdd = false
-                for (let k = 1; k < colspan; k++) {
-                  if (!this.matrixMul[i + k][j - 1]) {
-                    isnCanAdd = true
-                  }
-                }
-                if (!isnCanAdd) {
-                  pointerX = i
-                  pointerY = j
-                  isAddress = true
-                }
-              }
-            } else { //
+  /** 表头分组 */
+  collapseColumn(columns: IColumnItem[]): IColumnItem[][] {
+    const result = []
+    function push(index, target) {
+      result[index] = result[index] || []
+      result[index].push(target)
+    }
+    columns.reduce((pre, cur, index) => {
+      const { x, y } = pre
+      const { colspan, rowspan } = cur
+      // 需要重新确定大块
+      if (x === 0 || y === 0) {
+        // 如果colspan=1, 则就是一列, 则直接推入
+        if (colspan === 1) {
+          push(0, cur)
+          // arr[0].push(cur)
+          return { w: 0, h: 0, x: 0, y: 0 }
 
-            }
-          } else { // 向右边
+        // 如果rowspan=1, 则大块的大小就是 w=cur.colspan, h =
+        } else if (rowspan === 1) {
+          pre.w = colspan
+          pre.h = columns[index + 1].rowspan + 1
+          pre.x = pre.w
+          pre.y = pre.h
+          push(pre.h - pre.y, cur)
+          pre.y = pre.h - 1
+          return pre
+        }
+        console.error('表格配置错误, 不能生成')
+        return pre
 
-          }
-        }
-
-        if (isAddress) {
-          break
-        }
+      // 列等于1,
+      } else if (colspan === 1) {
+        // arr[pre.h - pre.y].push(cur)
+        push(pre.h - pre.y, cur)
+        pre.x -= 1
+        return pre
+      } else if (rowspan === 1) {
+        push(pre.h - pre.y, cur)
+        pre.y -= 1
+        return pre
       }
-      if (isAddress) {
-        break
-      }
-    }
-    if (!isAddress) {
-      pointerX = mLen
-    }
-    return {
-      pointerX,
-      pointerY,
-    }
-  }
-  fillMu() {
-    const mLen = this.matrixMul.length
-    for (let i = 0; i < mLen; i++) {
-      for (let j = 0; j < this.matrixMul[0].length; j++) {
-        if (!this.matrixMul[i][j]) {
-          this.matrixMul[i][j] = ''
-        }
-      }
-    }
-  }
-  judgeMu(rowspan, colspan, title, ci) {
-    const mLen = this.matrixMul.length
-    let resDir = 0
-    // var arr = JSON.parse(JSON.stringify(this.matrixMul))
-    if (mLen <= colspan || this.matrixMul[0].length < rowspan) { // 先比整个列数    新加的列超出整个表的列
-      if (this.matrixMul[0].length < rowspan) {
-        for (let i = 0; i < mLen; i++) {
-          for (let j = 0; j < rowspan; j++) {
-            if (!this.matrixMul[i] || !this.matrixMul[i].length) {
-              this.matrixMul[i] = []
-            }
-            this.matrixMul[i][j] = this.matrixMul[i][j] || ''
-          }
-        }
-      }
-
-      if (ci) { //
-        for (let i = 0; i < colspan; i++) {
-          for (let j = 0; j < rowspan; j++) {
-            if (!this.matrixMul[mLen + i] || !this.matrixMul[mLen + i].length) {
-              this.matrixMul[mLen + i] = []
-            }
-            this.matrixMul[mLen + i][j] = title // 这里将变量初始化，我这边统一初始化为空，后面在用所需的值覆盖里面的值
-          }
-        }
-      } else {
-        for (let i = 0; i < colspan; i++) {
-          for (let j = 0; j < rowspan; j++) {
-            if (!this.matrixMul[mLen + i - 1] || !this.matrixMul[mLen + i - 1].length) {
-              this.matrixMul[mLen + i - 1] = []
-            }
-            this.matrixMul[mLen + i - 1][j] = title // 这里将变量初始化，我这边统一初始化为空，后面在用所需的值覆盖里面的值
-          }
-        }
-      }
-      this.fillMu()
-      resDir = 0
-    } else { // 小于整列  整行
-      const address = this.findAddress(rowspan, colspan)
-      const { pointerX } = address
-      const { pointerY } = address
-
-      for (let i = 0; i < colspan; i++) {
-        for (let j = 0; j < rowspan; j++) {
-          // this.matrixMul[i][j] = this.matrixMul[i][j] || ''
-          if (!this.matrixMul[i + pointerX] || !this.matrixMul[i + pointerX].length) {
-            this.matrixMul[i + pointerX] = []
-          }
-          this.matrixMul[i + pointerX][pointerY + j] = title
-        }
-      }
-      this.fillMu()
-      resDir = pointerY
-    }
-    return resDir
-  }
-  dealColumn(column) {
-    const len = column.length
-    let colIdx = 0
-    this.preDealMatri(column)
-    for (let ci = 0; ci < len; ci++) { // 一维长度为i,i为变量，可以根据实际情况改变
-      colIdx = this.judgeMu(column[ci].rowspan || 1, column[ci].colspan || 1, column[ci].title, ci)
-      column[ci].colIdx = colIdx
-    }
-  }
-  preDealMatri(column) {
-    let rowNum = 0
-    let colNum = 0
-    const len = column.length
-    for (let ci = 0; ci < len; ci++) { // 一维长度为i,i为变量，可以根据实际情况改变
-      if (rowNum < (column[ci].rowspan || 1)) {
-        rowNum = column[ci].rowspan || 1
-      }
-      if (colNum < (column[ci].colspan || 1)) {
-        colNum = column[ci].colspan || 1
-      }
-    }
-    for (let i = 0; i < colNum; i++) {
-      this.matrixMul[i] = []
-      for (let j = 0; j < rowNum; j++) {
-        this.matrixMul[i][j] = '' // 这里将变量初始化，我这边统一初始化为空，后面在用所需的值覆盖里面的值
-      }
-    }
-  }
-  /** 根据column */
-  getCollapse(column) {
-    this.dealColumn(column)
-    column.sort((a, b) => a.colIdx - b.colIdx)
-    const len = column.length
-    const resArr = []
-    let idx = 0
-    for (let i = 0; i < len; i++) {
-      idx = column[i].colIdx
-      if (!resArr[idx] || !resArr[idx].length) {
-        resArr[idx] = []
-      }
-      resArr[idx].push(column[i])
-    }
-    return resArr
+      console.error('表格配置错误, 不能生成')
+      return pre
+    }, { w: 0, h: 0, x: 0, y: 0 })
+    return result
   }
 }

@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core'
-import { NzTabsModule } from 'ng-zorro-antd'
+import { NzTabsModule } from 'ng-zorro-antd/tabs'
 import { TabSetComponent } from './tab-set.component'
 
 @NgModule({

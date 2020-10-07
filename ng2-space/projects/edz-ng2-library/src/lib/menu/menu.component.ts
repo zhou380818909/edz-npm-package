@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular
 import { NavigationEnd, PRIMARY_OUTLET, Router, UrlTree } from '@angular/router'
 import { BehaviorSubject, timer } from 'rxjs'
 import { filter } from 'rxjs/operators'
-import { IMenuConfig, IMenuItem } from '../interfaces'
+import { IMenuConfig, IMenuItem } from '../../interfaces'
 
 interface IMenuRenderItem extends IMenuItem {
   open?: boolean

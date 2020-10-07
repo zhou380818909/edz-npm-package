@@ -1,29 +1,21 @@
 {
   "name": "edz-ng2-library",
-  "version": "1.0.79",
+  "version": "2.0.0",
   "peerDependencies": {
-    "@angular/common": "~9.1.11",
-    "@angular/core": "~9.1.11",
-    "@angular/forms": "~9.1.11",
-    "@angular/router": "~9.1.11",
-    "@angular/platform-browser": "~9.1.11",
-    "ng-zorro-antd": "^9.3.0",
-    "@ant-design/icons-angular": "~9.0.1",
-    "lodash-decorators": "~6.0.1",
-    "lodash": "~4.17.15",
-    "rxjs": "~6.5.3"
+    "@angular/common": "~10.1.3",
+    "@angular/core": "~10.1.3",
+    "@angular/forms": "~10.1.3",
+    "@angular/router": "~10.1.3",
+    "@angular/platform-browser": "~10.1.3",
+    "ng-zorro-antd": "^10.0.0",
+    "@ant-design/icons-angular": "^10.0.1",
+    "@ant-design/colors": "^4.0.5",
+    "date-fns": "^2.16.1",
+    "rxjs": "^6.6.0",
+    "lodash": "^4.17.20",
+    "lodash-decorators": "^6.0.1"
   },
   "dependencies": {
-    "tslib": "^1.10.0"
-  },
-  "bundleDependencies": [
-    "lodash",
-    "lodash-decorators"
-  ],
-  "optionalDependencies": {
-    "@types/node": "^12.11.1",
-    "@types/lodash": "4.14.157",
-    "lodash-decorators": "~6.0.1",
-    "lodash": "~4.17.15"
+    "tslib": "^2.0.0"
   }
 }

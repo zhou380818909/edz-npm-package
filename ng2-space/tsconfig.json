@@ -7,30 +7,38 @@
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
-    "module": "esnext",
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "es2015",
+    "module": "es2020",
     "lib": [
       "es2018",
       "dom"
     ],
+    "allowJs": true,
     "paths": {
       "edz-ng2-library": [
         "dist/edz-ng2-library/edz-ng2-library",
         "dist/edz-ng2-library"
       ],
-      "form": [
-        "dist/form/form",
-        "dist/form"
+      "@/*": [
+        "./src/app/*"
       ]
     }
   },
-  "files": [
-    ".eslintrc.js"
-  ],
-  "angularCompilerOptions": {
-    "fullTemplateTypeCheck": true,
-    "strictInjectionParameters": true
-  }
+  "include": [
+    "src/environments/*.ts",
+    "projects/edz-ng2-library/src/interfaces/index.ts",
+    "projects/edz-ng2-library/src/edz-ng2-library.module.ts",
+    "projects/edz-ng2-library/src/lib/**/*.ts",
+    "projects/edz-ng2-library/src/interfaces/**/*.ts",
+    "projects/edz-ng2-library/src/services/**/*.ts",
+    "projects/edz-ng2-library/src/pipes/**/*.ts",
+    "proxy.conf.js",
+    ".eslintrc.js",
+    ".huskyrc.js",
+    ".lintstagedrc.js",
+    ".stylelintrc.js",
+    "projects/edz-ng2-library/src/edz-ng2-library.module.ts"
+  ]
 }

@@ -1,40 +1,30 @@
+import { registerLocaleData } from '@angular/common'
+import { HttpClientModule } from '@angular/common/http'
+import zh from '@angular/common/locales/zh'
 import { NgModule } from '@angular/core'
+import { FormsModule } from '@angular/forms'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
-// import { RouteReuseServiceFactory } from './services/route-reuse.service'
-import { RouteReuseStrategy } from '@angular/router'
-import { NzMessageModule } from 'ng-zorro-antd'
-// import { SecretTextModule } from 'projects/edz-ng2-library/src/public-api';
-import { EdzNg2LibraryModule } from '../../projects/edz-ng2-library/src/lib/edz-ng2-library.module'
-import { RouteReuseServiceFactory } from '../../projects/edz-ng2-library/src/public-api'
+import { NZ_I18N, zh_CN } from 'ng-zorro-antd/i18n'
+import { EdzNg2LibraryModule } from '../../projects/edz-ng2-library/src/public-api'
+import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
-// import { MenuModule } from '../../projects/edz-ng2-library/src/lib/menu/menu.module'
-import { AppRoutingModule } from './app.routing'
-import { LayoutComponent } from './layout.component'
-import { LayoutModule } from './layout/layout.module'
+
+registerLocaleData(zh)
 
 @NgModule({
   declarations: [
     AppComponent,
-    LayoutComponent,
   ],
   imports: [
     BrowserModule,
-    BrowserAnimationsModule,
-    // SecretTextModule
-    EdzNg2LibraryModule,
-    // MenuModule,
     AppRoutingModule,
-    NzMessageModule,
-    LayoutModule,
+    FormsModule,
+    HttpClientModule,
+    BrowserAnimationsModule,
+    EdzNg2LibraryModule,
   ],
+  providers: [{ provide: NZ_I18N, useValue: zh_CN }],
   bootstrap: [AppComponent],
-  providers: [
-    {
-      provide: RouteReuseStrategy,
-      useClass: RouteReuseServiceFactory(10),
-    },
-  ],
-  entryComponents: [LayoutComponent],
 })
 export class AppModule { }

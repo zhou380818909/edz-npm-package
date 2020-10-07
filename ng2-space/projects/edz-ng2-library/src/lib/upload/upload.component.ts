@@ -2,9 +2,10 @@ import { HttpClient, HttpEvent, HttpEventType, HttpHeaders, HttpRequest } from '
 import { ChangeDetectorRef, Component, EventEmitter, forwardRef, Input, OnDestroy, OnInit, Output } from '@angular/core'
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms'
 import { DomSanitizer } from '@angular/platform-browser'
-import { NzMessageService, NzUploadChangeParam, NzUploadFile, UploadXHRArgs } from 'ng-zorro-antd'
+import { NzMessageService } from 'ng-zorro-antd/message'
+import { NzUploadChangeParam, NzUploadFile, NzUploadXHRArgs } from 'ng-zorro-antd/upload'
 import { fromEvent, Subscription } from 'rxjs'
-import { IUploadConfig } from '../interfaces'
+import { IUploadConfig } from '../../interfaces'
 
 type FileType = 'image' | 'pdf' | 'word' | 'excel' | 'ppt' | 'unknown'
 /** 图片后缀名正则校验 */
@@ -99,7 +100,7 @@ export class Upload implements OnInit, OnDestroy, ControlValueAccessor {
   onTouchFn
 
   /** 自定义上传方法, 不是事件 */
-  uploader = (upload: UploadXHRArgs): Subscription => {
+  uploader = (upload: NzUploadXHRArgs): Subscription => {
     const { file, postFile } = upload
     // this.uploadFileQueue.push(file)
     const formdata = new FormData()

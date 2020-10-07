@@ -5,10 +5,11 @@ import {
   QueryList, Renderer2, SimpleChanges, ViewChild, ViewChildren, ViewContainerRef,
 } from '@angular/core'
 import { Debounce } from 'lodash-decorators'
-import { NzResizeObserver, NzTableComponent } from 'ng-zorro-antd'
+import { NzResizeObserver } from 'ng-zorro-antd/core/resize-observers'
+import { NzTableComponent } from 'ng-zorro-antd/table'
 import { Subscription } from 'rxjs'
 import { debounceTime } from 'rxjs/operators'
-import { ICheckedMap, IColumnItem, IPagination, ITableConfig, ITableItem, ITableScroll } from '../interfaces'
+import { ICheckedMap, IColumnItem, IPagination, ITableConfig, ITableItem, ITableScroll } from '../../interfaces'
 import { TableService } from './table.service'
 
 interface IRenderColumnItem extends IColumnItem {
@@ -17,8 +18,8 @@ interface IRenderColumnItem extends IColumnItem {
 }
 
 interface ICollapseItem extends IRenderColumnItem {
-  rowspan: number
-  colspan: number
+  rowspan?: number
+  colspan?: number
 }
 
 @Component({
@@ -175,7 +176,8 @@ export class TableComponent implements OnInit, OnDestroy {
         container.clear()
         const componentFactory = this.cfr.resolveComponentFactory(col.component)
         const componentRef = container.createComponent(componentFactory)
-        Object.assign(componentRef.instance, row)
+        const param = col.componentParam ? col.componentParam(row) : row
+        Object.assign(componentRef.instance, param)
       })
     })
   }
@@ -209,7 +211,7 @@ export class TableComponent implements OnInit, OnDestroy {
     // TODO: 暂时没有实现表头分组
     // 判断列配置中是否含有表头合并相关配置
     const hasCallapse = this.column.some(item => item.rowspan > 1 || item.colspan > 1)
-    this.renderColumn = [...this.column]
+    this.renderColumn = [...this.column].filter(item => item.colspan === 1 || !item.colspan)
     const collapseConfigLeft = this.setNzLeftOrRightWidth(this.renderColumn)
     const collapseConfigRight = this.setNzLeftOrRightWidth(this.renderColumn, true).reverse()
     this.renderColumn = collapseConfigLeft.map((item, index) => ({
@@ -224,11 +226,11 @@ export class TableComponent implements OnInit, OnDestroy {
       // 如果有表头合并
       // 宽度配置为colspan不设置或者为1的宽度
       this.nzWidthConfig = this.column.filter(item => !item.colspan || item.colspan < 2).map(item => item.width)
-      this.collapseConfig = this.service.getCollapse(this.column)
+      this.collapseConfig = this.service.collapseColumn(this.column)
       // const rowspanMax = Math.max(...this.column.filter(item => item.rowspan && item.rowspan > 1).map(item => item.rowspan))
       // 根据最大的行合并数生成合并配置的外层数量
       // this.collapseConfig = new Array(rowspanMax).fill([])
-      console.warn('暂不支持表头分组')
+      // console.warn('暂不支持表头分组')
     }
     // 执行脏值检测
     this.cdr.detectChanges()

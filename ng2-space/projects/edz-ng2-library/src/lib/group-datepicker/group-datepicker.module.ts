@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { FormsModule } from '@angular/forms'
-import { NzDatePickerModule, NzRadioModule } from 'ng-zorro-antd'
+import { NzDatePickerModule } from 'ng-zorro-antd/date-picker'
+import { NzRadioModule } from 'ng-zorro-antd/radio'
 import { GroupDatepickerComponent } from './group-datepicker.component'
 
 @NgModule({

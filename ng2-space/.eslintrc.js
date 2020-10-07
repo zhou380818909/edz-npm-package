@@ -3,10 +3,12 @@
  * @Author: ChouEric
  * @Date: 2020-06-19 16:18:42
  * @Last Modified by: ChouEric
- * @Last Modified time: 2020-06-28 15:27:09
+ * @Last Modified time: 2020-10-07 16:28:31
  * @Description: eslint检查js代码, 目前已经支持ts, 配合@typescript-eslint/parser https://eslint.org/docs/user-guide/configuring
- * 安装命令 npm i eslint@7.2.0 @typescript-eslint/parser  @typescript-eslint/eslint-plugin eslint@7.2.0 eslint-config-airbnb-base eslint-config-airbnb-typescript eslint-plugin-import -D
+ * 安装命令 npm i eslint @typescript-eslint/parser  @typescript-eslint/eslint-plugin eslint-config-airbnb-base eslint-config-airbnb-typescript eslint-plugin-import -D
+ * 目前根目录下的js文件, 除了此文件和proxy.conf.js, 其他(.husky.js, .lintstagedrc.js, .stylelintrc.js)在eslint中不生效
 */
+
 module.exports = {
   env: {
     browser: true,
@@ -22,7 +24,7 @@ module.exports = {
     sourceType: 'module',
     project: ['./tsconfig.json', './tsconfig.app.json', './projects/edz-ng2-library/tsconfig.lib.json'],
   },
-  ignorePatterns: ['**/*.spec.ts', 'e2e/**/*'],
+  ignorePatterns: ['**/*.spec.ts', 'e2e/**/*', 'karma.conf.js', '**/test.ts'],
   plugins: [
     '@typescript-eslint',
   ],
