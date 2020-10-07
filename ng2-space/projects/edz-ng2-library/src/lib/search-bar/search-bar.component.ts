@@ -2,7 +2,7 @@
  * @Author: ChouEric
  * @Date: 2020-07-09 17:47:34
  * @Last Modified by: ChouEric
- * @Last Modified time: 2020-07-16 11:17:01
+ * @Last Modified time: 2020-10-07 16:17:27
  * @Description: 优先调用父组件的ngOnChanges, 再调用ngOnInit钩子, 再调用子组件的ngOnChanges钩子, 再调用子组件的ngOnInit
  */
 import {
@@ -12,7 +12,7 @@ import {
   SimpleChanges,
 } from '@angular/core'
 import { cloneDeep, isEqual, union } from 'lodash'
-import { ISearchItem, ISearchValue } from '../interfaces'
+import { ISearchItem, ISearchValue } from '../../interfaces'
 
 @Component({
   selector: 'edz-search-bar',

@@ -7,7 +7,17 @@
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
-          "style": "scss"
+          "style": "scss",
+          "skipTests": true
+        },
+        "@schematics/angular:service": {
+          "skipTests": true
+        },
+        "@schematics/angular:directive": {
+          "skipTests": true
+        },
+        "@schematics/angular:pipe": {
+          "skipTests": true
         }
       },
       "root": "",
@@ -23,6 +33,10 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
             "aot": true,
+            "allowedCommonJsDependencies": [
+              "@ant-design/icons-angular",
+              "@ant-design/colors"
+            ],
             "assets": [
               "src/favicon.ico",
               "src/assets",
@@ -134,12 +148,28 @@
     },
     "edz-ng2-library": {
       "projectType": "library",
+      "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss",
+          "skipTests": true,
+          "flat": true
+        },
+        "@schematics/angular:service": {
+          "skipTests": true
+        },
+        "@schematics/angular:directive": {
+          "skipTests": true
+        },
+        "@schematics/angular:pipe": {
+          "skipTests": true
+        }
+      },
       "root": "projects/edz-ng2-library",
       "sourceRoot": "projects/edz-ng2-library/src",
       "prefix": "edz",
       "architect": {
         "build": {
-          "builder": "@angular-devkit/build-ng-packagr:build",
+          "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "projects/edz-ng2-library/tsconfig.lib.json",
             "project": "projects/edz-ng2-library/ng-package.json"
@@ -171,6 +201,7 @@
           }
         }
       }
-    }},
+    }
+  },
   "defaultProject": "ng2-space"
 }

@@ -1,10 +1,10 @@
-import { NgModule } from "@angular/core";
-import { RouterModule } from "@angular/router";
-import { FullScreenComponent } from "./full-screen/full-screen.component";
+import { NgModule } from '@angular/core'
+import { RouterModule } from '@angular/router'
+import { FullScreenComponent } from './full-screen/full-screen.component'
 
 @NgModule({
   declarations: [FullScreenComponent],
   exports: [FullScreenComponent],
-  imports: [ RouterModule ]
+  imports: [RouterModule],
 })
-export  class LayoutModule {}
+export class LayoutModule {}

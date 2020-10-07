@@ -1,6 +1,8 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
-import { NzTableModule, NzToolTipModule, NzTypographyModule } from 'ng-zorro-antd'
+import { NzTableModule } from 'ng-zorro-antd/table'
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip'
+import { NzTypographyModule } from 'ng-zorro-antd/typography'
 import { TableComponent } from './table.component'
 
 @NgModule({

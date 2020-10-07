@@ -1,5 +1,5 @@
-import { Component } from "@angular/core";
-import { IColumnItem, IMenuConfig, IMenuItem, ITableConfig } from "../../projects/edz-ng2-library/src/lib/interfaces";
+import { Component } from '@angular/core'
+import { IColumnItem, IMenuConfig, IMenuItem, ITableConfig } from '../../projects/edz-ng2-library/src/public-api'
 
 @Component({
   selector: 'app-layout',
@@ -16,8 +16,6 @@ export class LayoutComponent {
     } else {
       this.menuConfig = { nzMode: 'inline' }
     }
-    console.log(this.menuConfig);
-
   }
   text = '13211111111'
   options = [
@@ -30,10 +28,8 @@ export class LayoutComponent {
     }, 1000)
   }
   onBtnClick() {
-    console.log(this.date)
   }
-  dateChange(date) {
-    console.log(date)
+  dateChange() {
   }
   column: IColumnItem[] = [
     {
@@ -231,8 +227,7 @@ export class LayoutComponent {
 
   constructor() { }
 
-  menuHanlder(value) {
-    console.log(value)
+  menuHanlder() {
   }
 
   ngOnInit() {}

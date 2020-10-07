@@ -1,11 +1,10 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { RouterModule } from '@angular/router'
-import { CloseOutline } from '@ant-design/icons-angular/icons'
-import { NzDropDownModule, NzIconModule, NzTabsModule } from 'ng-zorro-antd'
+import { NzDropDownModule } from 'ng-zorro-antd/dropdown'
+import { NzIconModule } from 'ng-zorro-antd/icon'
+import { NzTabsModule } from 'ng-zorro-antd/tabs'
 import { TabComponent } from './tab.component'
-
-const icons = [CloseOutline]
 
 @NgModule({
   declarations: [TabComponent],
@@ -13,7 +12,6 @@ const icons = [CloseOutline]
     CommonModule,
     NzDropDownModule,
     NzTabsModule,
-    NzIconModule.forRoot(icons),
     RouterModule,
   ],
   exports: [RouterModule, NzTabsModule, NzIconModule, NzDropDownModule, TabComponent],

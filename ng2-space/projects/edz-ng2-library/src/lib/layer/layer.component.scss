@@ -57,7 +57,7 @@ nz-layout {
       flex-direction: column;
       height: 100%;
 
-      > .ng-star-inserted {
+      > .ng-star-inserted:not(router-outlet) {
         display: flex;
         flex-direction: column;
         height: 100%;

@@ -1,15 +1,10 @@
-/* eslint-disable no-console */
-import { registerLocaleData } from '@angular/common'
-import zh from '@angular/common/locales/zh'
-import { Component, OnInit } from '@angular/core'
-
-registerLocaleData(zh)
+import { Component } from '@angular/core'
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnInit {
-  ngOnInit() {}
+export class AppComponent {
+  title = 'ng2-space'
 }

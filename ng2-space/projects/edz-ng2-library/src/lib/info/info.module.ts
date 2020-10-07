@@ -1,6 +1,9 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
-import { NzGridModule, NzIconModule, NzToolTipModule, NzTypographyModule } from 'ng-zorro-antd'
+import { NzGridModule } from 'ng-zorro-antd/grid'
+import { NzIconModule } from 'ng-zorro-antd/icon'
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip'
+import { NzTypographyModule } from 'ng-zorro-antd/typography'
 import { InfoComponent } from './info.component'
 
 @NgModule({

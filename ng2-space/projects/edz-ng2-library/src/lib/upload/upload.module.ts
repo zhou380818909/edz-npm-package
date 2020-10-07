@@ -1,6 +1,10 @@
 import { NgModule } from '@angular/core'
 import { FormsModule, ReactiveFormsModule } from '@angular/forms'
-import { NzButtonModule, NzIconModule, NzModalModule, NzToolTipModule, NzUploadModule } from 'ng-zorro-antd'
+import { NzButtonModule } from 'ng-zorro-antd/button'
+import { NzIconModule } from 'ng-zorro-antd/icon'
+import { NzModalModule } from 'ng-zorro-antd/modal'
+import { NzToolTipModule } from 'ng-zorro-antd/tooltip'
+import { NzUploadModule } from 'ng-zorro-antd/upload'
 import { Upload } from './upload.component'
 
 @NgModule({

@@ -2,7 +2,11 @@
  * @Author: ChouEric
  * @Date: 2020-06-19 16:19:21
  * @Last Modified by: ChouEric
+<<<<<<< HEAD
  * @Last Modified time: 2020-06-21 16:32:41
+=======
+ * @Last Modified time: 2020-10-07 16:20:17
+>>>>>>> d476648... 重新使用脚手架优化项目并且将ng-zorro升级到10, 加入钩子函数
  * @Description: stylelint配置用来做样式检查 // https://stylelint.io/user-guide/configure
  * 安装命令 npm i stylelint stylelint-config-prettier stylelint-config-sass-guidelines stylelint-config-standard stylelint-order stylelint-scss -D
  */
@@ -23,7 +27,8 @@ module.exports = {
         "ignoreTypes": [
           "/^g2-/",
           "/^nz-/",
-          "/^app-/"
+          "/^app-/",
+          "router-outlet"
         ]
       }
     ],

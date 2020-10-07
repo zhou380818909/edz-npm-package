@@ -4,8 +4,12 @@
     <!-- label渲染 -->
     <span class="label" [ngStyle]="item?.labelStyle || configRender.labelStyle"><span [ngClass]="item.labelAlign || configRender.labelAlign || 'right'">{{item.label}}</span><i *ngIf="item.tips" nz-tooltip nz-icon nzType="question-circle" [nzTooltipTitle]="item.tips"></i>
     </span>
+    <!-- 有组件渲染则使用组件 -->
+    <span class="value" [ngStyle]="item?.valueStyle || configRender.valueStyle" *ngIf="item.component">
+      <ng-container #componentContainer></ng-container>
+    </span>
     <!-- 有组件渲染则定义模板出口 -->
-    <span class="value" [ngStyle]="item?.valueStyle || configRender.valueStyle" *ngIf="item.render; else noRenderTpl">
+    <span class="value" [ngStyle]="item?.valueStyle || configRender.valueStyle" *ngIf="(item.render && !item.component); else noRenderTpl">
       <ng-container *ngTemplateOutlet="item.render; context: { data: data, index: item.index }"></ng-container>
     </span>
     <!-- 如果没有渲染组件 -->
