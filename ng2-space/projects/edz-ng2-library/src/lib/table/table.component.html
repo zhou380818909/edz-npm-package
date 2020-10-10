@@ -23,29 +23,17 @@
             </ng-container>
             <ng-template #noCheckBox>
               <!-- 表头不固定 -->
-<<<<<<< HEAD
-              <th *ngIf="!th.nzLeft && !th.nzRight" [nzColumnKey]="th.index" [nzSortFn]="true" [nzShowSort]="th.nzShowSort" [(nzSortOrder)]="th.nzSortOrder"
-=======
               <th *ngIf="!th.nzLeft && !th.nzRight" [attr.colspan]="th.colspan || 1" [attr.rowspan]="th.rowspan || 1" [nzColumnKey]="th.index" [nzSortFn]="true" [nzShowSort]="th.nzShowSort" [(nzSortOrder)]="th.nzSortOrder"
->>>>>>> d476648... 重新使用脚手架优化项目并且将ng-zorro升级到10, 加入钩子函数
                 (nzSortOrderChange)="th.nzSortOrderChange($event, th, collapseItem)">
                 <ng-container *ngTemplateOutlet="thContent; context: { $implicit: th }"></ng-container>
               </th>
               <!-- 表头左侧列固定 -->
-<<<<<<< HEAD
-              <th *ngIf="th.nzLeft" [nzColumnKey]="th.index" [nzShowSort]="th.nzShowSort" [(nzSortOrder)]="th.nzSortOrder"
-=======
               <th *ngIf="th.nzLeft" [attr.colspan]="th.colspan || 1" [attr.rowspan]="th.rowspan || 1" [nzColumnKey]="th.index" [nzShowSort]="th.nzShowSort" [(nzSortOrder)]="th.nzSortOrder"
->>>>>>> d476648... 重新使用脚手架优化项目并且将ng-zorro升级到10, 加入钩子函数
                 [nzLeft]="th.nzLeftWidth" (nzSortOrderChange)="th.nzSortOrderChange($event, th, collapseItem)">
                 <ng-container *ngTemplateOutlet="thContent; context: { $implicit: th }"></ng-container>
               </th>
               <!-- 表头右侧列固定 -->
-<<<<<<< HEAD
-              <th *ngIf="th.nzRight" [nzColumnKey]="th.index" [nzShowSort]="th.nzShowSort" [(nzSortOrder)]="th.nzSortOrder"
-=======
               <th *ngIf="th.nzRight" [attr.colspan]="th.colspan || 1" [attr.rowspan]="th.rowspan || 1" [nzColumnKey]="th.index" [nzShowSort]="th.nzShowSort" [(nzSortOrder)]="th.nzSortOrder"
->>>>>>> d476648... 重新使用脚手架优化项目并且将ng-zorro升级到10, 加入钩子函数
                 [nzRight]="th.nzRightWidth" (nzSortOrderChange)="th.nzSortOrderChange($event, th, collapseItem)">
                 <ng-container *ngTemplateOutlet="thContent; context: { $implicit: th }"></ng-container>
               </th>

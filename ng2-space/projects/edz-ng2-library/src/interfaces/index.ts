@@ -1,5 +1,6 @@
 import { HttpResponse } from '@angular/common/http'
 import { EventEmitter, TemplateRef, Type } from '@angular/core'
+import { ValidatorFn } from '@angular/forms'
 import { Route as IRoute } from '@angular/router'
 import { NzMenuItemDirective } from 'ng-zorro-antd/menu'
 import { NzUploadFile, NzUploadXHRArgs, UploadFilter } from 'ng-zorro-antd/upload'
@@ -316,3 +317,101 @@ export interface Route extends IRoute {
 }
 
 export type Routes = Route[]
+
+export interface IFormItemBase<T = any> {
+  /** 表单字段说明 */
+  label: string
+  /** 是否必填 */
+  required?: boolean
+  /** 表单字段的索引 */
+  index: string
+  /** 默认值 */
+  defaultValue?: T
+  /** 校验规则 */
+  validators?: ValidatorFn[]
+  /** ≥1200px 响应式栅格 */
+  nzXl?: INzGrid
+  /** ≥1600px 响应式栅格  */
+  nzXXl?: INzGrid
+  /** 说明字段的宽 */
+  labelWidth?: number
+  /** 提示说明文字 */
+  tooltip?: string
+  /** 错误提示文字 */
+  errorTooltip?: Record<string, string>
+}
+
+export interface IFormInput extends IFormItemBase<string> {
+  type: 'input'
+  /** 提示 */
+  placeholder?: string
+}
+
+interface IFormSelectBase<T> extends IFormItemBase<T> {
+  type: 'select'
+  /** 提示 */
+  placeholder?: string
+  /** 是否允许搜索 */
+  nzShowSearch?: boolean
+  /** 是否允许清除 */
+  nzAllowClear?: boolean
+}
+
+// 下拉框带数组
+interface IFormSelectWithOption<T> extends IFormSelectBase<T> {
+  /** 下拉框选项 */
+  options: ISelectOption[]
+}
+// 下拉框带Observable
+interface IFormSelecWithObservable<T> extends IFormSelectBase<T> {
+  /** 下拉选择框流 */
+  options$: Observable<ISelectOption[]>
+}
+type IFormSelec<T> = XOR<IFormSelectWithOption<T>, IFormSelecWithObservable<T>>
+
+interface IFormRadioWithOption extends IFormItemBase {
+  type: 'radio'
+  options: ISelectOption[]
+}
+
+interface IFormRadioWithObservable extends IFormItemBase {
+  type: 'radio'
+  /** 下拉选择框流 */
+  options$: Observable<ISelectOption[]>
+}
+type IFormRadio = XOR<IFormRadioWithOption, IFormRadioWithObservable>
+
+interface ICascaderOption {
+  /** 标签名 */
+  label: string
+  /** 值 */
+  value: any
+  /** 是否是叶子节点 */
+  isLeaf?: boolean
+  /** 子节点集合 */
+  children?: ICascaderOption[]
+}
+
+interface IFormCascaderWithOption extends IFormItemBase {
+  type: 'cascader'
+  /** 下拉选项 */
+  options: ICascaderOption[]
+  /** 默认值 */
+  defaultValue?: any[]
+}
+
+interface IFormCascaderWithObservable extends IFormItemBase {
+  type: 'cascader'
+  /** 下拉选择框流 */
+  options$: Observable<ICascaderOption[]>
+  /** 默认值 */
+  defaultValue?: any[]
+}
+type IFormCascader = XOR<IFormCascaderWithOption, IFormCascaderWithObservable>
+
+interface IFormRender extends IFormItemBase {
+  type: 'render',
+  render: TemplateRef<any>
+}
+
+export type IFormItem<T = any> = IFormInput | IFormSelec<T> | IFormRadio | IFormCascader | IFormRender

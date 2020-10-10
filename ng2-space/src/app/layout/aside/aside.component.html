@@ -1,0 +1,8 @@
+<edz-layer [siderMinWidth]="70" [siderMaxWidth]="200" (onCollapse)="collapseHandler($event)">
+  <div class="layer-sider">
+    <edz-menu [menuList]="menuList" [config]="menuConfig"></edz-menu>
+  </div>
+  <div class="layer-body">
+    <router-outlet></router-outlet>
+  </div>
+</edz-layer>

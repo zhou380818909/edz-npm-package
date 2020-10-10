@@ -49,7 +49,7 @@ export class MenuComponent implements OnInit, OnDestroy {
 
   /** 将urlTree转换成url数组 */
   private getUrlArrayFromUrlTree(urlTree: UrlTree) {
-    return urlTree.root.children[PRIMARY_OUTLET].segments.map(item => item.path)
+    return urlTree.root.children[PRIMARY_OUTLET]?.segments.map(item => item.path) || []
   }
 
   /** 根据路由事件才激活当前菜单,以及失活上一个菜单 */

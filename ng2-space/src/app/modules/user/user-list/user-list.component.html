@@ -1,1 +1,9 @@
-<p>user-list works!</p>
+<edz-search-bar [config]="searchConfig" [value]="searchValue"></edz-search-bar>
+<edz-form [form]="formConfig"></edz-form>
+
+<button nz-button (click)="formHandler()">表单</button>
+
+<ng-template #date let-control="control" let-item="item">
+  <!-- 双向数据绑定 -->
+  <nz-date-picker [(ngModel)]="control.value" (ngModelChange)="item?.change($event)"></nz-date-picker>
+</ng-template>

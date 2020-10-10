@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
+import { AsideComponent } from './layout/aside/aside.component'
 
 const routes: Routes = [
   {
@@ -7,16 +8,22 @@ const routes: Routes = [
     loadChildren: () => import('./modules/login/login.module').then(m => m.LoginModule),
   },
   {
-    path: 'user',
-    loadChildren: () => import('./modules/user/user.module').then(m => m.UserModule),
-  },
-  {
-    path: 'role',
-    loadChildren: () => import('./modules/role/role.module').then(m => m.RoleModule),
-  },
-  {
-    path: 'auth',
-    loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule),
+    path: '',
+    component: AsideComponent,
+    children: [
+      {
+        path: 'user',
+        loadChildren: () => import('./modules/user/user.module').then(m => m.UserModule),
+      },
+      {
+        path: 'role',
+        loadChildren: () => import('./modules/role/role.module').then(m => m.RoleModule),
+      },
+      {
+        path: 'auth',
+        loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule),
+      },
+    ],
   },
 ]
 
