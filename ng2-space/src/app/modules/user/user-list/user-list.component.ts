@@ -3,6 +3,7 @@ import { Validators } from '@angular/forms'
 import { of } from 'rxjs'
 import { IFormItem, ISearchItem } from '../../../../../projects/edz-ng2-library/src/interfaces'
 import { FormComponent } from '../../../../../projects/edz-ng2-library/src/lib/form/form.component'
+import { InputComponent } from '../../../components/input/input.component'
 
 @Component({
   selector: 'app-user-list',
@@ -109,6 +110,18 @@ export class UserListComponent implements OnInit {
         required: true,
         render: this.dateTpl,
         defaultValue: new Date(),
+        nzXXl: { span: 10, offset: 2 },
+      },
+      {
+        label: '爱好',
+        index: 'hobby',
+        type: 'render',
+        component: InputComponent,
+        componentParam: form => ({
+          value: null,
+          change: form.change,
+        }),
+        required: true,
         nzXXl: { span: 10, offset: 2 },
       },
     ]

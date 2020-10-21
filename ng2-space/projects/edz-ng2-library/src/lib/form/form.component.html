@@ -22,9 +22,14 @@
           <!-- 自定义渲染 -->
           <ng-template [ngIf]="item.type === 'render'">
             <input type="hidden" [formControlName]="item.index">
-            <ng-container
-              *ngTemplateOutlet="item.render; context: { item: item, control: formGroup.controls[item.index] }">
-            </ng-container>
+            <ng-template [ngIf]="item.render">
+              <ng-container
+                *ngTemplateOutlet="item.render; context: { item: item, control: formGroup.controls[item.index] }">
+              </ng-container>
+            </ng-template>
+            <ng-template [ngIf]="item.component">
+              <span #componentContainer></span>
+            </ng-template>
           </ng-template>
 
           <!-- 错误提示类信息 -->

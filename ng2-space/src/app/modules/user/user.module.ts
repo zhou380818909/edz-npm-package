@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker'
-import { FormModule, SearchBarModule } from '../../../../projects/edz-ng2-library/src/public-api'
+import { DirectivesModule, FormModule, SearchBarModule } from '../../../../projects/edz-ng2-library/src/public-api'
+import { ComponentsModule } from '../../components/components.module'
 import { UserDetailComponent } from './user-detail/user-detail.component'
 import { UserListComponent } from './user-list/user-list.component'
 import { UserRoutingModule } from './user-routing.module'
@@ -14,6 +15,8 @@ import { UserRoutingModule } from './user-routing.module'
     SearchBarModule,
     FormModule,
     NzDatePickerModule,
+    ComponentsModule,
+    DirectivesModule,
   ],
 })
 export class UserModule { }

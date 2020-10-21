@@ -1,6 +1,7 @@
 /*
  * Public API Surface of edz-ng2-library
  */
+export * from './directives'
 export * from './edz-ng2-library.module'
 export * from './interfaces'
 export * from './lib/bool-text'

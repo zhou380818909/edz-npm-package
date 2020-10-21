@@ -411,7 +411,9 @@ type IFormCascader = XOR<IFormCascaderWithOption, IFormCascaderWithObservable>
 
 interface IFormRender extends IFormItemBase {
   type: 'render',
-  render: TemplateRef<any>
+  render?: TemplateRef<any>
+  component?: Type<any>
+  componentParam?: (value: any) => Record<any, any>
 }
 
 export type IFormItem<T = any> = IFormInput | IFormSelec<T> | IFormRadio | IFormCascader | IFormRender

@@ -1,7 +1,10 @@
-<edz-search-bar [config]="searchConfig" [value]="searchValue"></edz-search-bar>
-<edz-form [form]="formConfig"></edz-form>
-
-<button nz-button (click)="formHandler()">表单</button>
+<div edz-scroll>
+  <edz-search-bar [config]="searchConfig" [value]="searchValue"></edz-search-bar>
+  <div edz-scroll-content>
+    <edz-form [form]="formConfig"></edz-form>
+    <button nz-button (click)="formHandler()">表单</button>
+  </div>
+</div>
 
 <ng-template #date let-control="control" let-item="item">
   <!-- 双向数据绑定 -->

@@ -1,12 +1,12 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { NZ_I18N, zh_CN } from 'ng-zorro-antd/i18n'
+import { DirectivesModule } from './directives/directives.module'
 import { BoolTextModule } from './lib/bool-text/bool-text.module'
 import { GroupDatepickerModule } from './lib/group-datepicker/group-datepicker.module'
 import { InfoModule } from './lib/info/info.module'
 import { LayerModule } from './lib/layer/layer.module'
 import { MenuModule } from './lib/menu/menu.module'
-import { ScrollModule } from './lib/scroll/scroll.module'
 import { SearchBarModule } from './lib/search-bar/search-bar.module'
 import { SecretTextModule } from './lib/secret-text/secret-text.module'
 import { TabSetModule } from './lib/tab-set/tab-set.module'
@@ -26,10 +26,10 @@ const modules = [
   TabModule,
   SearchBarModule,
   TabSetModule,
-  ScrollModule,
   PipesModule,
   InfoModule,
   UploadModule,
+  DirectivesModule,
 ]
 
 @NgModule({
@@ -38,5 +38,6 @@ const modules = [
   providers: [
     { provide: NZ_I18N, useValue: zh_CN },
   ],
+  declarations: [],
 })
 export class EdzNg2LibraryModule { }
