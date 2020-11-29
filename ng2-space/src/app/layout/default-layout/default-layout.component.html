@@ -2,7 +2,10 @@
   <div class="layer-sider">
     <edz-menu [menuList]="menuList" [config]="menuConfig"></edz-menu>
   </div>
-  <div class="layer-body">
-    <router-outlet></router-outlet>
+  <div edz-scroll class="layer-body">
+    <edz-tab [menuList]="menuList"></edz-tab>
+    <div edz-scroll-content>
+      <router-outlet ></router-outlet>
+    </div>
   </div>
 </edz-layer>

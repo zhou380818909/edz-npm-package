@@ -1,14 +1,15 @@
-<nz-tabset [nzType]="'card'" [(nzSelectedIndex)]="activeIndex">
-  <nz-tab *ngFor="let tab of tabs" [nzTitle]="titleTemplate">
+<nz-tabset nzType="card" [(nzSelectedIndex)]="activeIndex">
+  <nz-tab *ngFor="let tab of tabs; let index = index" [nzTitle]="titleTemplate" (nzContextmenu)="contextMenu($event, menu, tab, index)">
     <ng-template #titleTemplate>
-      <div class="tab-title" (contextmenu)="contextMenu($event, menu, tab)" (click)="tabHandler(tab)">{{ tab.title }}<i nz-icon *ngIf="tabs?.length > 1 && !tab.disableClose" nzType="close-circle" class="ant-tabs-close-x" (click)="closeTab(tab, $event)"></i></div>
+      <div class="tab-title" (click)="tabHandler(tab)">{{ tab.title }}
+        <i nz-icon *ngIf="tabs?.length > 1 && !tab.disableClose" nzType="close-circle" class="ant-tabs-close-x" (click)="closeTab(tab, $event)"></i></div>
     </ng-template>
   </nz-tab>
 </nz-tabset>
 
-<nz-dropdown-menu #menu="nzDropdownMenu">
+<nz-dropdown-menu #menu="nzDropdownMenu" >
   <ul nz-menu>
-    <!-- <li nz-menu-item (click)="refreshHandler()">刷新当前</li> -->
+    <li nz-menu-item (click)="refreshHandler()">重新加载</li>
     <li nz-menu-item (click)="contextHandler('other')">关闭其他</li>
     <li nz-menu-item (click)="contextHandler('toRight')">关闭到右边</li>
     <li nz-menu-item (click)="contextHandler('toLeft')">关闭到左边</li>

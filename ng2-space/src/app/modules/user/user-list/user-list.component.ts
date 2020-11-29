@@ -1,17 +1,13 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core'
-import { Validators } from '@angular/forms'
-import { of } from 'rxjs'
-import { IFormItem, ISearchItem } from '../../../../../projects/edz-ng2-library/src/interfaces'
-import { FormComponent } from '../../../../../projects/edz-ng2-library/src/lib/form/form.component'
-import { InputComponent } from '../../../components/input/input.component'
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core'
+import { IColumnItem, IPagination, ISearchItem, ITableConfig } from '../../../../../projects/edz-ng2-library/src/interfaces'
+import { DateComponent } from '../../../components/date/date.component'
 
 @Component({
   selector: 'app-user-list',
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.scss'],
 })
-export class UserListComponent implements OnInit {
-  searchValue = { name: '张三' }
+export class UserListComponent implements OnInit, OnDestroy {
   searchConfig: ISearchItem[] = [
     {
       label: '姓名',
@@ -26,108 +22,199 @@ export class UserListComponent implements OnInit {
       defaultValue: 11,
     },
   ]
-  formConfig: IFormItem[] = []
-  @ViewChild(FormComponent)
-  formComponent: FormComponent
-  @ViewChild('date', { static: true })
-  dateTpl: TemplateRef<any>
+  searchValue = {}
+  tableColumn: IColumnItem[] = []
+  dataList = [
+    {
+      name: '张三',
+      addresss: '银河系太阳地球亚洲中国湖南长沙是朝阳区望京soho',
+      gender: '男',
+      birthday: new Date(),
+    },
+    {
+      name: '张三',
+      addresss: '银河系太阳地球亚洲中国湖南长沙是朝阳区望京soho',
+      gender: '男',
+      birthday: new Date(),
+    },
+    {
+      name: '张三',
+      addresss: '银河系太阳地球亚洲中国湖南长沙是朝阳区望京soho',
+      gender: '男',
+      birthday: new Date(),
+    },
+    {
+      name: '张三',
+      addresss: '银河系太阳地球亚洲中国湖南长沙是朝阳区望京soho',
+      gender: '男',
+      birthday: new Date(),
+    },
+    {
+      name: '张三',
+      addresss: '银河系太阳地球亚洲中国湖南长沙是朝阳区望京soho',
+      gender: '男',
+      birthday: new Date(),
+    },
+    {
+      name: '张三',
+      addresss: '银河系太阳地球亚洲中国湖南长沙是朝阳区望京soho',
+      gender: '男',
+      birthday: new Date(),
+    },
+    {
+      name: '张三',
+      addresss: '银河系太阳地球亚洲中国湖南长沙是朝阳区望京soho',
+      gender: '男',
+      birthday: new Date(),
+    },
+    {
+      name: '张三',
+      addresss: '银河系太阳地球亚洲中国湖南长沙是朝阳区望京soho',
+      gender: '男',
+      birthday: new Date(),
+    },
+    {
+      name: '张三',
+      addresss: '银河系太阳地球亚洲中国湖南长沙是朝阳区望京soho',
+      gender: '男',
+      birthday: new Date(),
+    },
+    {
+      name: '张三',
+      addresss: '银河系太阳地球亚洲中国湖南长沙是朝阳区望京soho',
+      gender: '男',
+      birthday: new Date(),
+    },
+    {
+      name: '张三',
+      addresss: '银河系太阳地球亚洲中国湖南长沙是朝阳区望京soho',
+      gender: '男',
+      birthday: new Date(),
+    },
+    {
+      name: '张三',
+      addresss: '银河系太阳地球亚洲中国湖南长沙是朝阳区望京soho',
+      gender: '男',
+      birthday: new Date(),
+    },
+  ]
+  pagination: IPagination = { pageIndex: 1, pageSize: 5, total: 50 }
+  tableConfig: ITableConfig = { width: 1720 }
+
+  @ViewChild('time', { static: true })
+  timeTpl: TemplateRef<any>
+  @ViewChild('operate', { static: true })
+  operateTpl: TemplateRef<any>
 
   constructor() { }
 
-  formHandler() {
-    const { formGroup: { controls } } = this.formComponent
-    Object.keys(controls).forEach(key => {
-      controls[key].markAsDirty()
-      controls[key].updateValueAndValidity()
-    })
-    // eslint-disable-next-line no-console
-    console.log(this.formComponent.formGroup.valid, this.formComponent.formGroup.value)
-  }
-
   initRender() {
-    this.formConfig = [
+    this.tableColumn = [
       {
-        label: '姓名',
+        title: '姓名',
         index: 'name',
-        type: 'input',
-        required: true,
-        defaultValue: '张三',
-        nzXXl: { offset: 2, span: 22 },
+        nzLeft: true,
+        width: 200,
       },
       {
-        label: '手机号',
-        index: 'mobile',
-        type: 'input',
-        required: true,
-        placeholder: '请输入联系方式',
-        validators: [Validators.pattern(/^1[3-9][0-9]{9}$/)],
-        errorTooltip: { pattern: '手机格式不正确' },
-        nzXXl: { offset: 2, span: 22 },
+        title: '家庭住址',
+        index: 'addresss',
+        textOverflow: 'ellipsis',
+        tooltip: true,
+        width: 100,
       },
       {
-        label: '邮箱',
-        index: 'mail',
-        type: 'input',
-        required: false,
-        validators: [Validators.required, Validators.email, Validators.maxLength(20)],
-        errorTooltip: { email: '邮箱格式不正确', maxlength: '不能超过20个字符' },
-        nzXXl: { offset: 2, span: 22 },
-        tooltip: '邮箱号以后可以修改',
-      },
-      {
-        label: '行吧',
-        index: 'sex',
-        placeholder: '请选择',
-        type: 'select',
-        options: [{ value: 1, label: '难' }],
-        nzAllowClear: true,
-        nzShowSearch: true,
-        required: true,
-        nzXXl: { span: 10, offset: 2 },
-      },
-      {
-        label: '性别',
-        index: 'gender',
-        type: 'radio',
-        required: true,
-        options$: of([{ label: '男', value: 1 }, { label: '女', value: 2 }, { label: '人妖', value: 3 }]),
-        nzXXl: { span: 10, offset: 2 },
-      },
-      {
-        label: '出生地',
-        index: 'area',
-        type: 'cascader',
-        required: true,
-        // eslint-disable-next-line max-len
-        options: [{ label: '河北', value: '002', children: [{ label: '承德', value: '002-1', isLeaf: true }] }, { label: '湖南', value: '003', isLeaf: true }],
-        defaultValue: ['002', '002-1'],
-        nzXXl: { span: 10, offset: 2 },
-      },
-      {
-        label: '出生日期',
+        title: '生日',
         index: 'birthday',
-        type: 'render',
-        required: true,
-        render: this.dateTpl,
-        defaultValue: new Date(),
-        nzXXl: { span: 10, offset: 2 },
+        width: 140,
+        component: DateComponent,
+        componentParam(data) {
+          return {
+            date: data.birthday,
+          }
+        },
       },
       {
-        label: '爱好',
-        index: 'hobby',
-        type: 'render',
-        component: InputComponent,
-        componentParam: form => ({
-          value: null,
-          change: form.change,
-        }),
-        required: true,
-        nzXXl: { span: 10, offset: 2 },
+        title: '生辰',
+        index: 'birthday',
+        render: this.timeTpl,
+        width: 200,
+      },
+      {
+        title: '家庭住址',
+        index: 'addresss',
+        textOverflow: 'ellipsis',
+        tooltip: true,
+        width: 100,
+      },
+      {
+        title: '家庭住址',
+        index: 'addresss',
+        textOverflow: 'ellipsis',
+        tooltip: true,
+        width: 100,
+      },
+      {
+        title: '家庭住址',
+        index: 'addresss',
+        textOverflow: 'ellipsis',
+        tooltip: true,
+        width: 100,
+      },
+      {
+        title: '家庭住址',
+        index: 'addresss',
+        textOverflow: 'ellipsis',
+        tooltip: true,
+        width: 100,
+      },
+      {
+        title: '家庭住址',
+        index: 'addresss',
+        textOverflow: 'ellipsis',
+        tooltip: true,
+        width: 100,
+      },
+      {
+        title: '家庭住址',
+        index: 'addresss',
+        textOverflow: 'ellipsis',
+        tooltip: true,
+        width: 100,
+      },
+      {
+        title: '家庭住址',
+        index: 'addresss',
+        textOverflow: 'ellipsis',
+        tooltip: true,
+        width: 100,
+      },
+      {
+        title: '家庭住址',
+        index: 'addresss',
+        textOverflow: 'ellipsis',
+        tooltip: true,
+        width: 100,
+      },
+      {
+        title: '性别',
+        index: 'gender',
+        nzRight: true,
+        width: 100,
+      },
+      {
+        title: '操作',
+        index: 'operate',
+        nzRight: true,
+        render: this.operateTpl,
       },
     ]
   }
 
   ngOnInit(): void {
     this.initRender()
+  }
+
+  ngOnDestroy() {
   }
 }

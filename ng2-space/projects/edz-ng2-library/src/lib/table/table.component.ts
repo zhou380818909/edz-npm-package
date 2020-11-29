@@ -1,10 +1,10 @@
 import {
+  AfterViewInit,
   ChangeDetectionStrategy, ChangeDetectorRef, Component,
   ComponentFactoryResolver, ElementRef, EventEmitter, Input,
-  OnDestroy, OnInit, Output,
+  isDevMode, OnDestroy, OnInit, Output,
   QueryList, Renderer2, SimpleChanges, ViewChild, ViewChildren, ViewContainerRef,
 } from '@angular/core'
-import { Debounce } from 'lodash-decorators'
 import { NzResizeObserver } from 'ng-zorro-antd/core/resize-observers'
 import { NzTableComponent } from 'ng-zorro-antd/table'
 import { Subscription } from 'rxjs'
@@ -29,7 +29,7 @@ interface ICollapseItem extends IRenderColumnItem {
   changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [TableService],
 })
-export class TableComponent implements OnInit, OnDestroy {
+export class TableComponent implements OnInit, OnDestroy, AfterViewInit {
   /** 列配置 */
   @Input()
   column: IColumnItem[] = []
@@ -46,9 +46,7 @@ export class TableComponent implements OnInit, OnDestroy {
   loading = false
   /** 表格的配置 */
   @Input()
-  config: ITableConfig = {
-    nzPageSizeOptions: [10, 20, 50, 100],
-  }
+  config: ITableConfig = {}
 
   /** 分页事件触发 */
   @Output()
@@ -61,12 +59,21 @@ export class TableComponent implements OnInit, OnDestroy {
   nzScroll: ITableScroll = null
   /** 表格需要渲染的列 */
   renderColumn: IRenderColumnItem[] = []
+  /** 渲染的配置 */
+  renderConfig: ITableConfig = {
+    nzPageSizeOptions: [10, 20, 50, 100],
+    scroll: true,
+    nzBordered: true,
+    nzHideOnSinglePage: false,
+    rowHeight: 24,
+  }
   /** 表格列宽设置 */
-  nzWidthConfig: string[] = null
+  nzWidthConfig: string[] = []
   /** 表头合并设置 */
   collapseConfig: ICollapseItem[][] = []
   // 数据缓存
   private _data = []
+  private measureWidth
 
   get totalData() {
     if (this.config && Array.isArray(this.config.totalData)) {
@@ -117,7 +124,7 @@ export class TableComponent implements OnInit, OnDestroy {
   ) {}
 
   /** 当页码和页大小同时改变的时候使用防抖 */
-  @Debounce(10)
+  // @Debounce(10)
   paginationHanlder() {
     this.tableChange.emit()
   }
@@ -141,7 +148,7 @@ export class TableComponent implements OnInit, OnDestroy {
 
   /** 设置表格滚动, 并且监听滚动 */
   setTableScroll() {
-    if (this.config.scroll && this.ele.nativeElement) {
+    if (this.renderConfig?.scroll && this.ele.nativeElement) {
       this.render.setStyle(this.ele.nativeElement, 'overflow', 'hidden')
       // 监听元素的大小改变同时设定滚动区域
       this.resizeSub = this.resize.observe(this.ele.nativeElement).pipe(debounceTime(100)).subscribe(([...data]: ResizeObserverEntry[]) => {
@@ -212,20 +219,22 @@ export class TableComponent implements OnInit, OnDestroy {
     // 判断列配置中是否含有表头合并相关配置
     const hasCallapse = this.column.some(item => item.rowspan > 1 || item.colspan > 1)
     this.renderColumn = [...this.column].filter(item => item.colspan === 1 || !item.colspan)
-    const collapseConfigLeft = this.setNzLeftOrRightWidth(this.renderColumn)
-    const collapseConfigRight = this.setNzLeftOrRightWidth(this.renderColumn, true).reverse()
-    this.renderColumn = collapseConfigLeft.map((item, index) => ({
-      ...item,
-      nzRightWidth: collapseConfigRight[index].nzRightWidth,
-    }))
+    // 已经可以自动实现左右固定了
+    // const collapseConfigLeft = this.setNzLeftOrRightWidth(this.renderColumn)
+    // const collapseConfigRight = this.setNzLeftOrRightWidth(this.renderColumn, true).reverse()
+    // this.renderColumn = collapseConfigLeft.map((item, index) => ({
+    //   ...item,
+    //   nzRightWidth: collapseConfigRight[index].nzRightWidth,
+    // }))
     if (!hasCallapse) {
       // 如果没有表头合并, 则提取宽度配置
-      this.nzWidthConfig = this.renderColumn.map(item => item.width)
+      this.nzWidthConfig = this.renderColumn.map(item => `${item.width}px`)
       this.collapseConfig = [this.renderColumn.map(item => ({ ...item, colspan: 1, rowspan: 1 }))]
     } else {
       // 如果有表头合并
       // 宽度配置为colspan不设置或者为1的宽度
-      this.nzWidthConfig = this.column.filter(item => !item.colspan || item.colspan < 2).map(item => item.width)
+      this.nzWidthConfig = this.column.filter(item => !item.colspan || item.colspan < 2).map(item => (item.width
+        ? `${item.width}px` : '0px'))
       this.collapseConfig = this.service.collapseColumn(this.column)
       // const rowspanMax = Math.max(...this.column.filter(item => item.rowspan && item.rowspan > 1).map(item => item.rowspan))
       // 根据最大的行合并数生成合并配置的外层数量
@@ -239,16 +248,22 @@ export class TableComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.nzScroll = { ...this.nzScroll, x: this.config.width }
+    this.nzScroll = { ...this.nzScroll, x: `${this.renderConfig?.width || 0}px` }
     this.setTableScroll()
     this.cdr.detectChanges()
     const measureWidth = this.nzTable.listOfAutoColWidth.reduce((pre, cur) => {
-      pre += cur ? parseInt(cur, 10) : 0
+      pre += parseInt(cur, 10) ? parseInt(cur, 10) : 0
       return pre
     }, 0)
-    const configWidth = this.config.width ? parseInt(this.config.width, 10) : 0
+    const configWidth = this.renderConfig?.width ? this.renderConfig?.width : 0
     if (measureWidth > configWidth) {
-      console.warn('表格config宽度小于column总宽度')
+      Object.assign(this.nzScroll, { x: `${measureWidth + 160}px` })
+      if (isDevMode) {
+        this.measureWidth = measureWidth
+        if (this.renderConfig.scroll) {
+          console.warn(`表格config宽度${configWidth}小于column累加总宽度${measureWidth}, 已自动设置为${measureWidth + 160}`)
+        }
+      }
     }
   }
 
@@ -263,11 +278,22 @@ export class TableComponent implements OnInit, OnDestroy {
     if (simpleChange.data && Array.isArray(simpleChange.data.currentValue)) {
       this.componentRender()
     }
+    if (simpleChange.config.currentValue) {
+      Object.assign(this.renderConfig, simpleChange.config.currentValue)
+    }
   }
 
   ngOnDestroy() {
     if (this.resizeSub && typeof this.resizeSub.unsubscribe === 'function') {
       this.resizeSub.unsubscribe()
     }
+  }
+
+  ngAfterViewInit() {
+    Promise.resolve().then(() => {
+      if (!this.renderConfig.scroll && this.measureWidth > this.ele?.nativeElement?.clientWidth) {
+        console.error(`表格宽度${this.ele?.nativeElement?.clientWidth || 0}小于column累加总宽度${this.measureWidth}, 最后一列布局出现错误`)
+      }
+    })
   }
 }

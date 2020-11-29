@@ -90,7 +90,7 @@
   <nz-date-picker [(ngModel)]="control.value" (ngModelChange)="item?.change($event)"></nz-date-picker>
 </ng-template>
 ```
-- 响应式表单数据
+- 组件内表格使用form组件,响应式表单数据
 ```ts
   const { formGroup: { controls } } = this.formComponent
   Object.keys(controls).forEach(key => {

@@ -27,7 +27,7 @@
       "querystring": "querystring",
       "date-fns": "dateFns",
       "lodash-decorators": "lodashDecorators",
-      "lodash": "lodash"
+      "lodash-es": "lodash"
     }
   }
 }

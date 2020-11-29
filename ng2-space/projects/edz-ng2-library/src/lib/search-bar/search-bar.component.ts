@@ -2,16 +2,14 @@
  * @Author: ChouEric
  * @Date: 2020-07-09 17:47:34
  * @Last Modified by: ChouEric
- * @Last Modified time: 2020-10-07 16:17:27
+ * @Last Modified time: 2020-10-22 15:17:31
  * @Description: 优先调用父组件的ngOnChanges, 再调用ngOnInit钩子, 再调用子组件的ngOnChanges钩子, 再调用子组件的ngOnInit
  */
 import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef, Component, EventEmitter, Input,
-  OnChanges, OnInit, Output,
-  SimpleChanges,
+  ChangeDetectionStrategy, ChangeDetectorRef, Component, EventEmitter, Input,
+  OnChanges, OnInit, Output, SimpleChanges,
 } from '@angular/core'
-import { cloneDeep, isEqual, union } from 'lodash'
+import { cloneDeep, isEqual, union } from 'lodash-es'
 import { ISearchItem, ISearchValue } from '../../interfaces'
 
 @Component({

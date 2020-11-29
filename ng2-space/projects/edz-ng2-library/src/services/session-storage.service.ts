@@ -2,11 +2,11 @@
  * @Author: ChouEric
  * @Date: 2019-11-18 15:12:40
  * @Last Modified by: ChouEric
- * @Last Modified time: 2020-07-16 18:10:17
+ * @Last Modified time: 2020-10-22 15:04:43
  * @Description: 浏览器的本地存储
  */
 import { Injectable } from '@angular/core'
-import { isNil } from 'lodash'
+import { isNil } from 'lodash-es'
 
 @Injectable({
   providedIn: 'root',

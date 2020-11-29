@@ -1,3 +1,10 @@
+/*
+ * @Author: ChouEric
+ * @Date: 2020-10-22 14:41:54
+ * @Last Modified by:   ChouEric
+ * @Last Modified time: 2020-10-22 14:41:54
+ * @Description: 描述
+ */
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { NzTableModule } from 'ng-zorro-antd/table'

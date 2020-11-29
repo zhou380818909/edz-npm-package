@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core'
 import { IMenuConfig, IMenuItem } from '../../../../projects/edz-ng2-library/src/interfaces'
 
 @Component({
-  selector: 'app-aside',
-  templateUrl: './aside.component.html',
-  styleUrls: ['./aside.component.scss'],
+  selector: 'app-default-layout',
+  templateUrl: './default-layout.component.html',
+  styleUrls: ['./default-layout.component.scss'],
 })
-export class AsideComponent implements OnInit {
+export class DefaultLayoutComponent implements OnInit {
   menuList: IMenuItem[] = [
     {
       icon: 'user',
@@ -15,7 +15,11 @@ export class AsideComponent implements OnInit {
       children: [
         {
           title: '用户列表',
-          path: '',
+          path: 'list',
+        },
+        {
+          title: '用户管理1',
+          path: 'manage',
         },
       ],
     },
@@ -26,7 +30,7 @@ export class AsideComponent implements OnInit {
       children: [
         {
           title: '角色列表',
-          path: '',
+          path: 'list',
         },
       ],
     },

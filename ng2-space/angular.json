@@ -172,7 +172,16 @@
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "projects/edz-ng2-library/tsconfig.lib.json",
-            "project": "projects/edz-ng2-library/ng-package.json"
+            "project": "projects/edz-ng2-library/ng-package.json",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets",
+              {
+                "glob": "**/*",
+                "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
+                "output": "/assets/"
+              }
+            ]
           },
           "configurations": {
             "production": {

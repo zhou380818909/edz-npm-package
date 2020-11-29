@@ -41,7 +41,7 @@ export interface IColumnItem<T = { [k: string]: any }> {
   /** 数据组件渲染  */
   component?: Type<any>
   /** component的函数, 参数当前行数据, 返回的对象作为component的参数 */
-  componentParam?: (row: object) => object
+  componentParam?: (row: Record<any, any>) => Record<any, any>
   /** 是否排序 */
   nzShowSort?: boolean
   /** 排序名 */
@@ -49,7 +49,7 @@ export interface IColumnItem<T = { [k: string]: any }> {
   /** 排序的回调 */
   nzSortOrderChange?: (sort: 'descend' | 'ascend' | null, column: IColumnItem[], index: number) => void
   /** 列宽, 如果超过宽度将自动缩略 */
-  width?: string
+  width?: number
   /** 行合并 */
   rowspan?: number
   /** 列合并 */
@@ -90,7 +90,7 @@ export interface ICheckedMap {
 /** 表格的配置 */
 export interface ITableConfig<T=object> {
   /** 表格总宽度, 出现横向滚动条 */
-  width?: string
+  width?: number
   /** 是否显示边框 */
   nzBordered?: boolean
   /** 分页大小范围 */

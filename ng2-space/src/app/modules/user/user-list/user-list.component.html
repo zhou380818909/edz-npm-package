@@ -1,12 +1,16 @@
 <div edz-scroll>
   <edz-search-bar [config]="searchConfig" [value]="searchValue"></edz-search-bar>
-  <div edz-scroll-content>
-    <edz-form [form]="formConfig"></edz-form>
-    <button nz-button (click)="formHandler()">表单</button>
-  </div>
+  <!-- <div> -->
+    <edz-table edz-scroll-content [column]="tableColumn" [data]="dataList" [pagination]="pagination" [config]="tableConfig"></edz-table>
+  <!-- </div> -->
 </div>
 
-<ng-template #date let-control="control" let-item="item">
-  <!-- 双向数据绑定 -->
-  <nz-date-picker [(ngModel)]="control.value" (ngModelChange)="item?.change($event)"></nz-date-picker>
+<ng-template #time let-data>
+  <span>{{data | date: 'yyyy-MM-dd HH:mm:ss'}}</span>
+</ng-template>
+
+<ng-template #operate let-row="row">
+  <span>
+    <a routerLink="../detail/11">详情</a>
+  </span>
 </ng-template>

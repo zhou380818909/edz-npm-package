@@ -17,12 +17,9 @@
     ],
     "allowJs": true,
     "paths": {
-      "edz-ng2-library": [
-        "dist/edz-ng2-library/edz-ng2-library",
-        "dist/edz-ng2-library"
-      ],
       "@/*": [
-        "./src/app/*"
+        "./src/app/*",
+        "./projects/edz-ng2-library"
       ]
     }
   },

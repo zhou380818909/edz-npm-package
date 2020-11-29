@@ -60,7 +60,7 @@ export class MenuComponent implements OnInit, OnDestroy {
     this.setMenuUnActive(previousePaths)
     if (this.fisrtRouterEvent$) {
       // 触发展开动画
-      timer(100).subscribe(() => this.setMenuActive(currentPaths))
+      timer(300).subscribe(() => this.setMenuActive(currentPaths))
     } else {
       this.setMenuActive(currentPaths)
     }
