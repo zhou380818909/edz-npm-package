@@ -18,7 +18,7 @@ export class DefaultLayoutComponent implements OnInit {
           path: 'list',
         },
         {
-          title: '用户管理1',
+          title: '用户管理',
           path: 'manage',
         },
       ],
@@ -38,10 +38,12 @@ export class DefaultLayoutComponent implements OnInit {
   menuConfig: IMenuConfig = {
     nzMode: 'inline',
   }
+  collapse = false
   constructor() { }
 
   collapseHandler(isCollapse) {
     this.menuConfig.nzMode = isCollapse ? 'vertical' : 'inline'
+    this.collapse = isCollapse
   }
 
   ngOnInit(): void {

@@ -13,6 +13,7 @@ import { EmptyComponent, TabComponent } from './tab.component'
     NzDropDownModule,
     NzTabsModule,
     RouterModule,
+    NzIconModule,
   ],
   exports: [RouterModule, NzTabsModule, NzIconModule, NzDropDownModule, TabComponent],
 })

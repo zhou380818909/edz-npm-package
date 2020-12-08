@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core'
+import { Router } from '@angular/router'
 import { IColumnItem, IPagination, ISearchItem, ITableConfig } from '../../../../../projects/edz-ng2-library/src/interfaces'
 import { DateComponent } from '../../../components/date/date.component'
 
@@ -21,6 +22,78 @@ export class UserListComponent implements OnInit, OnDestroy {
       index: 'age',
       defaultValue: 11,
     },
+    {
+      label: '年纪',
+      type: 'input',
+      index: 'age',
+      defaultValue: 11,
+    },
+    {
+      label: '年纪',
+      type: 'input',
+      index: 'age',
+      defaultValue: 11,
+    },
+    {
+      label: '年纪',
+      type: 'input',
+      index: 'age',
+      defaultValue: 11,
+    },
+    {
+      label: '年纪',
+      type: 'input',
+      index: 'age',
+      defaultValue: 11,
+    },
+    {
+      label: '年纪',
+      type: 'input',
+      index: 'age',
+      defaultValue: 11,
+    },
+    {
+      label: '年纪',
+      type: 'input',
+      index: 'age',
+      defaultValue: 11,
+    },
+    {
+      label: '年纪',
+      type: 'input',
+      index: 'age',
+      defaultValue: 11,
+    },
+    {
+      label: '年纪',
+      type: 'input',
+      index: 'age',
+      defaultValue: 11,
+    },
+    {
+      label: '年纪',
+      type: 'input',
+      index: 'age',
+      defaultValue: 11,
+    },
+    {
+      label: '年纪',
+      type: 'input',
+      index: 'age',
+      defaultValue: 11,
+    },
+    {
+      label: '年纪',
+      type: 'input',
+      index: 'age',
+      defaultValue: 11,
+    },
+    {
+      label: '年纪',
+      type: 'input',
+      index: 'age',
+      defaultValue: 11,
+    },
   ]
   searchValue = {}
   tableColumn: IColumnItem[] = []
@@ -30,72 +103,84 @@ export class UserListComponent implements OnInit, OnDestroy {
       addresss: '银河系太阳地球亚洲中国湖南长沙是朝阳区望京soho',
       gender: '男',
       birthday: new Date(),
+      id: 1,
     },
     {
       name: '张三',
       addresss: '银河系太阳地球亚洲中国湖南长沙是朝阳区望京soho',
       gender: '男',
       birthday: new Date(),
+      id: 2,
     },
     {
       name: '张三',
       addresss: '银河系太阳地球亚洲中国湖南长沙是朝阳区望京soho',
       gender: '男',
       birthday: new Date(),
+      id: 3,
     },
     {
       name: '张三',
       addresss: '银河系太阳地球亚洲中国湖南长沙是朝阳区望京soho',
       gender: '男',
       birthday: new Date(),
+      id: 4,
     },
     {
       name: '张三',
       addresss: '银河系太阳地球亚洲中国湖南长沙是朝阳区望京soho',
       gender: '男',
       birthday: new Date(),
+      id: 5,
     },
     {
       name: '张三',
       addresss: '银河系太阳地球亚洲中国湖南长沙是朝阳区望京soho',
       gender: '男',
       birthday: new Date(),
+      id: 6,
     },
     {
       name: '张三',
       addresss: '银河系太阳地球亚洲中国湖南长沙是朝阳区望京soho',
       gender: '男',
       birthday: new Date(),
+      id: 7,
     },
     {
       name: '张三',
       addresss: '银河系太阳地球亚洲中国湖南长沙是朝阳区望京soho',
       gender: '男',
       birthday: new Date(),
+      id: 8,
     },
     {
       name: '张三',
       addresss: '银河系太阳地球亚洲中国湖南长沙是朝阳区望京soho',
       gender: '男',
       birthday: new Date(),
+      id: 9,
     },
     {
       name: '张三',
       addresss: '银河系太阳地球亚洲中国湖南长沙是朝阳区望京soho',
       gender: '男',
       birthday: new Date(),
+      id: 10,
     },
     {
       name: '张三',
       addresss: '银河系太阳地球亚洲中国湖南长沙是朝阳区望京soho',
       gender: '男',
       birthday: new Date(),
+      id: 11,
     },
     {
       name: '张三',
       addresss: '银河系太阳地球亚洲中国湖南长沙是朝阳区望京soho',
       gender: '男',
       birthday: new Date(),
+      id: 12,
     },
   ]
   pagination: IPagination = { pageIndex: 1, pageSize: 5, total: 50 }
@@ -106,7 +191,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   @ViewChild('operate', { static: true })
   operateTpl: TemplateRef<any>
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   initRender() {
     this.tableColumn = [
@@ -209,6 +294,27 @@ export class UserListComponent implements OnInit, OnDestroy {
         render: this.operateTpl,
       },
     ]
+  }
+
+  /** 打开需要详情页 */
+  openAllHandler() {
+    for (let i = 0; i < 100; i++) {
+      setTimeout(() => {
+        this.router.navigate([`../detail/${i}`])
+      }, 200 * i)
+    }
+  }
+
+  toggleHandler() {
+    for (let i = 0; i < 100; i++) {
+      setTimeout(() => {
+        if (i % 2 === 0) {
+          this.router.navigate([`../detail/${i}`])
+        } else {
+          this.router.navigateByUrl('/user/list')
+        }
+      }, 200 * i)
+    }
   }
 
   ngOnInit(): void {

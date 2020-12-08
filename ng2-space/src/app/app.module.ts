@@ -25,7 +25,7 @@ registerLocaleData(zh)
     EdzNg2LibraryModule,
     LayoutModule,
   ],
-  providers: [{ provide: NZ_I18N, useValue: zh_CN }, { provide: RouteReuseStrategy, useClass: RouteReuseServiceFactory(20) }],
+  providers: [{ provide: NZ_I18N, useValue: zh_CN }, { provide: RouteReuseStrategy, useClass: RouteReuseServiceFactory(50) }],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

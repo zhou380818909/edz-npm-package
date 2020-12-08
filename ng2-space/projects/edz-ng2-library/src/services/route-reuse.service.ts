@@ -6,7 +6,7 @@
  * @Date: 2019-12-08 10:41:31
  * @Last Modified by: ChouEric
  * @Last Modified time: 2020-08-27 21:59:23
- * @Description: 路由复用策略
+ * @Description: 路由复用策略, 目前angular在多个页面中跳转内存会持续增加,和路由复用无关,应该和虚拟dom有关
  * // TODO: 未完成路由通配符
  */
 import { ComponentRef } from '@angular/core'
@@ -46,7 +46,7 @@ export const RouteReuseServiceFactory = (handlerSize = 20) => (
       }
       const isRouteConfigEqual = future.routeConfig === curr.routeConfig
       if (isRouteConfigEqual) {
-        const multi = future.data.multi
+        const multi = future.data?.multi
         return !multi
       } else {
         // FIXME: 这里是为了防止多个根路由组件直接的切换(全屏布局和侧边栏布局)的时候报错
@@ -66,7 +66,8 @@ export const RouteReuseServiceFactory = (handlerSize = 20) => (
     }
     /** 获取对应的缓存数据 */
     retrieve(route: ActivatedRouteSnapshot): DetachedRouteHandle {
-      const { data: { multi = false, noCache } = {} } = route.routeConfig
+      if (!route.routeConfig) return null
+      const { data: { multi = false, noCache = false } = {} } = route.routeConfig
       if (noCache) {
         return null
       }
@@ -98,7 +99,7 @@ export const RouteReuseServiceFactory = (handlerSize = 20) => (
         RouteReuseService.runNgOnDestroy(deleteKey)
         RouteReuseService.urlRoutes.delete(url)
       }
-      if (RouteReuseService.handlersWithParam.size > 10) {
+      if (RouteReuseService.handlersWithParam.size > handlerSize) {
         const deleteKey = [...RouteReuseService.handlersWithParam.keys()].shift()
         RouteReuseService.runNgOnDestroy(deleteKey)
       }
@@ -132,22 +133,20 @@ export const RouteReuseServiceFactory = (handlerSize = 20) => (
       if (!route) {
         return
       }
+      let handler
+      let componentRef
       if (typeof route === 'object') {
         // 删除handlers中的缓存
-        const handler = RouteReuseService.handlers.get(route) || {} as DetachedRouteHandle
-        const componentRef = handler.componentRef as ComponentRef<any>
-        if (componentRef && componentRef.instance && componentRef.instance.ngOnDestroy) {
-          // 销毁实例
-          componentRef.destroy()
-        }
+        handler = RouteReuseService.handlers.get(route) || {} as DetachedRouteHandle
+        componentRef = handler.componentRef as ComponentRef<any>
       } else {
         // 多开模式, 删除handlers中的缓存
-        const handler = RouteReuseService.handlersWithParam.get(route) || {} as DetachedRouteHandle
-        const componentRef = handler.componentRef as ComponentRef<any>
-        if (componentRef && componentRef.instance && componentRef.instance.ngOnDestroy) {
-          // 销毁实例
-          componentRef.destroy()
-        }
+        handler = RouteReuseService.handlersWithParam.get(route) || {} as DetachedRouteHandle
+        componentRef = handler.componentRef as ComponentRef<any>
+      }
+      if (componentRef && typeof componentRef.destroy === 'function') {
+        // 销毁实例
+        componentRef.destroy()
       }
       if (typeof route === 'object') {
         RouteReuseService.handlers.delete(route)

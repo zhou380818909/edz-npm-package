@@ -1,6 +1,8 @@
 :host {
   background-color: #fff;
+  box-shadow: 0 2px 2px 0 #ccc;
   display: block;
+  padding-top: 2px;
 
   &::ng-deep {
     .ant-tabs-nav {
@@ -12,11 +14,21 @@
         transition: none !important;
       }
 
+      .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+        font-weight: normal;
+      }
+
       .ant-tabs-tab-active {
-        font-weight: 400;
+        font-weight: normal;
+      }
+
+      .ant-tabs-tab-btn:focus {
+        color: unset;
       }
 
       .ant-tabs-close-x {
+        margin-left: 4px;
+        margin-right: 0;
         transition: none !important;
 
         &:hover {
@@ -30,6 +42,6 @@
   }
 
   .tab-title {
-    padding: 6px 16px;
+    padding: 6px 8px;
   }
 }

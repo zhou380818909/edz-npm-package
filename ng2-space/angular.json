@@ -63,7 +63,6 @@
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,
-              "extractCss": true,
               "namedChunks": false,
               "extractLicenses": true,
               "vendorChunk": false,
@@ -88,11 +87,14 @@
           "options": {
             "browserTarget": "ng2-space:build",
             "watch": true,
-            "hmr": true
+            "hmr": true,
+            "port": 12233
           },
           "configurations": {
             "production": {
-              "browserTarget": "ng2-space:build:production"
+              "browserTarget": "ng2-space:build:production",
+              "vendorChunk": true,
+              "sourceMap": true
             }
           }
         },
@@ -172,16 +174,7 @@
           "builder": "@angular-devkit/build-angular:ng-packagr",
           "options": {
             "tsConfig": "projects/edz-ng2-library/tsconfig.lib.json",
-            "project": "projects/edz-ng2-library/ng-package.json",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets",
-              {
-                "glob": "**/*",
-                "input": "./node_modules/@ant-design/icons-angular/src/inline-svg/",
-                "output": "/assets/"
-              }
-            ]
+            "project": "projects/edz-ng2-library/ng-package.json"
           },
           "configurations": {
             "production": {

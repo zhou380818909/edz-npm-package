@@ -105,7 +105,8 @@ export class TabComponent implements OnInit, OnDestroy {
     const tabMenu = this.getTabFromMenu([...currentPaths])
     // 从路由配置中获取最后一级路由配置Route
     const route = this.routerService.getLastRouteConfigFromRouteConfig(this.router.config, currentPaths) || {} as Route
-    const { data: { title = tabMenu.title || this.getTitle, disableClose = false, hiddenInTab = false, multi = false } = {}, path } = route
+    const { data: { title = tabMenu.title || this.getTitle(),
+      disableClose = false, hiddenInTab = false, multi = false } = {}, path } = route
     if (hiddenInTab) {
       return
     }

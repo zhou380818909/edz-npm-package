@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core'
-import { RouterModule, Routes } from '@angular/router'
+import { RouterModule } from '@angular/router'
+import { Routes } from '../../../../projects/edz-ng2-library/src/interfaces'
 import { UserDetailComponent } from './user-detail/user-detail.component'
 import { UserListComponent } from './user-list/user-list.component'
 
@@ -25,6 +26,9 @@ const routes: Routes = [
   {
     path: 'detail/:id',
     component: UserDetailComponent,
+    data: {
+      multi: true,
+    },
   },
 ]
 

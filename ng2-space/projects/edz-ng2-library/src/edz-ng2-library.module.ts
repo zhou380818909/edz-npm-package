@@ -5,7 +5,7 @@ import { DirectivesModule } from './directives/directives.module'
 import { BoolTextModule } from './lib/bool-text/bool-text.module'
 import { GroupDatepickerModule } from './lib/group-datepicker/group-datepicker.module'
 import { InfoModule } from './lib/info/info.module'
-import { LayerModule } from './lib/layer/layer.module'
+import { LayoutsModule } from './lib/layouts/layouts.module'
 import { MenuModule } from './lib/menu/menu.module'
 import { SearchBarModule } from './lib/search-bar/search-bar.module'
 import { SecretTextModule } from './lib/secret-text/secret-text.module'
@@ -19,7 +19,6 @@ const modules = [
   CommonModule,
   SecretTextModule,
   BoolTextModule,
-  LayerModule,
   GroupDatepickerModule,
   TableModule,
   MenuModule,
@@ -30,6 +29,7 @@ const modules = [
   InfoModule,
   UploadModule,
   DirectivesModule,
+  LayoutsModule,
 ]
 
 @NgModule({

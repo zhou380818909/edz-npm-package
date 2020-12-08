@@ -1,11 +1,9 @@
-<edz-layer [siderMinWidth]="70" [siderMaxWidth]="200" (onCollapse)="collapseHandler($event)">
-  <div class="layer-sider">
-    <edz-menu [menuList]="menuList" [config]="menuConfig"></edz-menu>
-  </div>
-  <div edz-scroll class="layer-body">
-    <edz-tab [menuList]="menuList"></edz-tab>
-    <div edz-scroll-content>
-      <router-outlet ></router-outlet>
-    </div>
-  </div>
-</edz-layer>
+<edz-layout [isCollapsed]="collapse">
+  <edz-menu [menuList]="menuList" [config]="menuConfig">
+    <!-- 这里可以放入 menu 的title -->
+  </edz-menu>
+  <edz-header (collapse)="collapseHandler($event)">
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;占位符
+  </edz-header>
+  <edz-tab [menuList]="menuList"></edz-tab>
+</edz-layout>
