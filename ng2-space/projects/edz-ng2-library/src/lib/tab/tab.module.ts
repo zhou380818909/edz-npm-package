@@ -4,15 +4,16 @@ import { RouterModule } from '@angular/router'
 import { NzDropDownModule } from 'ng-zorro-antd/dropdown'
 import { NzIconModule } from 'ng-zorro-antd/icon'
 import { NzTabsModule } from 'ng-zorro-antd/tabs'
-import { TabComponent } from './tab.component'
+import { EmptyComponent, TabComponent } from './tab.component'
 
 @NgModule({
-  declarations: [TabComponent],
+  declarations: [TabComponent, EmptyComponent],
   imports: [
     CommonModule,
     NzDropDownModule,
     NzTabsModule,
     RouterModule,
+    NzIconModule,
   ],
   exports: [RouterModule, NzTabsModule, NzIconModule, NzDropDownModule, TabComponent],
 })

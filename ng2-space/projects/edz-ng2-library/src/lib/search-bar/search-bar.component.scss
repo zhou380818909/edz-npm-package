@@ -1,11 +1,17 @@
 .search-bar {
+  display: flex;
+  flex-wrap: wrap;
   margin: 8px 0;
 
+  &.shadow {
+    box-shadow: 0 0 4px 0 #bbb;
+    margin: 8px -8px;
+    padding: 8px 8px 0;
+  }
+
   .item {
-    display: inline-block;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
     margin-right: 24px;
-    vertical-align: middle;
 
     nz-select {
       width: 100%;
@@ -20,10 +26,8 @@
     }
   }
 
-  button {
-    &:first-of-type {
-      margin-right: 8px;
-    }
+  button.item {
+    margin-right: 8px;
   }
 
   &::ng-deep {

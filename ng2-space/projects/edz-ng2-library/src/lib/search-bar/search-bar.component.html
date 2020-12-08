@@ -1,5 +1,5 @@
 <nz-spin [nzIndicator]="spinTpl" [nzSpinning]="loading">
-  <div class="search-bar">
+  <div class="search-bar shadow" >
     <ng-template ngFor let-item [ngForOf]="config">
       <div class="item" [ngSwitch]="item.type" [style.width.px]="item.width || 240">
         <!-- 输入框 -->

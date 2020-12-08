@@ -2,13 +2,13 @@
  * @Author: ChouEric
  * @Date: 2020-07-15 15:05:59
  * @Last Modified by: ChouEric
- * @Last Modified time: 2020-08-23 20:47:09
+ * @Last Modified time: 2020-10-22 15:03:11
  * @Description: 封装 http 请求
  */
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http'
 import { Inject, Injectable, InjectionToken, Optional } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
-import { cloneDeep, isEmpty, isNil } from 'lodash'
+import { cloneDeep, isEmpty, isNil } from 'lodash-es'
 import { NzMessageService } from 'ng-zorro-antd/message'
 import { stringify } from 'querystring'
 import { EMPTY, Observable, of, Subject } from 'rxjs'
@@ -28,6 +28,8 @@ export interface IHttpServiceConfig {
   successCode?: number,
   /** 是否使用后端返回的错误信息 */
   useBackEndErrorMessage?: boolean
+  /** 是否携带cookie */
+  withCredentials?: boolean
   /** 未登录回调 */
   unAuthCallback?: () => void
 }
@@ -35,19 +37,19 @@ export interface IHttpServiceConfig {
 /** 基本请求参数 */
 interface IBaseHttpParam {
   /** 查询参数, ?a=1&b=2 */
-  query?: object
+  query?: Record<string, string> | [string, string][]
   /** 路径参数, /a/b */
   path?: string[]
 }
 
 interface IFormHttpParam extends IBaseHttpParam {
-  /** contentType: application/x-www-form-urlencoded  */
-  form?: object
+  /** json数据 contentType: application/x-www-form-urlencoded  */
+  form?: Record<string, string>
 
 }
 interface IJsonHttpParam extends IBaseHttpParam {
-  /** contentType: application/json */
-  json?: object
+  /** 表单数据 contentType: application/json */
+  json?: Record<string, string>
 }
 /** 带请求体的请求参数 */
 type IBodyHttpParam = XOR<IFormHttpParam, IJsonHttpParam>
@@ -68,6 +70,8 @@ interface IPostOption {
   observe?: 'response'
   /** 不设置请求头, 此配置用于配合请求拦截器使用 */
   noHeader?: boolean
+  /** 是否携带cookie */
+  withCredentials?: boolean
 }
 
 interface IGetOption extends IPostOption {
@@ -93,10 +97,14 @@ export class HttpService {
   private message: string
   /** 成功状态码 */
   private successCode: number
+  /** 是否携带cookie */
+  private withCredentials = true
   /** 是否使用后端返回的错误消息 */
   private useBackEndErrorMessage: boolean
   /** 未登录 */
   private unAuth$ = new Subject<{ message: string, notShowErrorMessagee: boolean }>()
+  /** 提示队列, 相同提示不用再提示 */
+  errorMessageQueque = new Set<string>()
   /** 缓存数据 */
   private static cache = {}
   constructor(
@@ -108,13 +116,19 @@ export class HttpService {
     @Inject(HTTP_SERVICE_CONFIG) private config: IHttpServiceConfig,
   ) {
     // 解构配置文件
-    const { map: { code = 'code', data = 'data', message = 'message' } = { },
-      successCode = 0, useBackEndErrorMessage = true, unAuthCallback } = config || {} as IHttpServiceConfig
+    const {
+      map: { code = 'code', data = 'data', message = 'message' } = { },
+      successCode = 0,
+      useBackEndErrorMessage = true,
+      withCredentials = true,
+      unAuthCallback,
+    } = config || {} as IHttpServiceConfig
     this.code = code
     this.data = data
     this.message = message
     this.successCode = successCode
     this.useBackEndErrorMessage = useBackEndErrorMessage
+    this.withCredentials = withCredentials
     this.unAuth$.pipe(throttleTime(600)).subscribe(({ message: msg, notShowErrorMessagee }) => {
       if (notShowErrorMessagee) {
         if (typeof unAuthCallback === 'function') {
@@ -122,8 +136,12 @@ export class HttpService {
         }
       } else {
         messageService.remove()
-        messageService.warning(msg, { nzDuration: 2000 }).onClose.subscribe(() => {
-        })
+        if (!this.errorMessageQueque.has(msg)) {
+          this.errorMessageQueque.add(msg)
+          messageService.error(msg, { nzDuration: 2000 }).onClose.subscribe(() => {
+            this.errorMessageQueque.delete(msg)
+          })
+        }
       }
     })
   }
@@ -137,7 +155,8 @@ export class HttpService {
   get<T = any>(
     url: string,
     { query = {} as any, path = [] } = {} as IBaseHttpParam,
-    { showError = true, cache = false, fresh = false, noHeader = false, callback = () => {}, observe } = {} as IGetOption,
+    { showError = true, cache = false, fresh = false, noHeader = false,
+      callback = () => {}, observe, withCredentials = this.withCredentials } = {} as IGetOption,
   ): Observable<T | never> {
     // 拼接路径参数
     if (path instanceof Array) {
@@ -154,12 +173,12 @@ export class HttpService {
     const headers = noHeader ? new HttpHeaders().set('No-Auth', 'TRUE').set('cache-control', 'no-cache')
       : new HttpHeaders().set('cache-control', 'no-cache')
     return this.http
-      .get<IResponse<T>>(`${url}`, {
-      withCredentials: true,
-      headers,
-    })
+      .get(`${url}`, {
+        withCredentials,
+        headers,
+      })
       .pipe(
-        switchMap(res => {
+        switchMap((res: any) => {
           if (observe === 'response') {
             callback()
             return of(res)
@@ -169,7 +188,11 @@ export class HttpService {
             if (cache || fresh) {
               // 采用lodash的cloneDeep
               // FIXME: 同样这里可以采用 ngxs 库来统一管理缓存
-              HttpService.cache[url] = observe !== 'response' ? cloneDeep(res.data) : cloneDeep(res)
+              const cacheData = observe !== 'response' ? cloneDeep(res.data) : cloneDeep(res)
+              if (!isEmpty(cacheData)) {
+                // FIXME: 同样这里可以采用 ngxs 库来统一管理缓存
+                HttpService.cache[url] = cacheData
+              }
             }
             callback()
             return of(res[this.data])
@@ -213,7 +236,7 @@ export class HttpService {
   delete<T = any>(
     url,
     { query = {}, path = [] } = {} as IBaseHttpParam,
-    { showError = true, noHeader = false, callback = () => {}, observe } = {} as IPostOption,
+    { showError = true, noHeader = false, callback = () => {}, observe, withCredentials = this.withCredentials } = {} as IPostOption,
   ): Observable<T | never> {
     // 拼接路径参数
     if (path instanceof Array) {
@@ -225,7 +248,7 @@ export class HttpService {
     return this.http
       .delete<IResponse<T>>(`${url}`, {
       params: query as any,
-      withCredentials: true,
+      withCredentials,
       headers,
     })
       .pipe(
@@ -252,7 +275,7 @@ export class HttpService {
   private bodyRequest<T>(
     url: string,
     { form = {}, json = {}, query = {}, path = [] } = {} as any,
-    { showError = true, noHeader = false, callback = () => {}, observe } = {} as IPostOption,
+    { showError = true, noHeader = false, withCredentials = this.withCredentials, callback = () => {}, observe } = {} as IPostOption,
     method = 'post',
   ) {
     // 拼接路径参数
@@ -280,7 +303,7 @@ export class HttpService {
     }
     return this.http[method]<IResponse<T>>(`${url}${hasQuery ? `?${stringify(query as any)}` : ''}`, param, {
       headers,
-      withCredentials: true,
+      withCredentials,
     }).pipe(
       // 根据返回结果转换
       switchMap((res: IResponse) => {
@@ -303,13 +326,32 @@ export class HttpService {
     ) as Observable<T>
   }
 
+  /**
+   * 格式换文字长度, 如果40个字符以内原文返回, 如果超过40个将返回40个字符和...
+   * @param text
+   * @returns 格式话之后的文字
+   */
+  private formatText(text: string) {
+    return text.replace(/(.{0,40})?(.*)/s, (s, p1, p2) => p1 + (p2 ? '...' : ''))
+  }
+
+  /** 显示错误 */
+  private error(text: string) {
+    if (!this.errorMessageQueque.has(text)) {
+      this.errorMessageQueque.add(text)
+      this.messageService.error(text).onClose.subscribe(() => {
+        this.errorMessageQueque.delete(text)
+      })
+    }
+  }
+
   /** 处理错误 */
   private errorHandler(error: any, notShowErrorMessagee): Observable<never> {
     if (notShowErrorMessagee && (error && error.status !== 200)) {
       return EMPTY
     }
     if (typeof error === 'string') {
-      this.messageService.error(this.useBackEndErrorMessage ? error : '未知错误，请与研发中心技术客服联系！')
+      this.error(this.useBackEndErrorMessage ? this.formatText(error) : '未知错误，请与研发中心技术客服联系！')
       return EMPTY
     }
     if (error && error.status) {
@@ -330,27 +372,28 @@ export class HttpService {
         } else {
           message = '未知错误，请与研发中心技术客服联系！'
         }
+        message = this.formatText(message)
         this.unAuth$.next({ message, notShowErrorMessagee })
         return EMPTY
       }
       if (status < 400) {
-        this.messageService.error('服务端处理异常，请与研发中心技术客服联系！')
+        this.error('服务端处理异常，请与研发中心技术客服联系！')
         return EMPTY
       }
       if (status === 404) {
-        this.messageService.error('请求地址不存在，请与研发中心技术客服联系！')
+        this.error('请求地址不存在，请与研发中心技术客服联系！')
         return EMPTY
       }
       if (status < 500) {
-        this.messageService.error('请求参数错误，请检查后重试！')
+        this.error('请求参数错误，请检查后重试！')
         return EMPTY
       }
       if (status >= 500) {
-        this.messageService.error('服务端处理异常，请与研发中心技术客服联系！')
+        this.error('服务端处理异常，请与研发中心技术客服联系！')
         return EMPTY
       }
     }
-    this.messageService.error('未知错误，请与研发中心技术客服联系！')
+    this.error('未知错误，请与研发中心技术客服联系！')
     return EMPTY
   }
 

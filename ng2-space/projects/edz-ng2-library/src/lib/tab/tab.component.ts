@@ -5,8 +5,8 @@
  * @Last Modified time: 2020-10-07 16:22:22
  * @Description: tab组件, 和路径相关, 在Router中,可以访问路由复用策略
  */
-import { Component, Input, OnDestroy, OnInit } from '@angular/core'
-import { NavigationEnd, Router } from '@angular/router'
+import { ChangeDetectorRef, Component, Input, isDevMode, OnDestroy, OnInit } from '@angular/core'
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router'
 import { NzContextMenuService, NzDropdownMenuComponent } from 'ng-zorro-antd/dropdown'
 import { BehaviorSubject, Subscription } from 'rxjs'
 import { filter } from 'rxjs/operators'
@@ -30,6 +30,11 @@ interface ITabItem {
 }
 
 @Component({
+  template: '',
+})
+export class EmptyComponent {}
+
+@Component({
   selector: 'edz-tab',
   templateUrl: './tab.component.html',
   styleUrls: ['./tab.component.scss'],
@@ -46,6 +51,8 @@ export class TabComponent implements OnInit, OnDestroy {
   tabs: ITabItem[]
   // 右键菜单选中的tab
   private contextMenuTab: ITabItem
+  // 右键菜单选中的index
+  private contextMenuIndex: number
   // 用来取消订阅
   private routerSub$: Subscription
   // 首次路由
@@ -56,7 +63,9 @@ export class TabComponent implements OnInit, OnDestroy {
     private sessionStorage: SessionStorageService,
     private localStorage: LocalStorageService,
     private service: TabService,
+    private activatedRoute: ActivatedRoute,
     private routerService: RouterService,
+    private cdf: ChangeDetectorRef,
   ) {
     this.routerSub$ = this.router.events.pipe(
       // 当前路由事件已经完成了切换
@@ -75,15 +84,29 @@ export class TabComponent implements OnInit, OnDestroy {
         this.closeTab(item)
       }
     })
+    service.title$.subscribe(({ title, url }) => {
+      const index = this.tabs.findIndex(item => (item.urlWithParam && item.urlWithParam === url) || (item.url && item.url === url))
+      this.tabs[index].title = title
+      this.saveTabToStorage()
+    })
+  }
+
+  private getTitle() {
+    if (isDevMode) {
+      console.warn('当前tab的title没有配置, 可以在tab组件的menuList自动查找, 或者在对应组件的路由配置中的data配置为{title: "xxx"}')
+    }
+    return '未命名'
   }
 
   /** 根据路由事件来打开tab或者设置为激活, 或者关闭 */
   routerEvent(event: NavigationEnd) {
     // 根据url地址转换为数组
     const currentPaths = this.routerService.getPathArrayFromUrl(event.urlAfterRedirects)
+    const tabMenu = this.getTabFromMenu([...currentPaths])
     // 从路由配置中获取最后一级路由配置Route
     const route = this.routerService.getLastRouteConfigFromRouteConfig(this.router.config, currentPaths) || {} as Route
-    const { data: { title = '未命名', disableClose = false, hiddenInTab = false, multi = false } = {}, path } = route
+    const { data: { title = tabMenu.title || this.getTitle(),
+      disableClose = false, hiddenInTab = false, multi = false } = {}, path } = route
     if (hiddenInTab) {
       return
     }
@@ -98,8 +121,7 @@ export class TabComponent implements OnInit, OnDestroy {
       urlWithParam = rootFromPath.reduce((pre, cur) => pre += cur.path ? `/${cur.path}` : '', '')
     }
     // 当前的url在tab中的索引
-    const existIndex = this.tabs.findIndex(tab => tab.title === title
-      && ((urlWithParam && urlWithParam === tab.urlWithParam) || tab.url === url))
+    const existIndex = this.tabs.findIndex(tab => (urlWithParam && urlWithParam === tab.urlWithParam) || tab.url === url)
     // 如果当前url的索引小于0, 即是当前url不在tab中
     if (existIndex < 0 && title) {
       const tab = { url, title, disableClose } as ITabItem
@@ -112,16 +134,58 @@ export class TabComponent implements OnInit, OnDestroy {
     } else {
       this.activeIndex = existIndex
     }
+    this.cdf.detectChanges()
   }
 
+  /** 重新刷新选中tab对应的路由 */
   refreshHandler() {
-    // eslint-disable-next-line no-console
-    console.log(((this.router as any).rootContexts as any).contexts.get('primary'))
+    // 如果需要刷新的tab不是当前激活的, 只需要删除对应的缓存即可
+    if (this.activeIndex !== this.contextMenuIndex) {
+      if (this.router.routeReuseStrategy && typeof (this.router.routeReuseStrategy as any).deleteHandlerByUrl === 'function') {
+        (this.router.routeReuseStrategy as any).deleteHandlerByUrl(this.contextMenuTab.urlWithParam || this.contextMenuTab.url)
+      }
+      return
+    }
+    // 暂时向children当中动态追加一个路由和组件, 先导航到这个临时的路由,然后再删除路由复用, 再导航到tab的路由,这样就相当于刷新了tab的路由
+    const emptyUrl = Math.random().toString(16).substr(2)
+    this.activatedRoute.routeConfig.children.unshift({
+      path: emptyUrl,
+      component: EmptyComponent,
+      data: {
+        noCache: true,
+        hiddenInTab: true,
+      },
+    })
+    const { url, urlWithParam } = this.tabs[this.activeIndex]
+    this.router.navigateByUrl(emptyUrl, { skipLocationChange: true })
+      .then(() => {
+        if (this.router.routeReuseStrategy && typeof (this.router.routeReuseStrategy as any).deleteHandlerByUrl === 'function') {
+          return (this.router.routeReuseStrategy as any).deleteHandlerByUrl(urlWithParam || url)
+        }
+        return Promise.resolve()
+      })
+      .then(() => this.router.navigateByUrl(urlWithParam || url)).then(() => {
+        this.activatedRoute.routeConfig.children.shift()
+      })
+  }
+
+  /**
+   * 从路由菜单获取tab的
+   * @param pathArr path的数组
+   * @param menus 菜单
+   */
+  getTabFromMenu(pathArr: string[], menus = this.menuList): IMenuItem {
+    const path = pathArr.shift()
+    const menuItem = menus.find(menu => menu.path === path || menu.path === '**') || {} as IMenuItem
+    if (menuItem.children) {
+      return this.getTabFromMenu(pathArr, menuItem.children)
+    }
+    return menuItem || {} as IMenuItem
   }
 
   /** 点击tab */
   tabHandler(tab: ITabItem) {
-    this.router.navigateByUrl(tab.url)
+    this.router.navigateByUrl(tab.urlWithParam || tab.url)
   }
 
   /** 关闭tab */
@@ -164,13 +228,10 @@ export class TabComponent implements OnInit, OnDestroy {
   }
 
   /** tab的右键菜单 */
-  contextMenu($event: MouseEvent, menu: NzDropdownMenuComponent, tab: ITabItem): void {
-    // 如果tab长度小于2, 则不生成右键菜单
-    if (this.tabs.length < 2) {
-      return
-    }
+  contextMenu($event: MouseEvent, menu: NzDropdownMenuComponent, tab: ITabItem, index: number): void {
     const menuSub = menu.descendantMenuItemClick$.subscribe(() => {
       this.contextMenuTab = tab
+      this.contextMenuIndex = index
       menuSub.unsubscribe()
     })
     this.nzContextMenuService.create($event, menu)

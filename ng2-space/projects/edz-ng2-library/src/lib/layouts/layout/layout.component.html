@@ -1,22 +1,11 @@
-<nz-layout>
-  <nz-sider [ngStyle]="siderStyle" nzCollapsible [nzTrigger]="null">
-    <ng-content select=".layer-sider"></ng-content>
+<nz-layout [class]="siderTransition ? '' : 'hide'">
+  <nz-sider [nzCollapsed]="isCollapsed" [nzCollapsedWidth]="70">
+    <ng-content select="edz-menu"></ng-content>
   </nz-sider>
   <nz-layout>
-    <nz-header>
-        <div class="header-top">
-          <div class="collapse">
-              <i nz-icon [hidden]="isCollapsed" (click)="toggleCollapsed()" nzType="double-left" nzTheme="outline"></i>
-              <i nz-icon [hidden]="!isCollapsed" (click)="toggleCollapsed()" nzType="double-right" nzTheme="outline"></i>
-          </div>
-          <div class="header">
-              <ng-content select=".layer-header"></ng-content>
-          </div>
-        </div>
-        <ng-content select=".layer-second-header"></ng-content>
-    </nz-header>
+    <ng-content></ng-content>
     <nz-content>
-      <ng-content select=".layer-body"></ng-content>
+      <router-outlet></router-outlet>
     </nz-content>
     <nz-footer>
       <img

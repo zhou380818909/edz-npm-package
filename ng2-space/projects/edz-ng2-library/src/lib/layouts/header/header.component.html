@@ -1,0 +1,6 @@
+
+<div class="header-container">
+  <i nz-icon [hidden]="isCollapsed" (click)="collapseHandler()" nzType="double-left" nzTheme="outline"></i>
+  <i nz-icon [hidden]="!isCollapsed" (click)="collapseHandler()" nzType="double-right" nzTheme="outline"></i>
+  <ng-content></ng-content>
+</div>

@@ -1,3 +1,4 @@
+<ng-content></ng-content>
 <ul nz-menu nzTheme="dark" [nzMode]="config.nzMode || 'inline'" [nzInlineCollapsed]="config.nzMode === 'vertical'">
   <ng-container *ngTemplateOutlet="menuTpl; context: { $implicit: menus }"></ng-container>
   <ng-template #menuTpl let-menus>

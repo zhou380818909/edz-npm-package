@@ -1,0 +1,26 @@
+
+:host {
+  box-shadow: 0 0 2px 2px #ccc;
+
+  .header-container {
+    align-items: center;
+    box-shadow: inset 0 -2px 2px 0 #ccc;
+    display: flex;
+    height: 32px;
+    padding: 0 8px;
+
+    i {
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 32px;
+      transition: all 0.2s;
+      user-select: none;
+    }
+
+    ::ng-deep {
+      .anticon svg {
+        vertical-align: middle;
+      }
+    }
+  }
+}

@@ -1,1 +1,12 @@
-<p>user-detail works!</p>
+<div edz-scroll>
+  <div>一个伟大的用户诞生了</div>
+  <div edz-scroll-content>
+    <edz-form [form]="formConfig"></edz-form>
+    <button nz-button (click)="formHandler()">表单</button>
+  </div>
+</div>
+
+<ng-template #date let-control="control" let-item="item">
+  <!-- 双向数据绑定 -->
+  <nz-date-picker [(ngModel)]="control.value" (ngModelChange)="item?.change($event)"></nz-date-picker>
+</ng-template>

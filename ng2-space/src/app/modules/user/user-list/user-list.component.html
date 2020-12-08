@@ -1,1 +1,18 @@
-<p>user-list works!</p>
+<div edz-scroll>
+  <edz-search-bar [config]="searchConfig" [value]="searchValue">
+    <button nz-button (click)="openAllHandler()">多开</button>
+    &nbsp;&nbsp;
+    <button nz-button (click)="toggleHandler()">切换</button>
+  </edz-search-bar>
+  <edz-table edz-scroll-content [column]="tableColumn" [data]="dataList" [pagination]="pagination" [config]="tableConfig"></edz-table>
+</div>
+
+<ng-template #time let-data>
+  <span>{{data | date: 'yyyy-MM-dd HH:mm:ss'}}</span>
+</ng-template>
+
+<ng-template #operate let-row="row">
+  <span>
+    <a routerLink="../detail/{{row.id}}">详情</a>
+  </span>
+</ng-template>

@@ -1,0 +1,9 @@
+<edz-layout [isCollapsed]="collapse">
+  <edz-menu [menuList]="menuList" [config]="menuConfig">
+    <!-- 这里可以放入 menu 的title -->
+  </edz-menu>
+  <edz-header (collapse)="collapseHandler($event)">
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;占位符
+  </edz-header>
+  <edz-tab [menuList]="menuList"></edz-tab>
+</edz-layout>

@@ -2,13 +2,13 @@
   由于ng-zorro版本9.x, nzLeft和nzRight属性变更, 需要判断nzLeft和nzRight属性存在与否
   https://ng.ant.design/components/table/zh#components-table-demo-fixed-columns
  -->
-<nz-table #nzTable nzTableLayout="fixed" [nzData]="data" [nzWidthConfig]="nzWidthConfig" [nzBordered]="config.nzBordered !== false" [nzShowPagination]="true"
+<nz-table #nzTable nzTableLayout="fixed" [nzData]="data" [nzWidthConfig]="nzWidthConfig" [nzBordered]="renderConfig.nzBordered" [nzShowPagination]="true"
   [(nzPageIndex)]="pagination.pageIndex" [(nzPageSize)]="pagination.pageSize"
   [nzShowTotal]="rangeTemplate" [nzShowQuickJumper]="true" [nzShowSizeChanger]="true"
-  [nzPageSizeOptions]="config.nzPageSizeOptions || [10, 20, 50, 100]" [nzTotal]="pagination.total"
-  [nzHideOnSinglePage]="config.nzHideOnSinglePage" (nzPageIndexChange)="paginationHanlder()"
+  [nzPageSizeOptions]="renderConfig.nzPageSizeOptions || [10, 20, 50, 100]" [nzTotal]="pagination.total"
+  [nzHideOnSinglePage]="renderConfig.nzHideOnSinglePage" (nzPageIndexChange)="paginationHanlder()"
   (nzPageSizeChange)="paginationHanlder()" [nzScroll]="nzScroll" nzSize="middle" [nzLoading]="loading"
-  [nzFrontPagination]="false" [class.empty]="data?.length === 0">
+  [nzFrontPagination]="false" [class.empty]="data?.length === 0" [class.no-pagination]="renderConfig.nzHideOnSinglePage && data?.length <= pagination.total">
   <thead>
     <!-- *ngFor="let collapseItem of collapseConfig" -->
       <tr *ngFor="let collapseItem of collapseConfig">
@@ -23,30 +23,18 @@
             </ng-container>
             <ng-template #noCheckBox>
               <!-- 表头不固定 -->
-<<<<<<< HEAD
-              <th *ngIf="!th.nzLeft && !th.nzRight" [nzColumnKey]="th.index" [nzSortFn]="true" [nzShowSort]="th.nzShowSort" [(nzSortOrder)]="th.nzSortOrder"
-=======
               <th *ngIf="!th.nzLeft && !th.nzRight" [attr.colspan]="th.colspan || 1" [attr.rowspan]="th.rowspan || 1" [nzColumnKey]="th.index" [nzSortFn]="true" [nzShowSort]="th.nzShowSort" [(nzSortOrder)]="th.nzSortOrder"
->>>>>>> d476648... 重新使用脚手架优化项目并且将ng-zorro升级到10, 加入钩子函数
                 (nzSortOrderChange)="th.nzSortOrderChange($event, th, collapseItem)">
                 <ng-container *ngTemplateOutlet="thContent; context: { $implicit: th }"></ng-container>
               </th>
               <!-- 表头左侧列固定 -->
-<<<<<<< HEAD
-              <th *ngIf="th.nzLeft" [nzColumnKey]="th.index" [nzShowSort]="th.nzShowSort" [(nzSortOrder)]="th.nzSortOrder"
-=======
               <th *ngIf="th.nzLeft" [attr.colspan]="th.colspan || 1" [attr.rowspan]="th.rowspan || 1" [nzColumnKey]="th.index" [nzShowSort]="th.nzShowSort" [(nzSortOrder)]="th.nzSortOrder"
->>>>>>> d476648... 重新使用脚手架优化项目并且将ng-zorro升级到10, 加入钩子函数
-                [nzLeft]="th.nzLeftWidth" (nzSortOrderChange)="th.nzSortOrderChange($event, th, collapseItem)">
+                [nzLeft]="th.nzLeft" (nzSortOrderChange)="th.nzSortOrderChange($event, th, collapseItem)">
                 <ng-container *ngTemplateOutlet="thContent; context: { $implicit: th }"></ng-container>
               </th>
               <!-- 表头右侧列固定 -->
-<<<<<<< HEAD
-              <th *ngIf="th.nzRight" [nzColumnKey]="th.index" [nzShowSort]="th.nzShowSort" [(nzSortOrder)]="th.nzSortOrder"
-=======
               <th *ngIf="th.nzRight" [attr.colspan]="th.colspan || 1" [attr.rowspan]="th.rowspan || 1" [nzColumnKey]="th.index" [nzShowSort]="th.nzShowSort" [(nzSortOrder)]="th.nzSortOrder"
->>>>>>> d476648... 重新使用脚手架优化项目并且将ng-zorro升级到10, 加入钩子函数
-                [nzRight]="th.nzRightWidth" (nzSortOrderChange)="th.nzSortOrderChange($event, th, collapseItem)">
+                [nzRight]="th.nzRight" (nzSortOrderChange)="th.nzSortOrderChange($event, th, collapseItem)">
                 <ng-container *ngTemplateOutlet="thContent; context: { $implicit: th }"></ng-container>
               </th>
             </ng-template>
@@ -70,10 +58,10 @@
           <td *ngIf="!col.nzLeft && !col.nzRight">
             <ng-container *ngTemplateOutlet="tdContent;context: { $implicit: col, item: item }"></ng-container>
           </td>
-          <td *ngIf="col.nzLeft" [nzLeft]="col.nzLeftWidth">
+          <td *ngIf="col.nzLeft" [nzLeft]="col.nzLeft">
             <ng-container *ngTemplateOutlet="tdContent;context: { $implicit: col, item: item }"></ng-container>
           </td>
-          <td *ngIf="col.nzRight" [nzRight]="col.nzRightWidth">
+          <td *ngIf="col.nzRight" [nzRight]="col.nzRight">
             <ng-container *ngTemplateOutlet="tdContent;context: { $implicit: col, item: item }"></ng-container>
           </td>
         </ng-template>
@@ -134,8 +122,8 @@
       *ngIf="col.textOverflow !== 'ellipsis' || col.lineCamp < 2; else elseText"
       nz-tooltip
       [nzTooltipTitle]="col.tooltip ? item[col.index] : ''"
-      [style.height.px]="config?.rowHeight || 24"
-      [style.lineHeight.px]="config?.lineHeight || config?.rowHeight || 24"
+      [style.height.px]="renderConfig?.rowHeight"
+      [style.lineHeight.px]="renderConfig?.lineHeight || renderConfig?.rowHeight"
       [ngClass]="{hidden: col.textOverflow === 'hidden', ellipsis: col.textOverflow === 'ellipsis'}">
       {{item[col.index]}}
     </span>
@@ -145,7 +133,7 @@
         nz-typography
         [nzTooltipTitle]="col.tooltip ? item[col.index] : ''"
         [nzEllipsis]="true"
-        [nzEllipsisRows]="col.lineCamp">
+        [nzEllipsisRows]="col.lineCamp || 1">
         {{item[col.index]}}
       </p>
     </ng-template>

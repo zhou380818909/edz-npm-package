@@ -5,17 +5,17 @@ import { NgModule } from '@angular/core'
 import { FormsModule } from '@angular/forms'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
+import { RouteReuseStrategy } from '@angular/router'
 import { NZ_I18N, zh_CN } from 'ng-zorro-antd/i18n'
-import { EdzNg2LibraryModule } from '../../projects/edz-ng2-library/src/public-api'
+import { EdzNg2LibraryModule, RouteReuseServiceFactory } from '../../projects/edz-ng2-library/src/public-api'
 import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
+import { LayoutModule } from './layout/layout.module'
 
 registerLocaleData(zh)
 
 @NgModule({
-  declarations: [
-    AppComponent,
-  ],
+  declarations: [AppComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -23,8 +23,9 @@ registerLocaleData(zh)
     HttpClientModule,
     BrowserAnimationsModule,
     EdzNg2LibraryModule,
+    LayoutModule,
   ],
-  providers: [{ provide: NZ_I18N, useValue: zh_CN }],
+  providers: [{ provide: NZ_I18N, useValue: zh_CN }, { provide: RouteReuseStrategy, useClass: RouteReuseServiceFactory(50) }],
   bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
