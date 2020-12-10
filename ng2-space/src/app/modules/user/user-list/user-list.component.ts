@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core'
 import { Router } from '@angular/router'
-import { IColumnItem, IPagination, ISearchItem, ITableConfig } from '../../../../../projects/edz-ng2-library/src/interfaces'
+import { IColumnItem, IPagination, ISearchItem, ITableConfig } from 'edz-ng2-library'
 import { DateComponent } from '../../../components/date/date.component'
 
 @Component({

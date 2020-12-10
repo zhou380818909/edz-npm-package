@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core'
-import { IMenuConfig, IMenuItem } from '../../../../projects/edz-ng2-library/src/interfaces'
+import { IMenuConfig, IMenuItem } from 'edz-ng2-library'
 
 @Component({
   selector: 'app-default-layout',

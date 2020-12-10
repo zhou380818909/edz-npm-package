@@ -6,8 +6,12 @@
     "umdModuleIds": {
       "ng-zorro-antd": "ngZorroAntd",
       "ng-zorro-antd/date-picker": "datePicker",
+      "ng-zorro-antd/cascader": "cascader",
+      "ng-zorro-antd/checkbox": "checkbox",
       "ng-zorro-antd/radio": "radio",
       "ng-zorro-antd/icon": "icon",
+      "ng-zorro-antd/form": "form",
+      "ng-zorro-antd/i18n": "i18n",
       "ng-zorro-antd/layout": "layout",
       "ng-zorro-antd/grid": "grid",
       "ng-zorro-antd/tooltip": "tooltip",

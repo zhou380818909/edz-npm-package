@@ -1,10 +1,8 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core'
 import { Validators } from '@angular/forms'
 import { ActivatedRoute } from '@angular/router'
+import { FormComponent, IFormConfig, IFormItem, ISearchItem, TabService } from 'edz-ng2-library'
 import { of } from 'rxjs'
-import { IFormItem, ISearchItem } from '../../../../../projects/edz-ng2-library/src/interfaces'
-import { FormComponent } from '../../../../../projects/edz-ng2-library/src/lib/form/form.component'
-import { TabService } from '../../../../../projects/edz-ng2-library/src/lib/tab'
 import { InputComponent } from '../../../components/input/input.component'
 
 @Component({
@@ -29,6 +27,7 @@ export class UserDetailComponent implements OnInit {
     },
   ]
   formConfig: IFormItem[] = []
+  config: IFormConfig = { labelWidth: 120 }
   @ViewChild(FormComponent)
   formComponent: FormComponent
   @ViewChild('date', { static: true })
@@ -42,6 +41,9 @@ export class UserDetailComponent implements OnInit {
       controls[key].markAsDirty()
       controls[key].updateValueAndValidity()
     })
+    this.formComponent.formGroup.controls.name.setValue('aaa')
+    // console.log()
+
     // eslint-disable-next-line no-console
     console.log(this.formComponent.formGroup.valid, this.formComponent.formGroup.value)
   }
@@ -55,6 +57,8 @@ export class UserDetailComponent implements OnInit {
         required: true,
         defaultValue: '张三',
         nzXXl: { offset: 2, span: 22 },
+        labelWidth: 60,
+        readonly: true,
       },
       {
         label: '手机号',
@@ -86,6 +90,7 @@ export class UserDetailComponent implements OnInit {
         nzShowSearch: true,
         required: true,
         nzXXl: { span: 10, offset: 2 },
+        readonly: true,
       },
       {
         label: '性别',

@@ -1,0 +1,44 @@
+<form nz-form [formGroup]="formGroup">
+  <nz-row>
+    <nz-col *ngFor="let item of form" [nzXl]="item.nzXl" [nzXXl]="item.nzXXl">
+      <nz-form-item>
+        <nz-form-label [style.width.px]="item.labelWidth || configRender.labelWidth" [nzRequired]="item.required">
+          {{item.label}}
+          <i *ngIf="item.tooltip" nz-icon nzType="question-circle" nz-tooltip [nzTooltipTitle]="item.tooltip"></i>
+        </nz-form-label>
+        <nz-form-control [nzErrorTip]="errorTip">
+          <!-- 输入框 -->
+          <input *ngIf="item.type === 'input'" [readonly]="item.readonly" nz-input [formControlName]="item.index" [placeholder]="item.placeholder || '请输入'+item.label">
+          <!-- 下拉选择 -->
+          <nz-select  *ngIf="item.type === 'select'" [nzDisabled]="item.readonly" [formControlName]="item.index" [nzShowSearch]="item?.nzShowSearch !== false"  [nzAllowClear]="item.nzAllowClear !== false" [nzPlaceHolder]="item.placeholder || '请选择'+item.label">
+            <nz-option *ngFor="let option of item.options$ ? (item.options$ | async) : item.options" [nzValue]="option.value" [nzLabel]="option.label"></nz-option>
+          </nz-select>
+          <!-- 单选框组 -->
+          <nz-radio-group *ngIf="item.type === 'radio'" [nzDisabled]="item.readonly" [formControlName]="item.index" [nzName]="item.index">
+            <label nz-radio *ngFor="let option of item.options$ ? (item.options$ | async) : item.options" [nzValue]="option.value">{{option.label}}</label>
+          </nz-radio-group>
+          <!-- 级联 -->
+          <nz-cascader *ngIf="item.type === 'cascader'" [nzDisabled]="item.readonly" [formControlName]="item.index" [nzOptions]="item.options$ ? (item.options | async) : item.options" [nzPlaceHolder]="item.placeholder || '请选择'+item.label"></nz-cascader>
+          <!-- 自定义渲染 -->
+          <ng-template [ngIf]="item.type === 'render'">
+            <input type="hidden" [formControlName]="item.index">
+            <ng-template [ngIf]="item.render">
+              <ng-container
+                *ngTemplateOutlet="item.render; context: { item: item, control: formGroup.controls[item.index] }">
+              </ng-container>
+            </ng-template>
+            <ng-template [ngIf]="item.component">
+              <span #componentContainer></span>
+            </ng-template>
+          </ng-template>
+
+          <!-- 错误提示类信息 -->
+          <ng-template #errorTip let-control>
+            <span *ngIf="control.errors.required">请{{item.type === 'input' ? '输入' : '选择'}}{{item.label}}</span>
+            <span *ngIf="!control.errors.required">{{errorTips(control, item)}}</span>
+          </ng-template>
+        </nz-form-control>
+      </nz-form-item>
+    </nz-col>
+  </nz-row>
+</form>
