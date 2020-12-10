@@ -3,7 +3,7 @@
  * @Author: ChouEric
  * @Date: 2020-06-19 16:18:42
  * @Last Modified by: ChouEric
- * @Last Modified time: 2020-10-07 16:28:31
+ * @Last Modified time: 2020-12-10 16:43:12
  * @Description: eslint检查js代码, 目前已经支持ts, 配合@typescript-eslint/parser https://eslint.org/docs/user-guide/configuring
  * 安装命令 npm i eslint @typescript-eslint/parser  @typescript-eslint/eslint-plugin eslint-config-airbnb-base eslint-config-airbnb-typescript eslint-plugin-import -D
  * 目前根目录下的js文件, 除了此文件和proxy.conf.js, 其他(.husky.js, .lintstagedrc.js, .stylelintrc.js)在eslint中不生效
@@ -15,7 +15,7 @@ module.exports = {
     es2020: true,
   },
   extends: [
-    'airbnb-base',
+    // 'airbnb-base',
     'airbnb-typescript/base',
   ],
   parser: '@typescript-eslint/parser',

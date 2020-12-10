@@ -19,23 +19,18 @@
     "paths": {
       "@/*": [
         "./src/app/*",
-        "./projects/edz-ng2-library"
-      ]
+      ],
+      "dev": ["./projects/edz-ng2-library/src"],
     }
   },
   "include": [
     "src/environments/*.ts",
-    "projects/edz-ng2-library/src/interfaces/index.ts",
     "projects/edz-ng2-library/src/edz-ng2-library.module.ts",
     "projects/edz-ng2-library/src/lib/**/*.ts",
-    "projects/edz-ng2-library/src/interfaces/**/*.ts",
-    "projects/edz-ng2-library/src/services/**/*.ts",
-    "projects/edz-ng2-library/src/pipes/**/*.ts",
     "proxy.conf.js",
     ".eslintrc.js",
     ".huskyrc.js",
     ".lintstagedrc.js",
     ".stylelintrc.js",
-    "projects/edz-ng2-library/src/edz-ng2-library.module.ts"
   ]
 }

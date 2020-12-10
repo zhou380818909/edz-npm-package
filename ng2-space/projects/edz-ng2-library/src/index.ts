@@ -1,6 +1,4 @@
-/*
- * Public API Surface of edz-ng2-library
- */
+import '@angular/compiler'
 
 export * from './lib/components/bool-text'
 export * from './lib/components/form'
