@@ -1,6 +1,7 @@
 :host {
   display: block;
   height: 100%;
+  position: relative;
 
   nz-table {
     display: block;
@@ -112,4 +113,13 @@
 
 .cursor-pointer {
   cursor: pointer;
+}
+
+.selectable {
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 40px;
+  position: absolute;
+  right: 8px;
+  top: 0;
 }

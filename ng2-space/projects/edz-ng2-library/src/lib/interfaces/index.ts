@@ -50,10 +50,6 @@ export interface IColumnItem<T = { [k: string]: any }> {
   nzSortOrderChange?: (sort: 'descend' | 'ascend' | null, column: IColumnItem[], index: number) => void
   /** 列宽, 如果超过宽度将自动缩略 */
   width?: number
-  /** 行合并 */
-  rowspan?: number
-  /** 列合并 */
-  colspan?: number
   /** 行高, 当设置列宽的时候, 可能s出现表格对不齐的问题, 需要设置行高 */
   lineHeight?: number
   /** 列宽固定左侧, 不要和左边的选择框同时使用 */
@@ -66,6 +62,10 @@ export interface IColumnItem<T = { [k: string]: any }> {
   tooltip?: boolean
   /** 文字溢出隐藏行数 */
   lineCamp?: number
+  /** ###暂不实现### 如果设置为true,则默认设置显示,如果设置为false则默认不设置, 如果不设置将不会出现列选则功能 */
+  selected?: boolean
+  /** 表头分组 */
+  children?: IColumnItem[]
 }
 /** 表格数据 */
 export interface ITableItem {

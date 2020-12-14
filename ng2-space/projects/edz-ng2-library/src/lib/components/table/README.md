@@ -6,6 +6,8 @@
 - 支持左右固定
 - 支持表格单元格悬浮提示, 文字溢出隐藏, 省略, 默认不处理
 - 可以带分页功能和loading功能
+- 支持表头分组功能
+- 暂时未完成 列选择功能
 
 ```html
 <edz-table [column]="tableColumn" [data]="dataList" [pagination]="pagination" [config]="tableConfig"></edz-table>
@@ -100,7 +102,7 @@
     },
   ]
   pagination: IPagination = { pageIndex: 1, pageSize: 5, total: 50 }
-  tableConfig: ITableConfig = null
+  tableConfig: ITableConfig = { width: 1960 }
 
   @ViewChild('time', { static: true })
   timeTpl: TemplateRef<any>
@@ -140,41 +142,88 @@
         index: 'birthday',
         render: this.timeTpl,
         width: 200,
+        selected: true,
       },
       {
-        title: '家庭住址',
+        title: '家庭住址1',
         index: 'addresss',
         textOverflow: 'ellipsis',
         tooltip: true,
         width: 100,
+        selected: true,
       },
       {
-        title: '家庭住址',
+        title: '家庭住址2',
         index: 'addresss',
         textOverflow: 'ellipsis',
         tooltip: true,
         width: 100,
+        selected: true,
       },
       {
-        title: '家庭住址',
+        title: '家庭住址3',
         index: 'addresss',
         textOverflow: 'ellipsis',
         tooltip: true,
         width: 100,
+        selected: true,
       },
       {
-        title: '家庭住址',
+        title: '家庭住址4',
         index: 'addresss',
         textOverflow: 'ellipsis',
         tooltip: true,
         width: 100,
-      },
-      {
-        title: '家庭住址',
-        index: 'addresss',
-        textOverflow: 'ellipsis',
-        tooltip: true,
-        width: 100,
+        selected: false,
+        children: [
+          {
+            title: '家庭住址å',
+            index: 'addresss',
+            textOverflow: 'ellipsis',
+            tooltip: true,
+            width: 100,
+          },
+          {
+            title: '家庭住址ß',
+            index: 'addresss',
+            textOverflow: 'ellipsis',
+            tooltip: true,
+            width: 100,
+            children: [
+              {
+                title: '家庭住址a',
+                index: 'addresss',
+                textOverflow: 'ellipsis',
+                tooltip: true,
+                width: 100,
+                children: [
+                  {
+                    title: '生辰',
+                    index: 'birthday',
+                    render: this.timeTpl,
+                    width: 200,
+                    selected: true,
+                  },
+                  {
+                    title: '家庭住址1',
+                    index: 'addresss',
+                    textOverflow: 'ellipsis',
+                    tooltip: true,
+                    width: 100,
+                    selected: true,
+                  },
+                ],
+              },
+              {
+                title: '家庭住址b',
+                index: 'addresss',
+                textOverflow: 'ellipsis',
+                tooltip: true,
+                width: 100,
+              },
+            ],
+          },
+        ],
       },
       {
         title: '家庭住址',
@@ -201,12 +250,14 @@
         title: '性别',
         index: 'gender',
         nzRight: true,
+        width: 120,
       },
       {
         title: '操作',
         index: 'operate',
         nzRight: true,
         render: this.operateTpl,
+        selected: true,
       },
     ]
   }

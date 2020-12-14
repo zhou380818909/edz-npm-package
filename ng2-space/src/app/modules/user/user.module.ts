@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
-import { DirectivesModule, FormModule, SearchBarModule, TableModule } from 'edz-ng2-library'
+import { DirectivesModule, FormModule, SearchBarModule, TableModule } from 'dev'
 import { NzDatePickerModule } from 'ng-zorro-antd/date-picker'
 import { ComponentsModule } from '../../components/components.module'
 import { UserDetailComponent } from './user-detail/user-detail.component'

@@ -1,5 +1,5 @@
 <div edz-scroll>
-  <edz-search-bar [config]="searchConfig" [value]="searchValue">
+  <edz-search-bar [config]="searchConfig" [value]="searchValue" (search)="searchHandler($event)" (reset)="resetHandler($event)">
     <button nz-button (click)="openAllHandler()">多开</button>
     &nbsp;&nbsp;
     <button nz-button (click)="toggleHandler()">切换</button>

@@ -12,12 +12,7 @@ import { debounceTime } from 'rxjs/operators'
 import { ICheckedMap, IColumnItem, IPagination, ITableConfig, ITableItem, ITableScroll } from '../../interfaces'
 import { TableService } from './table.service'
 
-interface IRenderColumnItem extends IColumnItem {
-  nzLeftWidth?: string | boolean
-  nzRightWidth?: string | boolean
-}
-
-interface ICollapseItem extends IRenderColumnItem {
+export interface ICollapseItem extends IColumnItem {
   rowspan?: number
   colspan?: number
 }
@@ -58,7 +53,7 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewInit {
   /** 滚动区域 */
   nzScroll: ITableScroll = null
   /** 表格需要渲染的列 */
-  renderColumn: IRenderColumnItem[] = []
+  renderColumn: IColumnItem[] = []
   /** 渲染的配置 */
   renderConfig: ITableConfig = {
     nzPageSizeOptions: [10, 20, 50, 100],
@@ -71,6 +66,11 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewInit {
   nzWidthConfig: string[] = []
   /** 表头合并设置 */
   collapseConfig: ICollapseItem[][] = []
+  /** 是否有列选择 */
+  hasColumnSelected = false
+  cachedColumn: IColumnItem[] = []
+  /** 列选择缓存数据 */
+  selectableColumn = new Map<number, IColumnItem>()
   // 数据缓存
   private _data = []
   private measureWidth
@@ -141,9 +141,26 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   /** 每行选中触发的事件 */
-  checkHanlder(checked, data: ITableItem, col: IRenderColumnItem) {
+  checkHanlder(checked, data: ITableItem, col: IColumnItem) {
     this.checkedMap[data[col.index || 'id']] = checked
     this.checkChange.next({ data, checked })
+  }
+
+  selectHandler(columnItem: IColumnItem) {
+    if (columnItem.selected) {
+      const index = [...this.selectableColumn.entries()].find(sub => sub[1] === columnItem)[0]
+      this.cachedColumn.splice(index, 0, columnItem)
+      this.nzWidthConfig.splice(index, 0, `${columnItem.width}px`)
+      this.nzScroll = { ...this.nzScroll, x: `${parseInt(this.nzScroll.x, 10) + columnItem.width}px` }
+      this.createCollapses(this.cachedColumn)
+    } else {
+      const index = this.cachedColumn.findIndex(item => item === columnItem)
+      this.cachedColumn.splice(index, 1)
+      this.nzWidthConfig.splice(index, 1)
+      this.renderConfig = { ...this.renderConfig, width: this.renderConfig.width + columnItem.width }
+      this.nzScroll = { ...this.nzScroll, x: `${parseInt(this.nzScroll.x, 10) - columnItem.width}px` }
+      this.createCollapses(this.cachedColumn)
+    }
   }
 
   /** 设置表格滚动, 并且监听滚动 */
@@ -166,15 +183,10 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  // 提升表格循环渲染性能, 目前用索引, 如果为了实现排序则会需要为的index.
-  trackBy(index) {
-    return index
-  }
-
   /** 根据component渲染数据 */
-  componentRender() {
+  componentRender(columns = this.column) {
     if (!this.components) return
-    const cols = this.column.filter(col => col.component)
+    const cols = columns.filter(col => col.component)
     // 视图容器是由行到列
     this.data.forEach((row, index) => {
       cols.forEach((col, number) => {
@@ -189,57 +201,33 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewInit {
     })
   }
 
-  /** 根据宽度自动计算所需要的定位的宽度 */
-  private setNzLeftOrRightWidth([...column]: IRenderColumnItem[], isRight = false): IRenderColumnItem[] {
-    if (isRight) {
-      column = column.reverse()
-    }
-    return column.reduce((pre, cur, index) => {
-      let nzLeftWidth: boolean | string
-      let nzRightWidth: boolean | string
-      if (index === 0) {
-        nzLeftWidth = cur.nzLeft
-        nzRightWidth = cur.nzRight
-      } else {
-        nzLeftWidth = cur.nzLeft ? `${parseInt(pre[index - 1].width, 10)
-          + parseInt(pre[index - 1].nzLeftWidth === true ? 0 : pre[index - 1].nzLeftWidth, 10)}px` : false
-        nzRightWidth = cur.nzRight ? `${parseInt(pre[index - 1].width, 10)
-          + parseInt(pre[index - 1].nzRightWidth === true ? 0 : pre[index - 1].nzRightWidth, 10)}px` : false
-      }
-      pre.push({ ...cur, nzLeftWidth, nzRightWidth })
-      return pre
-    }, [])
-  }
-
   /** 根据表格列配置和列宽配置生成表头分组 */
-  createCollapses() {
+  createCollapses(columns = this.column) {
     // 取消脏值检测
     this.cdr.detach()
-    // TODO: 暂时没有实现表头分组
+    // TODO: 暂未完善
+    // 列配置中是否包含选择列
+    // this.cachedColumn = [...columns]
+    // if (this.column === columns) {
+    //   columns.forEach((item, index) => {
+    //     if (item.selected === true || item.selected === false) {
+    //       this.hasColumnSelected = true
+    //       this.selectableColumn.set(index, item)
+    //     }
+    //   })
+    // }
     // 判断列配置中是否含有表头合并相关配置
-    const hasCallapse = this.column.some(item => item.rowspan > 1 || item.colspan > 1)
-    this.renderColumn = [...this.column].filter(item => item.colspan === 1 || !item.colspan)
-    // 已经可以自动实现左右固定了
-    // const collapseConfigLeft = this.setNzLeftOrRightWidth(this.renderColumn)
-    // const collapseConfigRight = this.setNzLeftOrRightWidth(this.renderColumn, true).reverse()
-    // this.renderColumn = collapseConfigLeft.map((item, index) => ({
-    //   ...item,
-    //   nzRightWidth: collapseConfigRight[index].nzRightWidth,
-    // }))
+    const hasCallapse = columns.some(item => item.children && item.children.length > 0)
     if (!hasCallapse) {
-      // 如果没有表头合并, 则提取宽度配置
-      this.nzWidthConfig = this.renderColumn.map(item => `${item.width}px`)
+      this.renderColumn = [...columns].filter(item => !item.children?.length && item.selected !== false)
+      this.nzWidthConfig = this.renderColumn.map(item => (item.width ? `${item.width}px` : ''))
       this.collapseConfig = [this.renderColumn.map(item => ({ ...item, colspan: 1, rowspan: 1 }))]
     } else {
+      const parentToRootColumn = this.service.addParentToRoot(columns)
       // 如果有表头合并
-      // 宽度配置为colspan不设置或者为1的宽度
-      this.nzWidthConfig = this.column.filter(item => !item.colspan || item.colspan < 2).map(item => (item.width
-        ? `${item.width}px` : '0px'))
-      this.collapseConfig = this.service.collapseColumn(this.column)
-      // const rowspanMax = Math.max(...this.column.filter(item => item.rowspan && item.rowspan > 1).map(item => item.rowspan))
-      // 根据最大的行合并数生成合并配置的外层数量
-      // this.collapseConfig = new Array(rowspanMax).fill([])
-      // console.warn('暂不支持表头分组')
+      this.renderColumn = this.service.getRenderColumn(parentToRootColumn)
+      this.nzWidthConfig = this.service.getWidthConfig(parentToRootColumn)
+      this.collapseConfig = this.service.collapseColumn(parentToRootColumn)
     }
     // 执行脏值检测
     this.cdr.detectChanges()

@@ -1,5 +1,5 @@
 {
-  "compileOnSave": true,
+  "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
@@ -10,17 +10,14 @@
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "es2015",
-    "module": "es2020",
+    "module": "esnext",
     "lib": [
       "es2018",
       "dom"
     ],
-    "allowJs": true,
     "paths": {
-      "@/*": [
-        "./src/app/*",
-      ],
-      "dev": ["./projects/edz-ng2-library/src"],
+      "@/*": ["./src/app/*"],
+      "dev": ["./projects/edz-ng2-library/src"]
     }
   },
   "include": [
