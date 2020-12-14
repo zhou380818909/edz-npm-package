@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core'
 import { Router } from '@angular/router'
-import { IColumnItem, IPagination, ISearchItem, ITableConfig } from 'edz-ng2-library'
+import { IColumnItem, IPagination, ISearchItem, ITableConfig } from 'dev'
 import { DateComponent } from '../../../components/date/date.component'
 
 @Component({
@@ -184,7 +184,7 @@ export class UserListComponent implements OnInit, OnDestroy {
     },
   ]
   pagination: IPagination = { pageIndex: 1, pageSize: 5, total: 50 }
-  tableConfig: ITableConfig = { width: 1720 }
+  tableConfig: ITableConfig = { width: 1960 }
 
   @ViewChild('time', { static: true })
   timeTpl: TemplateRef<any>
@@ -224,41 +224,88 @@ export class UserListComponent implements OnInit, OnDestroy {
         index: 'birthday',
         render: this.timeTpl,
         width: 200,
+        selected: true,
       },
       {
-        title: '家庭住址',
+        title: '家庭住址1',
         index: 'addresss',
         textOverflow: 'ellipsis',
         tooltip: true,
         width: 100,
+        selected: true,
       },
       {
-        title: '家庭住址',
+        title: '家庭住址2',
         index: 'addresss',
         textOverflow: 'ellipsis',
         tooltip: true,
         width: 100,
+        selected: true,
       },
       {
-        title: '家庭住址',
+        title: '家庭住址3',
         index: 'addresss',
         textOverflow: 'ellipsis',
         tooltip: true,
         width: 100,
+        selected: true,
       },
       {
-        title: '家庭住址',
+        title: '家庭住址4',
         index: 'addresss',
         textOverflow: 'ellipsis',
         tooltip: true,
         width: 100,
-      },
-      {
-        title: '家庭住址',
-        index: 'addresss',
-        textOverflow: 'ellipsis',
-        tooltip: true,
-        width: 100,
+        selected: false,
+        children: [
+          {
+            title: '家庭住址å',
+            index: 'addresss',
+            textOverflow: 'ellipsis',
+            tooltip: true,
+            width: 100,
+          },
+          {
+            title: '家庭住址ß',
+            index: 'addresss',
+            textOverflow: 'ellipsis',
+            tooltip: true,
+            width: 100,
+            // children: [
+            //   {
+            //     title: '家庭住址a',
+            //     index: 'addresss',
+            //     textOverflow: 'ellipsis',
+            //     tooltip: true,
+            //     width: 100,
+            //     children: [
+            //       {
+            //         title: '生辰',
+            //         index: 'birthday',
+            //         render: this.timeTpl,
+            //         width: 200,
+            //         selected: true,
+            //       },
+            //       {
+            //         title: '家庭住址1',
+            //         index: 'addresss',
+            //         textOverflow: 'ellipsis',
+            //         tooltip: true,
+            //         width: 100,
+            //         selected: true,
+            //       },
+            //     ],
+            //   },
+            //   {
+            //     title: '家庭住址b',
+            //     index: 'addresss',
+            //     textOverflow: 'ellipsis',
+            //     tooltip: true,
+            //     width: 100,
+            //   },
+            // ],
+          },
+        ],
       },
       {
         title: '家庭住址',
@@ -285,13 +332,14 @@ export class UserListComponent implements OnInit, OnDestroy {
         title: '性别',
         index: 'gender',
         nzRight: true,
-        width: 100,
+        width: 120,
       },
       {
         title: '操作',
         index: 'operate',
         nzRight: true,
         render: this.operateTpl,
+        selected: true,
       },
     ]
   }
@@ -315,6 +363,16 @@ export class UserListComponent implements OnInit, OnDestroy {
         }
       }, 200 * i)
     }
+  }
+
+  searchHandler(value) {
+    // eslint-disable-next-line no-console
+    console.dir(value)
+  }
+
+  resetHandler(value) {
+    // eslint-disable-next-line no-console
+    console.dir(value)
   }
 
   ngOnInit(): void {

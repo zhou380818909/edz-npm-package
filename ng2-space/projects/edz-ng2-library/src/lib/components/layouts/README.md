@@ -1,12 +1,15 @@
-import { Component, OnInit } from '@angular/core'
-import { IMenuConfig, IMenuItem } from 'dev'
-
-@Component({
-  selector: 'app-default-layout',
-  templateUrl: './default-layout.component.html',
-  styleUrls: ['./default-layout.component.scss'],
-})
-export class DefaultLayoutComponent implements OnInit {
+## 布局组件
+能够配合 menu 和 tab 组件 实现常见的侧边栏布局, 路由出口在本组件当中自带
+```html
+<edz-layout [isCollapsed]="collapse">
+  <edz-menu [menuList]="menuList" [config]="menuConfig"></edz-menu>
+  <edz-header [isCollapsed]="collapse" (collapse)="collapseHandler($event)">
+    &nbsp;&nbsp;&nbsp;&nbsp; <span>这是是占位符</span>
+  </edz-header>
+  <edz-tab [menuList]="menuList"></edz-tab>
+</edz-layout>
+```
+```ts
   menuList: IMenuItem[] = [
     {
       icon: 'user',
@@ -39,13 +42,9 @@ export class DefaultLayoutComponent implements OnInit {
     nzMode: 'inline',
   }
   collapse = false
-  constructor() { }
 
   collapseHandler(isCollapse) {
     this.menuConfig.nzMode = isCollapse ? 'vertical' : 'inline'
     this.collapse = isCollapse
   }
-
-  ngOnInit(): void {
-  }
-}
+```

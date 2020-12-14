@@ -1,5 +1,40 @@
-目前欠缺的功能
-1. 通过ngxs进行模块间通信
-2. 图标引入问题
-3. 可配置化问题, 比如select状态激活是手动控制还是根据路由来
-4. 通过事件激活菜单选中或者菜单展开
+## 菜单组件
+实现菜单的功能, 可以通过修改 config.nzMode 来切换菜单展示形式
+
+```html
+<edz-menu [menuList]="menuList" [config]="menuConfig"></edz-menu>
+```
+```ts
+  menuList: IMenuItem[] = [
+    {
+      icon: 'user',
+      path: 'user',
+      title: '用户',
+      children: [
+        {
+          title: '用户列表',
+          path: 'list',
+        },
+        {
+          title: '用户管理',
+          path: 'manage',
+        },
+      ],
+    },
+    {
+      icon: 'dollar',
+      path: 'role',
+      title: '角色',
+      children: [
+        {
+          title: '角色列表',
+          path: 'list',
+        },
+      ],
+    },
+  ]
+  menuConfig: IMenuConfig = {
+    nzMode: 'inline',
+  }
+
+```

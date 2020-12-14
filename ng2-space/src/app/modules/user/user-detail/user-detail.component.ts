@@ -1,7 +1,7 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core'
 import { Validators } from '@angular/forms'
 import { ActivatedRoute } from '@angular/router'
-import { FormComponent, IFormConfig, IFormItem, ISearchItem, TabService } from 'edz-ng2-library'
+import { FormComponent, IFormConfig, IFormItem, ISearchItem, TabService } from 'dev'
 import { of } from 'rxjs'
 import { InputComponent } from '../../../components/input/input.component'
 
