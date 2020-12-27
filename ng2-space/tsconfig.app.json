@@ -7,8 +7,7 @@
   },
   "files": ["src/polyfills.ts", "src/main.ts"],
   "include": [
-    "src/main.ts",
-    "src/app/**/*.ts"
+    "src/main.ts"
   ],
   "exclude": [
     "src/test.ts",
