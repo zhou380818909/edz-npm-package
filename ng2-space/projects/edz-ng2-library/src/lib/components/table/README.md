@@ -8,6 +8,8 @@
 - 可以带分页功能和loading功能
 - 支持表头分组功能
 - 暂时未完成 列选择功能
+- 虚拟滚动未实现
+- 导出功能未实现
 
 ```html
 <edz-table [column]="tableColumn" [data]="dataList" [pagination]="pagination" [config]="tableConfig"></edz-table>

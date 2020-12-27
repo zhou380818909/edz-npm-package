@@ -1,6 +1,6 @@
 {
   "name": "edz-ng2-library",
-  "version": "2.0.3",
+  "version": "2.1.1",
   "peerDependencies": {
     "@angular/common": "~11.0.3",
     "@angular/compiler": "~11.0.3",
@@ -8,8 +8,8 @@
     "@angular/forms": "~11.0.3",
     "@angular/platform-browser": "~11.0.3",
     "@angular/router": "~11.0.3",
-    "ng-zorro-antd": "^10.2.0",
-    "@ant-design/icons-angular": "^10.2.0",
+    "ng-zorro-antd": "^11.0.0",
+    "@ant-design/icons-angular": "^11.0.1",
     "@ant-design/colors": "^5.0.0",
     "date-fns": "^2.16.1",
     "rxjs": "^6.6.0",

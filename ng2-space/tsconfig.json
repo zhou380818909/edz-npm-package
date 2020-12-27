@@ -22,6 +22,7 @@
   },
   "include": [
     "src/environments/*.ts",
+    "src/app/**/*.ts",
     "projects/edz-ng2-library/src/edz-ng2-library.module.ts",
     "projects/edz-ng2-library/src/lib/**/*.ts",
     "proxy.conf.js",
