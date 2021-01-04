@@ -12,11 +12,6 @@ import { debounceTime } from 'rxjs/operators'
 import { ICheckedMap, IColumnItem, IPagination, ITableConfig, ITableItem, ITableScroll } from '../../interfaces'
 import { TableService } from './table.service'
 
-export interface ICollapseItem extends IColumnItem {
-  rowspan?: number
-  colspan?: number
-}
-
 @Component({
   selector: 'edz-table',
   templateUrl: './table.component.html',
@@ -65,7 +60,7 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewInit {
   /** 表格列宽设置 */
   nzWidthConfig: string[] = []
   /** 表头合并设置 */
-  collapseConfig: ICollapseItem[][] = []
+  collapseConfig: any[][] = []
   /** 是否有列选择 */
   hasColumnSelected = false
   cachedColumn: IColumnItem[] = []
@@ -246,7 +241,7 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewInit {
     const configWidth = this.renderConfig?.width ? this.renderConfig?.width : 0
     if (measureWidth > configWidth) {
       Object.assign(this.nzScroll, { x: `${measureWidth + 160}px` })
-      if (isDevMode) {
+      if (isDevMode()) {
         this.measureWidth = measureWidth
         if (this.renderConfig.scroll) {
           console.warn(`表格config宽度${configWidth}小于column累加总宽度${measureWidth}, 已自动设置为${measureWidth + 160}`)

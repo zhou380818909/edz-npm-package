@@ -2,7 +2,7 @@
  * @Author: ChouEric
  * @Date: 2020-07-15 11:39:46
  * @Last Modified by: ChouEric
- * @Last Modified time: 2020-10-07 16:22:22
+ * @Last Modified time: 2021-01-03 17:01:00
  * @Description: tab组件, 和路径相关, 在Router中,可以访问路由复用策略
  */
 import { ChangeDetectorRef, Component, Input, isDevMode, OnDestroy, OnInit } from '@angular/core'
@@ -92,7 +92,7 @@ export class TabComponent implements OnInit, OnDestroy {
   }
 
   private getTitle() {
-    if (isDevMode) {
+    if (isDevMode()) {
       console.warn('当前tab的title没有配置, 可以在tab组件的menuList自动查找, 或者在对应组件的路由配置中的data配置为{title: "xxx"}')
     }
     return '未命名'
