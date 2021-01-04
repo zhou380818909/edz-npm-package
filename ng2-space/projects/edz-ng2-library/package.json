@@ -1,6 +1,6 @@
 {
   "name": "edz-ng2-library",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "peerDependencies": {
     "@angular/common": "~11.0.3",
     "@angular/compiler": "~11.0.3",
