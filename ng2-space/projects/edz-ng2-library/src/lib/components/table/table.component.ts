@@ -261,7 +261,7 @@ export class TableComponent implements OnInit, OnDestroy, AfterViewInit {
     if (simpleChange.data && Array.isArray(simpleChange.data.currentValue)) {
       this.componentRender()
     }
-    if (simpleChange.config.currentValue) {
+    if (simpleChange.config?.currentValue) {
       Object.assign(this.renderConfig, simpleChange.config.currentValue)
     }
   }
