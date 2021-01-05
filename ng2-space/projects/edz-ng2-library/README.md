@@ -1,11 +1,17 @@
 # EdzNg2Library
 
-This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 10.1.3.
+This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.0.3.
+
+## 更新日志
+- v2.1.4 布局组件加入 footerTitle: string | TemplateRef 属性, 可以自定脚部内容
+- v2.1.3 修复table组件不传入config配置报错的bug
+- v2.1.2 优化search-bar的阴影样式, isDevMode 在tab和table中的警告
+- v2.1.1 将ng-zorro升级到^11, 至此ng和ng-zorro全部在^11版本. 同时优化table组件,使得table组件在数据不够的情况下,分页组件位于底部位置
 
 ## Code scaffolding
 
 Run `ng generate component component-name --project edz-ng2-library` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module --project edz-ng2-library`.
-> Note: Don't forget to add `--project edz-ng2-library` or else it will be added to the default project in your `angular.json` file. 
+> Note: Don't forget to add `--project edz-ng2-library` or else it will be added to the default project in your `angular.json` file.
 
 ## Build
 
