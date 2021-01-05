@@ -1,13 +1,17 @@
-import { AfterViewInit, Component, Input } from '@angular/core'
+import { AfterViewInit, Component, Input, OnInit, TemplateRef } from '@angular/core'
 
 @Component({
   selector: 'edz-layout',
   templateUrl: './layout.component.html',
   styleUrls: ['./layout.component.scss'],
 })
-export class LayoutComponent implements AfterViewInit {
+export class LayoutComponent implements OnInit, AfterViewInit {
   @Input()
   isCollapsed = false
+  @Input()
+  footerTitle: string | TemplateRef<any> = null
+
+  isString
 
   siderTransition = false
 
@@ -20,5 +24,9 @@ export class LayoutComponent implements AfterViewInit {
         this.siderTransition = true
       })
     }
+  }
+
+  ngOnInit() {
+    this.isString = typeof this.footerTitle === 'string'
   }
 }
