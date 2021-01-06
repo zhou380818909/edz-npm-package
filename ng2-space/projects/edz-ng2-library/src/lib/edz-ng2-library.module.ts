@@ -1,8 +1,7 @@
-import { CommonModule } from '@angular/common'
 import { NgModule } from '@angular/core'
 import { NZ_I18N, zh_CN } from 'ng-zorro-antd/i18n'
 import { BoolTextModule } from './components/bool-text'
-import { FormModule } from './components/form'
+import { FormModule } from './components/form/form.module'
 import { GroupDatepickerModule } from './components/group-datepicker/group-datepicker.module'
 import { InfoModule } from './components/info/info.module'
 import { LayoutsModule } from './components/layouts/layouts.module'
@@ -17,7 +16,6 @@ import { DirectivesModule } from './directives/directives.module'
 import { PipesModule } from './pipes/pipes.module'
 
 const modules = [
-  CommonModule,
   SecretTextModule,
   BoolTextModule,
   FormModule,

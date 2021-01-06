@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "publish": "npm run lint && npm run build:lib && cd projects/edz-ng2-library && npm version patch && cd ../../dist/edz-ng2-library && npm version patch && npm publish --registry http://npm.edianzu.cn",
+    "publish": "npm run lint && npm run build:lib && cd projects/edz-ng2-library && npm version patch && cd ../../dist/edz-ng2-library  && npm publish --registry http://npm.edianzu.cn && npm version patch",
     "build": "ng build -c=production",
     "build:lib": "ng build edz-ng2-library -c=production",
     "lint-staged": "lint-staged",
@@ -28,6 +28,7 @@
     "lodash-decorators": "^6.0.1",
     "lodash-es": "^4.17.15",
     "ng-zorro-antd": "^11.0.0",
+    "qs": "^6.9.4",
     "rxjs": "~6.6.0",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"

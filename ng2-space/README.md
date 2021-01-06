@@ -17,6 +17,7 @@ projects/edz-ng2-library 为 组件库源码
 运行 npm publish
 
 ## 发布日志
+- v2.1.5 修复form组件在全局模块导出的依赖不识别的bug, 优化组件库版本依赖的更新逻辑, 修复组件库打包的警告问题如: 采用qs代替querystring
 - v2.1.4 布局组件加入 footerTitle: string | TemplateRef 属性, 可以自定脚部内容
 - v2.1.3 修复table组件不传入config配置报错的bug
 - v2.1.2 优化search-bar的阴影样式, isDevMode 在tab和table中的警告
