@@ -1,7 +1,7 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core'
 import { Validators } from '@angular/forms'
 import { ActivatedRoute } from '@angular/router'
-import { FormComponent, IFormConfig, IFormItem, ISearchItem, TabService } from 'dev'
+import { FormComponent, IFormConfig, IFormItem, TabService } from 'dev'
 import { of } from 'rxjs'
 import { InputComponent } from '../../../components/input/input.component'
 
@@ -11,23 +11,15 @@ import { InputComponent } from '../../../components/input/input.component'
   styleUrls: ['./user-detail.component.scss'],
 })
 export class UserDetailComponent implements OnInit {
-  searchValue = { name: '张三' }
-  searchConfig: ISearchItem[] = [
-    {
-      label: '姓名',
-      type: 'input',
-      index: 'name',
-      defaultValue: '李四',
-    },
-    {
-      label: '年纪',
-      type: 'input',
-      index: 'age',
-      defaultValue: 11,
-    },
-  ]
   formConfig: IFormItem[] = []
   config: IFormConfig = { labelWidth: 120 }
+  formValue = {
+    name: '李四',
+    mobile: '13112341234',
+    birthday: new Date(),
+    hobby: 'aaa',
+    sex: 1,
+  }
   @ViewChild(FormComponent)
   formComponent: FormComponent
   @ViewChild('date', { static: true })
@@ -36,16 +28,11 @@ export class UserDetailComponent implements OnInit {
   constructor(private tabService: TabService, private activatedRoute: ActivatedRoute) { }
 
   formHandler() {
-    const { formGroup: { controls } } = this.formComponent
-    Object.keys(controls).forEach(key => {
-      controls[key].markAsDirty()
-      controls[key].updateValueAndValidity()
-    })
-    this.formComponent.formGroup.controls.name.setValue('aaa')
-    // console.log()
-
+    const { validate } = this.formComponent
+    // this.formComponent.formGroup.controls.name.setValue('aaa')
+    if (!validate()) return
     // eslint-disable-next-line no-console
-    console.log(this.formComponent.formGroup.valid, this.formComponent.formGroup.value)
+    console.log(this.formComponent.formGroup.valid, this.formComponent.formGroup.value, this.formValue)
   }
 
   initRender() {
@@ -78,6 +65,7 @@ export class UserDetailComponent implements OnInit {
         validators: [Validators.required, Validators.email, Validators.maxLength(20)],
         errorTooltip: { email: '邮箱格式不正确', maxlength: '不能超过20个字符' },
         nzXXl: { offset: 2, span: 22 },
+        defaultValue: '111',
         tooltip: '邮箱号以后可以修改',
       },
       {
@@ -124,10 +112,6 @@ export class UserDetailComponent implements OnInit {
         index: 'hobby',
         type: 'render',
         component: InputComponent,
-        componentParam: form => ({
-          value: null,
-          change: form.change,
-        }),
         required: true,
         nzXXl: { span: 10, offset: 2 },
       },
@@ -136,10 +120,6 @@ export class UserDetailComponent implements OnInit {
         index: 'hobby',
         type: 'render',
         component: InputComponent,
-        componentParam: form => ({
-          value: null,
-          change: form.change,
-        }),
         required: true,
         nzXXl: { span: 10, offset: 2 },
       },
@@ -148,10 +128,6 @@ export class UserDetailComponent implements OnInit {
         index: 'hobby',
         type: 'render',
         component: InputComponent,
-        componentParam: form => ({
-          value: null,
-          change: form.change,
-        }),
         required: true,
         nzXXl: { span: 10, offset: 2 },
       },
@@ -160,10 +136,6 @@ export class UserDetailComponent implements OnInit {
         index: 'hobby',
         type: 'render',
         component: InputComponent,
-        componentParam: form => ({
-          value: null,
-          change: form.change,
-        }),
         required: true,
         nzXXl: { span: 10, offset: 2 },
       },
@@ -172,10 +144,6 @@ export class UserDetailComponent implements OnInit {
         index: 'hobby',
         type: 'render',
         component: InputComponent,
-        componentParam: form => ({
-          value: null,
-          change: form.change,
-        }),
         required: true,
         nzXXl: { span: 10, offset: 2 },
       },
@@ -184,10 +152,6 @@ export class UserDetailComponent implements OnInit {
         index: 'hobby',
         type: 'render',
         component: InputComponent,
-        componentParam: form => ({
-          value: null,
-          change: form.change,
-        }),
         required: true,
         nzXXl: { span: 10, offset: 2 },
       },
@@ -196,10 +160,6 @@ export class UserDetailComponent implements OnInit {
         index: 'hobby',
         type: 'render',
         component: InputComponent,
-        componentParam: form => ({
-          value: null,
-          change: form.change,
-        }),
         required: true,
         nzXXl: { span: 10, offset: 2 },
       },
@@ -208,10 +168,6 @@ export class UserDetailComponent implements OnInit {
         index: 'hobby',
         type: 'render',
         component: InputComponent,
-        componentParam: form => ({
-          value: null,
-          change: form.change,
-        }),
         required: true,
         nzXXl: { span: 10, offset: 2 },
       },
@@ -220,10 +176,6 @@ export class UserDetailComponent implements OnInit {
         index: 'hobby',
         type: 'render',
         component: InputComponent,
-        componentParam: form => ({
-          value: null,
-          change: form.change,
-        }),
         required: true,
         nzXXl: { span: 10, offset: 2 },
       },
@@ -232,10 +184,6 @@ export class UserDetailComponent implements OnInit {
         index: 'hobby',
         type: 'render',
         component: InputComponent,
-        componentParam: form => ({
-          value: null,
-          change: form.change,
-        }),
         required: true,
         nzXXl: { span: 10, offset: 2 },
       },
@@ -244,10 +192,6 @@ export class UserDetailComponent implements OnInit {
         index: 'hobby',
         type: 'render',
         component: InputComponent,
-        componentParam: form => ({
-          value: null,
-          change: form.change,
-        }),
         required: true,
         nzXXl: { span: 10, offset: 2 },
       },
@@ -256,10 +200,6 @@ export class UserDetailComponent implements OnInit {
         index: 'hobby',
         type: 'render',
         component: InputComponent,
-        componentParam: form => ({
-          value: null,
-          change: form.change,
-        }),
         required: true,
         nzXXl: { span: 10, offset: 2 },
       },
@@ -268,10 +208,6 @@ export class UserDetailComponent implements OnInit {
         index: 'hobby',
         type: 'render',
         component: InputComponent,
-        componentParam: form => ({
-          value: null,
-          change: form.change,
-        }),
         required: true,
         nzXXl: { span: 10, offset: 2 },
       },
@@ -280,10 +216,6 @@ export class UserDetailComponent implements OnInit {
         index: 'hobby',
         type: 'render',
         component: InputComponent,
-        componentParam: form => ({
-          value: null,
-          change: form.change,
-        }),
         required: true,
         nzXXl: { span: 10, offset: 2 },
       },
@@ -292,10 +224,6 @@ export class UserDetailComponent implements OnInit {
         index: 'hobby',
         type: 'render',
         component: InputComponent,
-        componentParam: form => ({
-          value: null,
-          change: form.change,
-        }),
         required: true,
         nzXXl: { span: 10, offset: 2 },
       },

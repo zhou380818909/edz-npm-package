@@ -9,13 +9,9 @@ export class InputComponent implements OnInit {
   @Input()
   change: (str: string) => void
   @Input()
-  value = ''
+  model = ''
 
   constructor() { }
-
-  ngModelChange(value) {
-    this.change(value)
-  }
 
   ngOnInit(): void {
   }

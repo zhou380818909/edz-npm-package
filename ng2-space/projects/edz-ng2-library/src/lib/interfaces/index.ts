@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { HttpResponse } from '@angular/common/http'
 import { EventEmitter, TemplateRef, Type } from '@angular/core'
 import { ValidatorFn } from '@angular/forms'
@@ -413,9 +414,16 @@ type IFormCascader = XOR<IFormCascaderWithOption, IFormCascaderWithObservable>
 
 interface IFormRender extends IFormItemBase {
   type: 'render',
+  /**
+   * 模板引用
+   * @example `<ng-template let-model="model" let-change="change"><input [ngModle]="model" (ngModelChange)="change($event)" /></ng-template>`
+   */
   render?: TemplateRef<any>
+  /**
+   * 组件引用
+   * @example `@Input() model; @Input() change;`
+   */
   component?: Type<any>
-  componentParam?: (value: any) => Record<any, any>
 }
 
 export interface IFormConfig {

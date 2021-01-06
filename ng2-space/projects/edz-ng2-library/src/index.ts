@@ -1,3 +1,10 @@
+/*
+ * @Author: ChouEric
+ * @Date: 2021-01-06 17:22:51
+ * @Last Modified by: ChouEric
+ * @Last Modified time: 2021-01-06 17:26:46
+ * @Description: 开发模式引入
+ */
 import '@angular/compiler'
 
 export * from './lib/components/bool-text'
