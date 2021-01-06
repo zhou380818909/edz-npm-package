@@ -28,7 +28,7 @@
       "ng-zorro-antd/select": "select",
       "ng-zorro-antd/spin": "spin",
       "ng-zorro-antd/menu": "menu",
-      "querystring": "querystring",
+      "qs": "qs",
       "date-fns": "dateFns",
       "lodash-decorators": "lodashDecorators",
       "lodash-es": "lodash"

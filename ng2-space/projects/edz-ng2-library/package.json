@@ -1,6 +1,6 @@
 {
   "name": "edz-ng2-library",
-  "version": "2.1.4",
+  "version": "2.1.6",
   "peerDependencies": {
     "@angular/common": "~11.0.3",
     "@angular/compiler": "~11.0.3",
@@ -14,9 +14,14 @@
     "date-fns": "^2.16.1",
     "rxjs": "^6.6.0",
     "lodash-es": "^4.17.15",
-    "lodash-decorators": "^6.0.1"
+    "lodash-decorators": "^6.0.1",
+    "qs": "^6.9.4"
   },
   "dependencies": {
     "tslib": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/lodash-es": "^4.17.4",
+    "@types/qs": "^6.9.5"
   }
 }

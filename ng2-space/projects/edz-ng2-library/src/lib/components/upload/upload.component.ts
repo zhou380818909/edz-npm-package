@@ -12,7 +12,7 @@ type FileType = 'image' | 'pdf' | 'word' | 'excel' | 'ppt' | 'unknown'
 const imageReg = /.*(\.png|\.jpg|\.jpeg|\.gif|\.webp|\.bmp)$/i
 
 /** 判断文件格式 */
-const getFileType = (file: File | Blob | string): FileType => {
+export const getFileType = (file: File | Blob | string): FileType => {
   if (typeof file === 'string') {
     if (imageReg.test(file)) {
       return 'image'

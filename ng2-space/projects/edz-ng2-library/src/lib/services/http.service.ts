@@ -2,7 +2,7 @@
  * @Author: ChouEric
  * @Date: 2020-07-15 15:05:59
  * @Last Modified by: ChouEric
- * @Last Modified time: 2020-10-22 15:03:11
+ * @Last Modified time: 2021-01-06 14:11:54
  * @Description: 封装 http 请求
  */
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http'
@@ -10,7 +10,7 @@ import { Inject, Injectable, InjectionToken, Optional } from '@angular/core'
 import { ActivatedRoute } from '@angular/router'
 import { cloneDeep, isEmpty, isNil } from 'lodash-es'
 import { NzMessageService } from 'ng-zorro-antd/message'
-import { stringify } from 'querystring'
+import { stringify } from 'qs'
 import { EMPTY, Observable, of, Subject } from 'rxjs'
 import { catchError, switchMap, throttleTime } from 'rxjs/operators'
 import { XOR } from '../interfaces'
