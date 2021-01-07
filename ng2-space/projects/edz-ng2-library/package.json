@@ -1,7 +1,8 @@
 {
   "name": "edz-ng2-library",
-  "version": "2.1.7",
+  "version": "2.1.8",
   "peerDependencies": {
+    "@angular/cdk": "~11.0.3",
     "@angular/common": "~11.0.3",
     "@angular/compiler": "~11.0.3",
     "@angular/core": "~11.0.3",
@@ -10,16 +11,15 @@
     "@angular/router": "~11.0.3",
     "ng-zorro-antd": "^11.0.0",
     "@ant-design/icons-angular": "^11.0.1",
-    "@ant-design/colors": "^5.0.0"
-  },
-  "dependencies": {
-    "tslib": "^2.0.0",
+    "@ant-design/colors": "^5.0.0",
     "date-fns": "^2.16.1",
     "rxjs": "^6.6.0",
     "lodash-es": "^4.17.15",
     "lodash-decorators": "^6.0.1",
-    "qs": "^6.9.4",
-    "@angular/cdk": "~11.0.3"
+    "qs": "^6.9.4"
+  },
+  "dependencies": {
+    "tslib": "^2.0.0"
   },
   "devDependencies": {
     "@types/lodash-es": "^4.17.4",

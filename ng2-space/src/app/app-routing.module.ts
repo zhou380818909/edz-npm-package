@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core'
 import { RouterModule, Routes } from '@angular/router'
+import { LayoutLoadingGuard } from 'dev'
 import { DefaultLayoutComponent } from './layout/default-layout/default-layout.component'
 
 const routes: Routes = [
@@ -10,6 +11,7 @@ const routes: Routes = [
   {
     path: '',
     component: DefaultLayoutComponent,
+    canActivateChild: [LayoutLoadingGuard],
     children: [
       {
         path: 'user',

@@ -308,6 +308,8 @@ export interface IRouteData {
   disableClose?: boolean
   /** 在tab中隐藏显示 */
   hiddenInTab?: boolean
+  /** 是否开启页面的加载动画, 当前页面需要长时间渲染可以配置 */
+  loading?: boolean
   [k: string]: any
 }
 

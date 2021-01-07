@@ -14,6 +14,7 @@ const routes: Routes = [
     component: UserListComponent,
     data: {
       title: '用户列表',
+      loading: true,
     },
   },
   {
@@ -21,6 +22,7 @@ const routes: Routes = [
     component: UserListComponent,
     data: {
       title: '用户管理',
+      loading: true,
     },
   },
   {

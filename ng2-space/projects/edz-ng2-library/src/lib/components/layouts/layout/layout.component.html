@@ -4,7 +4,8 @@
   </nz-sider>
   <nz-layout>
     <ng-content></ng-content>
-    <nz-content>
+    <nz-content [class]="loading ? 'blur': ''">
+      <nz-spin *ngIf="loading" class="spin" nzTip="加载中..."></nz-spin>
       <router-outlet></router-outlet>
     </nz-content>
     <nz-footer>
