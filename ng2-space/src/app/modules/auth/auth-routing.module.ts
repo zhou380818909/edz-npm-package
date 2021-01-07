@@ -1,7 +1,19 @@
 import { NgModule } from '@angular/core'
-import { Routes, RouterModule } from '@angular/router'
+import { RouterModule } from '@angular/router'
+import { Routes } from 'dev'
+import { AuthDetailComponent } from './auth-detail/auth-detail.component'
+import { AuthListComponent } from './auth-list/auth-list.component'
 
-const routes: Routes = []
+const routes: Routes = [
+  {
+    path: 'list',
+    component: AuthListComponent,
+  },
+  {
+    path: ':id',
+    component: AuthDetailComponent,
+  },
+]
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],

@@ -1,0 +1,11 @@
+<div class="header">
+  <div></div>
+  <div class="close" (click)="closeHandler()">×</div>
+</div>
+<div class="content">
+  <div class="top"></div>
+  <div class="images">
+    <img [class]="current === index ? 'image active' : 'image'" *ngFor="let item of list; let index=index" [src]="item">
+  </div>
+  <div class="bottom"></div>
+</div>
