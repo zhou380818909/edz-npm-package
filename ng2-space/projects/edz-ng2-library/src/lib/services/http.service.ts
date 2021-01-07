@@ -2,7 +2,7 @@
  * @Author: ChouEric
  * @Date: 2020-07-15 15:05:59
  * @Last Modified by: ChouEric
- * @Last Modified time: 2021-01-07 19:30:11
+ * @Last Modified time: 2021-01-07 19:31:33
  * @Description: 封装 http 请求
  */
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http'
@@ -72,6 +72,8 @@ interface IPostOption {
   noHeader?: boolean
   /** 是否携带cookie */
   withCredentials?: boolean
+  /** 请求的loading */
+  loading?: Subject<boolean>
 }
 
 interface IGetOption extends IPostOption {
@@ -156,7 +158,7 @@ export class HttpService {
     url: string,
     { query = {} as any, path = [] } = {} as IBaseHttpParam,
     { showError = true, cache = false, fresh = false, noHeader = false,
-      callback = () => {}, observe, withCredentials = this.withCredentials } = {} as IGetOption,
+      callback = () => {}, observe, withCredentials = this.withCredentials, loading } = {} as IGetOption,
   ): Observable<T | never> {
     // 拼接路径参数
     if (path instanceof Array) {
@@ -172,6 +174,9 @@ export class HttpService {
     }
     const headers = noHeader ? new HttpHeaders().set('No-Auth', 'TRUE').set('cache-control', 'no-cache')
       : new HttpHeaders().set('cache-control', 'no-cache')
+    if (loading instanceof Subject) {
+      loading.next(true)
+    }
     return this.http
       .get(`${url}`, {
         withCredentials,
@@ -179,6 +184,9 @@ export class HttpService {
       })
       .pipe(
         switchMap((res: any) => {
+          if (loading instanceof Subject) {
+            loading.next(false)
+          }
           if (observe === 'response') {
             callback()
             return of(res)
@@ -202,6 +210,9 @@ export class HttpService {
         }),
         catchError((error: any) => {
           callback(error)
+          if (loading instanceof Subject) {
+            loading.next(false)
+          }
           return this.errorHandler(error, !showError)
         }),
       ) as Observable<T>
@@ -236,7 +247,8 @@ export class HttpService {
   delete<T = any>(
     url,
     { query = {}, path = [] } = {} as IBaseHttpParam,
-    { showError = true, noHeader = false, callback = () => {}, observe, withCredentials = this.withCredentials } = {} as IPostOption,
+    { showError = true, noHeader = false, callback = () => {},
+      observe, withCredentials = this.withCredentials, loading } = {} as IPostOption,
   ): Observable<T | never> {
     // 拼接路径参数
     if (path instanceof Array) {
@@ -245,6 +257,9 @@ export class HttpService {
     query = this.deleteEmptyParams(query)
     query = this.trimParams(query)
     const headers = noHeader ? new HttpHeaders().set('No-Auth', 'TRUE') : new HttpHeaders().set('cache-control', 'no-cache')
+    if (loading instanceof Subject) {
+      loading.next(true)
+    }
     return this.http
       .delete<IResponse<T>>(`${url}`, {
       params: query as any,
@@ -253,6 +268,9 @@ export class HttpService {
     })
       .pipe(
         switchMap(res => {
+          if (loading instanceof Subject) {
+            loading.next(false)
+          }
           if (observe === 'response') {
             callback()
             return of(res)
@@ -266,6 +284,9 @@ export class HttpService {
         }),
         catchError((error: any) => {
           callback(error)
+          if (loading instanceof Subject) {
+            loading.next(false)
+          }
           return this.errorHandler(error, !showError)
         }),
       ) as Observable<T>
@@ -275,7 +296,8 @@ export class HttpService {
   private bodyRequest<T>(
     url: string,
     { form = {}, json = {}, query = {}, path = [] } = {} as any,
-    { showError = true, noHeader = false, withCredentials = this.withCredentials, callback = () => {}, observe } = {} as IPostOption,
+    { showError = true, noHeader = false, withCredentials = this.withCredentials,
+      callback = () => {}, observe, loading } = {} as IPostOption,
     method = 'post',
   ) {
     // 拼接路径参数
@@ -301,12 +323,18 @@ export class HttpService {
       json = this.trimParams(json)
       param = json
     }
+    if (loading instanceof Subject) {
+      loading.next(true)
+    }
     return this.http[method]<IResponse<T>>(`${url}${hasQuery ? `?${stringify(query as any)}` : ''}`, param, {
       headers,
       withCredentials,
     }).pipe(
       // 根据返回结果转换
       switchMap((res: IResponse) => {
+        if (loading instanceof Subject) {
+          loading.next(false)
+        }
         if (observe === 'response') {
           callback()
           return of(res)
@@ -320,6 +348,9 @@ export class HttpService {
       }),
       // 如果失败则处理失败
       catchError((error: any) => {
+        if (loading instanceof Subject) {
+          loading.next(false)
+        }
         callback(error)
         return this.errorHandler(error, !showError)
       }),

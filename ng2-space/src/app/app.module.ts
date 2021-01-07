@@ -8,6 +8,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { RouteReuseStrategy } from '@angular/router'
 import { RouteReuseServiceFactory } from 'dev'
 import { NZ_I18N, zh_CN } from 'ng-zorro-antd/i18n'
+import { NzMessageModule } from 'ng-zorro-antd/message'
 import { AppRoutingModule } from './app-routing.module'
 import { AppComponent } from './app.component'
 import { LayoutModule } from './layout/layout.module'
@@ -23,6 +24,7 @@ registerLocaleData(zh)
     HttpClientModule,
     BrowserAnimationsModule,
     LayoutModule,
+    NzMessageModule,
   ],
   providers: [{ provide: NZ_I18N, useValue: zh_CN }, { provide: RouteReuseStrategy, useClass: RouteReuseServiceFactory(50) }],
   bootstrap: [AppComponent],
