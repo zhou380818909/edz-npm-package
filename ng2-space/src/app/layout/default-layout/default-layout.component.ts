@@ -34,6 +34,17 @@ export class DefaultLayoutComponent implements OnInit {
         },
       ],
     },
+    {
+      icon: 'home',
+      path: 'auth',
+      title: '权限管理',
+      children: [
+        {
+          title: '权限列表',
+          path: 'list',
+        },
+      ],
+    },
   ]
   menuConfig: IMenuConfig = {
     nzMode: 'inline',

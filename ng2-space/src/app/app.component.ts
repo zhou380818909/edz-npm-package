@@ -23,9 +23,9 @@ export class AppComponent {
           if (style) {
             document.head.removeChild(style)
           }
-        }, 1500)
+          this.routerSubject.unsubscribe()
+        }, 15000)
       }
-      this.routerSubject.unsubscribe()
     })
   }
 }

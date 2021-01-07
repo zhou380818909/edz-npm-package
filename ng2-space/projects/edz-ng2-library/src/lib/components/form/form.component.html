@@ -1,6 +1,6 @@
 <form nz-form [formGroup]="formGroup">
   <nz-row>
-    <nz-col *ngFor="let item of form" [nzXl]="item.nzXl" [nzXXl]="item.nzXXl">
+    <nz-col *ngFor="let item of formRender" [nzXl]="item.nzXl" [nzXXl]="item.nzXXl">
       <nz-form-item>
         <nz-form-label [style.width.px]="item.labelWidth || configRender.labelWidth" [nzRequired]="item.required">
           {{item.label}}
@@ -20,21 +20,21 @@
           <!-- 级联 -->
           <nz-cascader *ngIf="item.type === 'cascader'" [nzDisabled]="item.readonly" [formControlName]="item.index" [nzOptions]="item.options$ ? (item.options | async) : item.options" [nzPlaceHolder]="item.placeholder || '请选择'+item.label"></nz-cascader>
           <!-- 自定义渲染 -->
-          <ng-template [ngIf]="item.type === 'render'">
+          <ng-container *ngIf="item.type === 'render'">
             <input type="hidden" [formControlName]="item.index">
             <ng-template [ngIf]="item.render">
               <ng-container
-                *ngTemplateOutlet="item.render; context: { item: item, control: formGroup.controls[item.index] }">
+                *ngTemplateOutlet="item.render; context: { model: formGroup.value[item.index] , change: item.ngModelChange }">
               </ng-container>
             </ng-template>
             <ng-template [ngIf]="item.component">
               <span #componentContainer></span>
             </ng-template>
-          </ng-template>
+          </ng-container>
 
           <!-- 错误提示类信息 -->
           <ng-template #errorTip let-control>
-            <span *ngIf="control.errors.required">请{{item.type === 'input' ? '输入' : '选择'}}{{item.label}}</span>
+            <span *ngIf="control.errors.required">{{item.label}}是必填字段</span>
             <span *ngIf="!control.errors.required">{{errorTips(control, item)}}</span>
           </ng-template>
         </nz-form-control>

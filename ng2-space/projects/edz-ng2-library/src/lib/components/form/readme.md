@@ -74,10 +74,6 @@
       index: 'hobby',
       type: 'render',
       component: InputComponent,
-      componentParam: form => ({
-        value: null,
-        change: form.change,
-      }),
       required: true,
       nzXXl: { span: 10, offset: 2 },
     },
@@ -85,9 +81,9 @@
 ```
 !!!注意: render双向数据绑定
 ```html
-<ng-template #date let-control="control" let-item="item">
+<ng-template #date let-model="model" let-change="change">
   <!-- 双向数据绑定 -->
-  <nz-date-picker [(ngModel)]="control.value" (ngModelChange)="item?.change($event)"></nz-date-picker>
+  <nz-date-picker [ngModel]="model" (ngModelChange)="change($event)"></nz-date-picker>
 </ng-template>
 ```
 - 组件内表格使用form组件,响应式表单数据

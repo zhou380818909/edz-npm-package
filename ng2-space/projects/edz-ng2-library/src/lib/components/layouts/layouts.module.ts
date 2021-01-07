@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core'
 import { RouterModule } from '@angular/router'
 import { NzIconModule } from 'ng-zorro-antd/icon'
 import { NzLayoutModule } from 'ng-zorro-antd/layout'
+import { NzSpinModule } from 'ng-zorro-antd/spin'
 import { HeaderComponent } from './header/header.component'
 import { LayoutComponent } from './layout/layout.component'
 
@@ -13,6 +14,7 @@ import { LayoutComponent } from './layout/layout.component'
     NzLayoutModule,
     RouterModule,
     NzIconModule,
+    NzSpinModule,
   ],
   exports: [LayoutComponent, HeaderComponent, NzLayoutModule, RouterModule, NzIconModule],
 })
