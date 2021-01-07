@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core'
 import { Router } from '@angular/router'
-import { IColumnItem, IPagination, ISearchItem, ITableConfig } from 'dev'
+import { HttpService, IColumnItem, IPagination, ISearchItem, ITableConfig } from 'dev'
+import { BehaviorSubject, timer } from 'rxjs'
 import { DateComponent } from '../../../components/date/date.component'
 
 @Component({
@@ -199,13 +200,14 @@ export class UserListComponent implements OnInit, OnDestroy {
   ]
   pagination: IPagination = { pageIndex: 1, pageSize: 5, total: 50 }
   tableConfig: ITableConfig = { width: 1960 }
+  loading$ = new BehaviorSubject<boolean>(true)
 
   @ViewChild('time', { static: true })
   timeTpl: TemplateRef<any>
   @ViewChild('operate', { static: true })
   operateTpl: TemplateRef<any>
 
-  constructor(private router: Router) { }
+  constructor(private router: Router, private http: HttpService) { }
 
   initRender() {
     this.tableColumn = [
@@ -382,6 +384,7 @@ export class UserListComponent implements OnInit, OnDestroy {
   searchHandler(value) {
     // eslint-disable-next-line no-console
     console.dir(value)
+    this.dataEmitter()
   }
 
   resetHandler(value) {
@@ -389,8 +392,15 @@ export class UserListComponent implements OnInit, OnDestroy {
     console.dir(value)
   }
 
+  dataEmitter() {
+    timer(1500).subscribe(() => this.loading$.next(false))
+    // this.http.post('http://fe-monitor.edianzu.cn/api/statistics/error-total', {}, { loading: this.loading$ } )
+  }
+
   ngOnInit(): void {
     this.initRender()
+    this.loading$.next(true)
+    this.dataEmitter()
   }
 
   ngOnDestroy() {
