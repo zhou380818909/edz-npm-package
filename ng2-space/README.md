@@ -17,6 +17,7 @@ projects/edz-ng2-library 为 组件库源码
 运行 npm publish
 
 ## 发布日志
+- v2.1.9 加入overlayCloseService服务, 用来在切换路由的时候关闭除了modal以外的弹框, 直接在 app.component.ts 的服务中注入即可
 - v2.1.8 http请求服务支持loading, 配置增加loading: Subject | BehaviorSubject, 可以直接在 table 的loading属性中使用异步管道
 - v2.1.7 layout组件实现loading效果, 懒加载模块有loading效果, 在路由配置的data加入loading: true属性, 再引入LayoutLoadingGuard到根路由即可
 - v2.1.6 优化form组件,支持双向绑定 ngModel 传入表单数据, 优化 template 和 componet 组件更新数据方式
