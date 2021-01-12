@@ -6,7 +6,7 @@ import { FormsModule } from '@angular/forms'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { RouteReuseStrategy } from '@angular/router'
-import { RouteReuseServiceFactory } from 'dev'
+import { RouteReuseService, ROUTER_REUSE_CACHE_SIZE } from 'dev'
 import { NZ_I18N, zh_CN } from 'ng-zorro-antd/i18n'
 import { NzMessageModule } from 'ng-zorro-antd/message'
 import { AppRoutingModule } from './app-routing.module'
@@ -26,7 +26,11 @@ registerLocaleData(zh)
     LayoutModule,
     NzMessageModule,
   ],
-  providers: [{ provide: NZ_I18N, useValue: zh_CN }, { provide: RouteReuseStrategy, useClass: RouteReuseServiceFactory(50) }],
+  providers: [
+    { provide: NZ_I18N, useValue: zh_CN },
+    { provide: ROUTER_REUSE_CACHE_SIZE, useValue: 50 },
+    { provide: RouteReuseStrategy, useClass: RouteReuseService },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

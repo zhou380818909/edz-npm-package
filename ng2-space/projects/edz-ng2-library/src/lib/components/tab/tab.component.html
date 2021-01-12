@@ -1,4 +1,4 @@
-<nz-tabset nzType="card" [(nzSelectedIndex)]="activeIndex">
+<nz-tabset nzType="card" [nzSelectedIndex]="activeIndex">
   <nz-tab *ngFor="let tab of tabs; let index = index" [nzTitle]="titleTemplate" (nzContextmenu)="contextMenu($event, menu, tab, index)">
     <ng-template #titleTemplate>
       <div class="tab-title" (click)="tabHandler(tab)">{{ tab.title }}
