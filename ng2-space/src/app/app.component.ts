@@ -27,7 +27,7 @@ export class AppComponent {
             document.head.removeChild(style)
           }
           this.routerSubject.unsubscribe()
-        }, 15000)
+        }, 1500)
       }
     })
   }

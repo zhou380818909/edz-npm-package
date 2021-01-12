@@ -1,4 +1,4 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core'
+import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core'
 import { Validators } from '@angular/forms'
 import { ActivatedRoute } from '@angular/router'
 import { FormComponent, IFormConfig, IFormItem, TabService } from 'dev'
@@ -10,7 +10,7 @@ import { InputComponent } from '../../../components/input/input.component'
   templateUrl: './user-detail.component.html',
   styleUrls: ['./user-detail.component.scss'],
 })
-export class UserDetailComponent implements OnInit {
+export class UserDetailComponent implements OnInit, OnDestroy {
   formConfig: IFormItem[] = []
   config: IFormConfig = { labelWidth: 120 }
   formValue = {
@@ -233,5 +233,15 @@ export class UserDetailComponent implements OnInit {
   ngOnInit(): void {
     this.initRender()
     this.tabService.updateTabTitle(`新建一个用户${Math.random().toString(16).substr(2, 2)}`, this.activatedRoute.pathFromRoot)
+  }
+
+  ngOnDestroy() {
+    this.formConfig = null
+    this.config = null
+    this.formValue = null
+    this.formComponent = null
+    this.dateTpl = null
+    this.formHandler = null
+    this.initRender = null
   }
 }
