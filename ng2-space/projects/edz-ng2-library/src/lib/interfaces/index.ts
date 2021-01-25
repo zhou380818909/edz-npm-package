@@ -207,6 +207,13 @@ export type ISearchValue<T = any> = {
   [K in keyof T]?: T[K]
 }
 
+export interface ISearchConfig {
+  /** 折叠行数, 默认为null不折叠, 0和null不折叠 */
+  callapse?: number
+  /** 是否有阴影, 默认true, 有 */
+  shadow?: boolean
+}
+
 interface INzGrid {
   span?: number
   offset?: number
