@@ -10,7 +10,7 @@ import {
   OnChanges, OnInit, Output, SimpleChanges,
 } from '@angular/core'
 import { cloneDeep, isEqual, union } from 'lodash-es'
-import { ISearchItem, ISearchValue } from '../../interfaces'
+import { ISearchConfig, ISearchItem, ISearchValue } from '../../interfaces'
 
 @Component({
   selector: 'edz-search-bar',
@@ -19,15 +19,18 @@ import { ISearchItem, ISearchValue } from '../../interfaces'
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SearchBarComponent implements OnInit, OnChanges {
-  /** 搜索栏配置 */
+  /** 搜索栏列表配置 */
   @Input()
-  config: ISearchItem[] = []
-  /** 搜索栏数据 */
+  list: ISearchItem[] = []
+  /** 搜索栏列表数据 */
   @Input()
-  value: ISearchValue = {}
+  private value: ISearchValue = {}
   /** 搜索栏加载状态 */
   @Input()
   loading = false
+  /** 搜索栏配置  */
+  @Input()
+  config: ISearchConfig = { }
 
   /** 搜索事件触发 */
   @Output()
@@ -37,7 +40,16 @@ export class SearchBarComponent implements OnInit, OnChanges {
   reset = new EventEmitter()
 
   /** 渲染到模板的数据 */
-  searchValue: ISearchValue = {}
+  searchValue: ISearchValue = { }
+  /** 搜索栏高度 */
+  searchBarHeight = 0
+  /** 是否折叠 */
+  isCallapse = false
+  /** 搜索栏配置 */
+  searchBarConfig = {
+    callapse: null,
+    shadow: true,
+  }
   /** 用来重置的数据 */
   private initValue: ISearchValue = {}
 
@@ -46,7 +58,8 @@ export class SearchBarComponent implements OnInit, OnChanges {
     return isEqual(this.initValue, this.searchValue)
   }
 
-  constructor(private cdr: ChangeDetectorRef) {}
+  constructor(private cdr: ChangeDetectorRef) {
+  }
 
   /** 根据config配置初始化数据 */
   private initSearchValue() {
@@ -106,6 +119,10 @@ export class SearchBarComponent implements OnInit, OnChanges {
   }
 
   ngOnInit() {
+    Object.assign(this.searchBarConfig, this.config)
+    if (this.searchBarConfig.callapse >= 1) {
+      this.searchBarHeight = this.searchBarConfig.callapse * 32 + (this.searchBarConfig.callapse - 1) * 4
+    }
     this.search.emit(cloneDeep(this.searchValue))
   }
 

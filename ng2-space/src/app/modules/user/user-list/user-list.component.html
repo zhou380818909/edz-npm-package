@@ -1,7 +1,6 @@
 <div edz-scroll>
-  <edz-search-bar [config]="searchConfig" [value]="searchValue" (search)="searchHandler($event)" (reset)="resetHandler($event)">
+  <edz-search-bar [list]="searchConfig" [value]="searchValue" [config]="{ callapse: 2, shadow: true }" (search)="searchHandler($event)" (reset)="resetHandler($event)">
     <button nz-button (click)="openAllHandler()">多开</button>
-    &nbsp;&nbsp;
     <button nz-button (click)="toggleHandler()">切换</button>
   </edz-search-bar>
   <edz-table edz-scroll-content [column]="tableColumn" [loading]="loading$ | async" [data]="dataList" [pagination]="pagination" [config]="tableConfig"></edz-table>

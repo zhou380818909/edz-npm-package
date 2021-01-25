@@ -3,6 +3,7 @@
 This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.0.3.
 
 ## 更新日志
+- v2.1.11 search-bar增加折叠功能, API变更, 不能直接升级
 - v2.1.10 路由复用优化, API变更, 不能直接升级
 - v2.1.9 加入overlayCloseService服务, 用来在切换路由的时候关闭除了modal以外的弹框, 直接在 app.component.ts 的服务中注入即可
 - v2.1.8 http请求服务支持loading, 配置增加loading: Subject | BehaviorSubject, 可以直接在 table 的loading属性中使用异步管道

@@ -1,18 +1,24 @@
-.search-bar {
+.search-wrap {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   margin: 8px 0;
+  row-gap: 4px;
 
   &.shadow {
     box-shadow: 0 0 4px 0 #bbb;
     margin: 8px -6px;
-    padding: 8px 8px 4px;
+    padding: 8px;
   }
+}
+
+.search-bar {
+  column-gap: 16px;
+  display: flex;
+  flex-wrap: wrap;
+  overflow: hidden;
+  row-gap: 4px;
 
   .item {
-    margin-bottom: 4px;
-    margin-right: 24px;
-
     nz-select {
       width: 100%;
     }
@@ -47,5 +53,16 @@
       margin-left: 8px;
       vertical-align: middle;
     }
+  }
+}
+
+.search-extra {
+  align-items: center;
+  column-gap: 16px;
+  display: flex;
+  justify-content: flex-end;
+
+  .callapse {
+    cursor: pointer;
   }
 }
