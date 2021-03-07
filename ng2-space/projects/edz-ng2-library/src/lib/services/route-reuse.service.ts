@@ -5,9 +5,9 @@
  * @Author: ChouEric
  * @Date: 2019-12-08 10:41:31
  * @Last Modified by: ChouEric
- * @Last Modified time: 2021-01-12 15:31:13
+ * @Last Modified time: 2021-03-07 22:34:25
  * @Description: 路由复用策略, 目前angular在多个页面中跳转内存会持续增加,和路由复用无关,应该和虚拟dom有关
- * // TODO: 未完成路由通配符
+ * // TODO: 未完成路由通配符  path-to-regexp
  */
 import { ComponentRef, Inject, Injectable, InjectionToken, Optional } from '@angular/core'
 import { ActivatedRouteSnapshot, DetachedRouteHandle, Route, RouteReuseStrategy } from '@angular/router'
@@ -100,6 +100,10 @@ export class RouteReuseService implements RouteReuseStrategy {
   /** 根据路由配置存储对应的缓存数据 */
   store(route: ActivatedRouteSnapshot, handle: DetachedRouteHandle): void {
     if (!handle) {
+      return
+    }
+    // 如果组件已经销毁,则不在缓存
+    if ((handle as any).componentRef?.changeDetectorRef?.destroyed) {
       return
     }
     /** 控制缓存数量 */
