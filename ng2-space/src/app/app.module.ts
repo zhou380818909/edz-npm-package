@@ -6,7 +6,7 @@ import { FormsModule } from '@angular/forms'
 import { BrowserModule } from '@angular/platform-browser'
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations'
 import { RouteReuseStrategy } from '@angular/router'
-import { RouteReuseService, ROUTER_REUSE_CACHE_SIZE } from 'dev'
+import { HTTP_SERVICE_CONFIG, IHttpServiceConfig, RouteReuseService, ROUTER_REUSE_CACHE_SIZE } from 'dev'
 import { NZ_I18N, zh_CN } from 'ng-zorro-antd/i18n'
 import { NzMessageModule } from 'ng-zorro-antd/message'
 import { AppRoutingModule } from './app-routing.module'
@@ -30,6 +30,8 @@ registerLocaleData(zh)
     { provide: NZ_I18N, useValue: zh_CN },
     { provide: ROUTER_REUSE_CACHE_SIZE, useValue: 50 },
     { provide: RouteReuseStrategy, useClass: RouteReuseService },
+    // eslint-disable-next-line no-console
+    { provide: HTTP_SERVICE_CONFIG, useValue: { unAuthCode: -1, unAuthCallback: console.log } as IHttpServiceConfig },
   ],
   bootstrap: [AppComponent],
 })

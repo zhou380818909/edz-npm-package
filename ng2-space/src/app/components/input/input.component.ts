@@ -10,6 +10,8 @@ export class InputComponent implements OnInit {
   change: (str: string) => void
   @Input()
   model = ''
+  @Input()
+  type = 'default'
 
   constructor() { }
 

@@ -1,7 +1,7 @@
 <div edz-scroll>
   <div>一个伟大的用户诞生了</div>
   <div edz-scroll-content>
-    <edz-form [form]="formConfig" [config]="config" [(ngModel)]="formValue"></edz-form>
+    <edz-form [form]="formConfig" [config]="config" [(ngModel)]="formValue" [disabled]="disable"></edz-form>
     <button nz-button (click)="formHandler()">表单</button>
   </div>
 </div>

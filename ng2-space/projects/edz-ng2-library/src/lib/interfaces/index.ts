@@ -349,14 +349,20 @@ export interface IFormItemBase<T = any> {
   tooltip?: string
   /** 错误提示文字 */
   errorTooltip?: Record<string, string>
-  /** 是否只读 */
+  /** 是否只读, 和禁用的区别在于input类型不一样, 其他类型都是禁用效果 */
   readonly?: boolean
+  /** 是否禁用 */
+  disabled?: boolean
 }
 
 export interface IFormInput extends IFormItemBase<string> {
   type: 'input'
   /** 提示 */
   placeholder?: string
+  /** 最小长度 */
+  minLength?: number
+  /** 最大长度 */
+  maxLength?: number
 }
 
 interface IFormSelectBase<T> extends IFormItemBase<T> {
@@ -433,6 +439,8 @@ interface IFormRender extends IFormItemBase {
    * @example `@Input() model; @Input() change;`
    */
   component?: Type<any>
+  /** 组件参数 */
+  componentParam?: Record<any, any>
 }
 
 export interface IFormConfig {

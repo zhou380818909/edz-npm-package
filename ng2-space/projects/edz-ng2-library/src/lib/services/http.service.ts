@@ -30,8 +30,10 @@ export interface IHttpServiceConfig {
   useBackEndErrorMessage?: boolean
   /** 是否携带cookie */
   withCredentials?: boolean
+  /** 未登录的状态码 */
+  unAuthCode?: number
   /** 未登录回调 */
-  unAuthCallback?: () => void
+  unAuthCallback?: (errorMessage?: string) => void
 }
 
 /** 基本请求参数 */
@@ -103,8 +105,10 @@ export class HttpService {
   private withCredentials = true
   /** 是否使用后端返回的错误消息 */
   private useBackEndErrorMessage: boolean
+  /** 未登录状态码 */
+  private unAuthCode: number
   /** 未登录 */
-  private unAuth$ = new Subject<{ message: string, notShowErrorMessagee: boolean }>()
+  private unAuth$ = new Subject<{ message: string, notShowErrorMessagee?: boolean }>()
   /** 提示队列, 相同提示不用再提示 */
   errorMessageQueque = new Set<string>()
   /** 缓存数据 */
@@ -123,6 +127,7 @@ export class HttpService {
       successCode = 0,
       useBackEndErrorMessage = true,
       withCredentials = true,
+      unAuthCode = null,
       unAuthCallback,
     } = config || {} as IHttpServiceConfig
     this.code = code
@@ -131,12 +136,12 @@ export class HttpService {
     this.successCode = successCode
     this.useBackEndErrorMessage = useBackEndErrorMessage
     this.withCredentials = withCredentials
-    this.unAuth$.pipe(throttleTime(600)).subscribe(({ message: msg, notShowErrorMessagee }) => {
-      if (notShowErrorMessagee) {
-        if (typeof unAuthCallback === 'function') {
-          unAuthCallback()
-        }
-      } else {
+    this.unAuthCode = unAuthCode
+    this.unAuth$.pipe(throttleTime(600)).subscribe(({ message: msg, notShowErrorMessagee = false }) => {
+      if (typeof unAuthCallback === 'function') {
+        unAuthCallback(msg)
+      }
+      if (!notShowErrorMessagee) {
         messageService.remove()
         if (!this.errorMessageQueque.has(msg)) {
           this.errorMessageQueque.add(msg)
@@ -186,6 +191,10 @@ export class HttpService {
         switchMap((res: any) => {
           if (loading instanceof Subject) {
             loading.next(false)
+          }
+          if (this.unAuthCode === res[this.code]) {
+            this.unAuth$.next({ message: res[this.message] || '未登录或登录失效, 请重新登录!' })
+            return EMPTY
           }
           if (observe === 'response') {
             callback()
@@ -271,6 +280,10 @@ export class HttpService {
           if (loading instanceof Subject) {
             loading.next(false)
           }
+          if (this.unAuthCode === res[this.code]) {
+            this.unAuth$.next({ message: res[this.message] || '未登录或登录失效, 请重新登录!' })
+            return EMPTY
+          }
           if (observe === 'response') {
             callback()
             return of(res)
@@ -335,6 +348,10 @@ export class HttpService {
         if (loading instanceof Subject) {
           loading.next(false)
         }
+        if (this.unAuthCode === res[this.code]) {
+          this.unAuth$.next(res[this.message] || '未登录或登录失效, 请重新登录!')
+          return EMPTY
+        }
         if (observe === 'response') {
           callback()
           return of(res)
@@ -392,7 +409,7 @@ export class HttpService {
       if (status <= 200) {
         // 如果返回的是包含 html 关键字的文本, 则认为是重定向到了登录页
         if (/<html/i.test(text)) {
-          this.unAuth$.next({ message: '登录失效, 请重新登录!', notShowErrorMessagee })
+          this.unAuth$.next({ message: '未登录或登录失效, 请重新登录!', notShowErrorMessagee })
           return EMPTY
         }
         let message = ''

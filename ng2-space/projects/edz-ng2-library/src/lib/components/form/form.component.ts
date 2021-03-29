@@ -1,13 +1,19 @@
 import {
-  ChangeDetectionStrategy,
-  ChangeDetectorRef, Component, ComponentFactoryResolver,
-
-  forwardRef,
-  Input, isDevMode, QueryList, SimpleChanges, ViewChildren, ViewContainerRef,
+  ChangeDetectionStrategy, ChangeDetectorRef, Component, ComponentFactoryResolver,
+  forwardRef, Input, isDevMode, QueryList, SimpleChanges, Type, ViewChildren, ViewContainerRef,
 } from '@angular/core'
 import { FormBuilder, FormControl, FormGroup, NG_VALUE_ACCESSOR, Validators } from '@angular/forms'
 import { assign } from 'lodash-es'
 import { IFormConfig, IFormItem } from '../../interfaces'
+
+interface IFormGroup extends FormGroup {
+  componentInstance?: Type<any>
+}
+
+interface IFormRender {
+  componentInstance?: any
+  [k: string]: any
+}
 
 @Component({
   selector: 'edz-form',
@@ -31,14 +37,14 @@ export class FormComponent {
   @Input()
   private config: IFormConfig = {}
 
-  formRender: any[] = []
+  formRender: IFormRender[] = []
   configRender: IFormConfig = { }
   private defaultConfig: IFormConfig = { labelWidth: 84 }
   private value = {}
   private changeFn: any
 
   /** 响应式表单 */
-  formGroup: FormGroup
+  formGroup: IFormGroup
 
   @ViewChildren('componentContainer', { read: ViewContainerRef })
   components: QueryList<ViewContainerRef>
@@ -50,17 +56,26 @@ export class FormComponent {
     if (isDevMode()) {
       const mapIndex = this.form.map(item => item.index)
       if (new Set(mapIndex).size < mapIndex.length) {
-        console.warn('表单存在相同的index')
+        console.error('表单存在相同的index')
       }
     }
     this.formGroup = this.fb.group([])
     this.formRender = [...this.form]
     this.formRender.forEach((item => {
       const validators = item.validators || []
+      if (item.minLength) {
+        validators.unshift(Validators.minLength(item.minLength))
+      }
+      if (item.maxLength) {
+        validators.unshift(Validators.maxLength(item.maxLength))
+      }
       if (item.required) {
         validators.unshift(Validators.required)
       }
       const control = new FormControl(item.defaultValue || null, validators)
+      if (item.disabled) {
+        control.disable()
+      }
       if (item.type === 'render') {
         item.ngModelChange = value => {
           this.formGroup.controls[item.index].setValue(value)
@@ -74,6 +89,7 @@ export class FormComponent {
       })
       this.formGroup.addControl(item.index, control)
     }))
+    this.initGripLayout()
   }
 
   private initGripLayout() {
@@ -85,7 +101,10 @@ export class FormComponent {
 
   /** 错误提示 */
   errorTips(control: FormControl, item: IFormItem) {
-    return item?.errorTooltip[Object.keys(control?.errors || {}).find(key => control?.errors[key])] || ''
+    if (control.errors.required) return `${item.label}是必填字段`
+    if (control.errors.minlength) return `最少输入${control.errors.minlength.requiredLength}个字符`
+    if (control.errors.maxlength) return `最多输入${control.errors.minlength.requiredLength}个字符`
+    return item?.errorTooltip[Object.keys(control?.errors || {})?.find(key => control?.errors[key])] || ''
   }
 
   /** 校验表单返回校验结果 */
@@ -116,6 +135,9 @@ export class FormComponent {
       container.clear()
       const componentFactory = this.cfr.resolveComponentFactory(item.component)
       const componentRef = container.createComponent(componentFactory)
+      if (item.componentParam && typeof item.componentParam === 'object') {
+        Object.assign(componentRef.instance, item.componentParam)
+      }
       item.componentInstance = componentRef.instance
     })
   }
@@ -138,11 +160,16 @@ export class FormComponent {
     }
   }
   private registerOnTouched() {}
-  private setDisabledState() {}
+  private setDisabledState(value) {
+    if (value) {
+      this.formGroup.disable()
+    } else {
+      this.formGroup.enable()
+    }
+  }
 
   private ngOnInit(): void {
     this.initFormGroup()
-    this.initGripLayout()
   }
 
   private ngAfterViewInit() {
@@ -155,6 +182,7 @@ export class FormComponent {
       this.configRender = assign(this.defaultConfig, changes.config.currentValue)
     }
     if (changes.form && !changes.form.firstChange && Array.isArray(changes.form.currentValue)) {
+      this.initFormGroup()
       this.componentRender()
       this.cdf.detectChanges()
     }

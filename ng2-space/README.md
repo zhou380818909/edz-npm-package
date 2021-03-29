@@ -17,6 +17,11 @@ projects/edz-ng2-library 为 组件库源码
 运行 npm publish
 
 ## 发布日志
+- v2.1.20 HTTP_SERVICE_CONFIG 中支持 unAuthCode 字段, 在form组件增加 componentParam 字段支持,  form组件的form参数改变会重新渲染所有组件, 以及input类型的disabled功能
+- v2.1.19 解决在路由复用服务中一个bug, 删除缓存并且执行destroy之后,离开页面时候会缓存destroy执行后的组件, 这个会在下次进入路由的时候, 取到缓存然后报错
+- v2.1.18 http请求服务支持loading, 配置增加loading: Subject | BehaviorSubject, 可以直接在 table 的loading属性中使用异步管道
+- v2.1.17 layout组件实现loading效果, 懒加载模块有loading效果, 在路由配置的data加入loading: true属性, 再引入LayoutLoadingGuard到根路由即可
+- v2.1.16 优化form组件,支持双向绑定 ngModel 传入表单数据, 优化 template 和 componet 组件更新数据方式
 - v2.1.11 search-bar增加折叠功能, API变更, 不能直接升级
 - v2.1.10 路由复用优化, API变更, 不能直接升级
 - v2.1.9 加入overlayCloseService服务, 用来在切换路由的时候关闭除了modal以外的弹框, 直接在 app.component.ts 的服务中注入即可

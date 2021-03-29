@@ -1,8 +1,9 @@
+import { DemoService } from '@/services/demo.service'
 import { Component, OnDestroy, OnInit, TemplateRef, ViewChild } from '@angular/core'
 import { Validators } from '@angular/forms'
 import { ActivatedRoute } from '@angular/router'
 import { FormComponent, IFormConfig, IFormItem, TabService } from 'dev'
-import { of } from 'rxjs'
+import { of, timer } from 'rxjs'
 import { InputComponent } from '../../../components/input/input.component'
 
 @Component({
@@ -25,7 +26,9 @@ export class UserDetailComponent implements OnInit, OnDestroy {
   @ViewChild('date', { static: true })
   dateTpl: TemplateRef<any>
 
-  constructor(private tabService: TabService, private activatedRoute: ActivatedRoute) { }
+  disable = false
+
+  constructor(private tabService: TabService, private activatedRoute: ActivatedRoute, private demo: DemoService) { }
 
   formHandler() {
     const { validate } = this.formComponent
@@ -69,7 +72,7 @@ export class UserDetailComponent implements OnInit, OnDestroy {
         tooltip: '邮箱号以后可以修改',
       },
       {
-        label: '行吧',
+        label: '性别',
         index: 'sex',
         placeholder: '请选择',
         type: 'select',
@@ -109,7 +112,25 @@ export class UserDetailComponent implements OnInit, OnDestroy {
       },
       {
         label: '爱好',
-        index: 'hobby',
+        index: 'hobby1',
+        type: 'input',
+        required: true,
+        nzXXl: { span: 10, offset: 2 },
+        maxLength: 10,
+        minLength: 6,
+      },
+      {
+        label: '爱好',
+        index: 'hobby2',
+        type: 'render',
+        component: InputComponent,
+        componentParam: { type: '111' },
+        required: true,
+        nzXXl: { span: 10, offset: 2 },
+      },
+      {
+        label: '爱好',
+        index: 'hobby3',
         type: 'render',
         component: InputComponent,
         required: true,
@@ -117,7 +138,7 @@ export class UserDetailComponent implements OnInit, OnDestroy {
       },
       {
         label: '爱好',
-        index: 'hobby',
+        index: 'hobby4',
         type: 'render',
         component: InputComponent,
         required: true,
@@ -125,7 +146,7 @@ export class UserDetailComponent implements OnInit, OnDestroy {
       },
       {
         label: '爱好',
-        index: 'hobby',
+        index: 'hobby5',
         type: 'render',
         component: InputComponent,
         required: true,
@@ -133,7 +154,7 @@ export class UserDetailComponent implements OnInit, OnDestroy {
       },
       {
         label: '爱好',
-        index: 'hobby',
+        index: 'hobby6',
         type: 'render',
         component: InputComponent,
         required: true,
@@ -141,7 +162,7 @@ export class UserDetailComponent implements OnInit, OnDestroy {
       },
       {
         label: '爱好',
-        index: 'hobby',
+        index: 'hobby7',
         type: 'render',
         component: InputComponent,
         required: true,
@@ -149,7 +170,7 @@ export class UserDetailComponent implements OnInit, OnDestroy {
       },
       {
         label: '爱好',
-        index: 'hobby',
+        index: 'hobby8',
         type: 'render',
         component: InputComponent,
         required: true,
@@ -157,7 +178,7 @@ export class UserDetailComponent implements OnInit, OnDestroy {
       },
       {
         label: '爱好',
-        index: 'hobby',
+        index: 'hobby9',
         type: 'render',
         component: InputComponent,
         required: true,
@@ -165,7 +186,7 @@ export class UserDetailComponent implements OnInit, OnDestroy {
       },
       {
         label: '爱好',
-        index: 'hobby',
+        index: 'hobby10',
         type: 'render',
         component: InputComponent,
         required: true,
@@ -173,7 +194,7 @@ export class UserDetailComponent implements OnInit, OnDestroy {
       },
       {
         label: '爱好',
-        index: 'hobby',
+        index: 'hobby11',
         type: 'render',
         component: InputComponent,
         required: true,
@@ -181,7 +202,7 @@ export class UserDetailComponent implements OnInit, OnDestroy {
       },
       {
         label: '爱好',
-        index: 'hobby',
+        index: 'hobby12',
         type: 'render',
         component: InputComponent,
         required: true,
@@ -189,7 +210,7 @@ export class UserDetailComponent implements OnInit, OnDestroy {
       },
       {
         label: '爱好',
-        index: 'hobby',
+        index: 'hobby13',
         type: 'render',
         component: InputComponent,
         required: true,
@@ -197,7 +218,7 @@ export class UserDetailComponent implements OnInit, OnDestroy {
       },
       {
         label: '爱好',
-        index: 'hobby',
+        index: 'hobby14',
         type: 'render',
         component: InputComponent,
         required: true,
@@ -205,23 +226,7 @@ export class UserDetailComponent implements OnInit, OnDestroy {
       },
       {
         label: '爱好',
-        index: 'hobby',
-        type: 'render',
-        component: InputComponent,
-        required: true,
-        nzXXl: { span: 10, offset: 2 },
-      },
-      {
-        label: '爱好',
-        index: 'hobby',
-        type: 'render',
-        component: InputComponent,
-        required: true,
-        nzXXl: { span: 10, offset: 2 },
-      },
-      {
-        label: '爱好',
-        index: 'hobby',
+        index: 'hobby15',
         type: 'render',
         component: InputComponent,
         required: true,
@@ -232,11 +237,26 @@ export class UserDetailComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.initRender()
+    // eslint-disable-next-line no-console
+    this.demo.demo().subscribe(console.log)
     this.tabService.updateTabTitle(`新建一个用户${Math.random().toString(16).substr(2, 2)}`, this.activatedRoute.pathFromRoot)
+    timer(3000).subscribe(() => {
+      this.formConfig = this.formConfig.map((item, index) => {
+        if (index === 0) {
+          return {
+            ...item,
+            readonly: false,
+            disabled: true,
+          }
+        }
+        return item
+      })
+    })
   }
 
   ngOnDestroy() {
     this.formConfig = null
+    this.formConfig = { ...this.formConfig }
     this.config = null
     this.formValue = null
     this.formComponent = null
