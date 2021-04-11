@@ -3,6 +3,7 @@
 This library was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.0.3.
 
 ## 更新日志
+- v2.1.21 menu 组件加入badge计数功能
 - v2.1.20 HTTP_SERVICE_CONFIG 中支持 unAuthCode 字段, 在form组件增加 componentParam 字段支持,  form组件的form参数改变会重新渲染所有组件, 以及input类型的disabled功能
 - v2.1.19 解决在路由复用服务中一个bug, 删除缓存并且执行destroy之后,离开页面时候会缓存destroy执行后的组件, 这个会在下次进入路由的时候, 取到缓存然后报错
 - v2.1.18 http请求服务支持loading, 配置增加loading: Subject | BehaviorSubject, 可以直接在 table 的loading属性中使用异步管道

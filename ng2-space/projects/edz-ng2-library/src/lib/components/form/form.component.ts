@@ -103,7 +103,7 @@ export class FormComponent {
   errorTips(control: FormControl, item: IFormItem) {
     if (control.errors.required) return `${item.label}是必填字段`
     if (control.errors.minlength) return `最少输入${control.errors.minlength.requiredLength}个字符`
-    if (control.errors.maxlength) return `最多输入${control.errors.minlength.requiredLength}个字符`
+    if (control.errors.maxlength) return `最多输入${control.errors.maxlength.requiredLength}个字符`
     return item?.errorTooltip[Object.keys(control?.errors || {})?.find(key => control?.errors[key])] || ''
   }
 

@@ -132,6 +132,10 @@ export interface IMenuItem {
   hidden?: boolean
   /** 是否新开窗口 */
   isBlank?: boolean
+  /** 前面徽章数订阅 */
+  prefixBadge?: Observable<any>
+  /** 后面徽章数订阅 */
+  suffixBadge?: Observable<any>
 }
 
 export interface IMenuConfig {

@@ -16,5 +16,24 @@
       flex: 1;
       overflow: auto;
     }
+
+    nz-badge {
+      margin-left: 16px;
+      vertical-align: middle;
+
+      &.prefix {
+        margin-left: 0;
+        margin-right: 16px;
+      }
+
+      .ant-badge-count {
+        height: 16px;
+        line-height: 16px;
+      }
+
+      p {
+        color: inherit;
+      }
+    }
   }
 }
