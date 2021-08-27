@@ -22,6 +22,7 @@ export class UserListComponent implements OnInit, OnDestroy {
       type: 'input',
       index: 'age',
       defaultValue: 11,
+      width: 400,
     },
     {
       label: '年纪',

@@ -1,8 +1,8 @@
 <nz-spin [nzIndicator]="spinTpl" [nzSpinning]="loading">
   <div class="search-wrap" [ngClass]="searchBarConfig.shadow ? 'shadow': ''">
-    <div class="search-bar" [style.maxHeight]="!isCallapse && searchBarConfig.callapse ? searchBarHeight + 'px' : ''">
+    <div class="search-bar" [style.gridTemplateColumns]="'repeat(auto-fill, minmax('+config.width+'px, 1fr))'" [style.maxHeight]="!isCallapse && searchBarConfig.callapse ? searchBarHeight + 'px' : ''">
       <ng-template ngFor let-item [ngForOf]="list">
-        <div class="item" [ngSwitch]="item.type" [style.width.px]="item.width || 240">
+        <div class="item" [ngSwitch]="item.type" [style.minWidth.px]="item.width || 240">
           <!-- 输入框 -->
           <ng-template ngSwitchCase="input">
             <!-- 如果clear标识不为false, 则渲染的input框带有清除按钮 -->

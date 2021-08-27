@@ -159,7 +159,10 @@ interface ISearchBase<T = any> {
   type: 'input' | 'select' | 'render'
   /** 是否清除, 显性设置为false禁用 */
   clear?: boolean
-  /** 宽度 */
+  /**
+   *  宽度
+   * @deprecated 已经不再生效
+  * */
   width?: number
 }
 // 输入框
@@ -216,6 +219,8 @@ export interface ISearchConfig {
   callapse?: number
   /** 是否有阴影, 默认true, 有 */
   shadow?: boolean
+  /** 每个项目的宽度 */
+  width?: number
 }
 
 interface INzGrid {

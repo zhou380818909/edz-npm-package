@@ -49,6 +49,7 @@ export class SearchBarComponent implements OnInit, OnChanges {
   searchBarConfig = {
     callapse: null,
     shadow: true,
+    width: 240,
   }
   /** 用来重置的数据 */
   private initValue: ISearchValue = {}

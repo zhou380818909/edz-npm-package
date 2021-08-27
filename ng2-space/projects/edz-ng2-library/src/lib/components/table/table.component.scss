@@ -45,6 +45,10 @@
     .ant-table-row {
       td {
         padding: 4px 16px !important;
+
+        > * {
+          content-visibility: auto;
+        }
       }
     }
 
